@@ -96,8 +96,7 @@ const Otp: FC<IProps> = (email) => {
     let otp = lettersReverse.reverse().toString().replace(/,/g, "");
     getOtpValidationQuery.mutate(
       {
-        //@ts-ignore
-        email: email,
+        email: email.email,
         otp: otp,
       },
       {
