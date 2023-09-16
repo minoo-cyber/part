@@ -9,7 +9,7 @@ import {
 } from "react";
 import { formBox, wrapperInput } from "./otp.style";
 import { useMutation } from "@tanstack/react-query";
-import { getEmailOtpService } from "../../../../services/login.api";
+import { getOtpValidation } from "../../../../services/login.api";
 import { useNavigate } from "react-router-dom";
 
 interface IProps {
@@ -18,8 +18,8 @@ interface IProps {
 
 const Otp: FC<IProps> = (email) => {
   const navigate = useNavigate();
-  const getEmailOtpQuery = useMutation(getEmailOtpService);
-  const numberOfInputs = 5;
+  const getOtpValidationQuery = useMutation(getOtpValidation);
+  const numberOfInputs = 6;
   const [inputRefsArray] = useState(() =>
     Array.from({ length: numberOfInputs }, () => createRef<HTMLInputElement>())
   );
@@ -97,11 +97,18 @@ const Otp: FC<IProps> = (email) => {
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     let otp = lettersReverse.reverse().toString().replace(/,/g, "");
-    getEmailOtpQuery.mutate(otp, {
-      onSuccess(data) {
-        navigate("/userPanel");
+    getOtpValidationQuery.mutate(
+      {
+        //@ts-ignore
+        email: email,
+        otp: otp,
       },
-    });
+      {
+        onSuccess(data) {
+          navigate("/userPanel");
+        },
+      }
+    );
     otp = lettersReverse.reverse().toString().replace(/,/g, "");
   };
 

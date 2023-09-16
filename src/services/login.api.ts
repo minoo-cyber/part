@@ -21,5 +21,5 @@ export const loginService = (param: ILoginParam) =>
 export const getOtpService = (email: string) =>
   axiosInstance.get(`/otp/${email}`);
 
-export const getEmailOtpService = (otp: string) =>
-  axiosInstance.get(`/otp/${otp}`);
+export const getOtpValidation = (otpParam: IOtpParam) =>
+  axiosInstance.post("/otp/validation", otpParam);
