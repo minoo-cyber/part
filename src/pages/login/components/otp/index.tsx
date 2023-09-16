@@ -40,10 +40,7 @@ const Otp: FC<IProps> = (email) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number
   ) => {
-    if (
-      e.currentTarget.value === "" ||
-      e.currentTarget.value.match(/^[0-9]{1}$/)
-    ) {
+    if (e.currentTarget.value === "" || e.currentTarget.value) {
       const { value } = e.target;
       setCurrentIndex((prevIndex) => {
         const nextIndex = prevIndex > 0 ? prevIndex - 1 : 0;
