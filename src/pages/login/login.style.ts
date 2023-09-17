@@ -4,14 +4,19 @@ export const wrapperBox: SxProps = {
   display: "flex",
   flexWrap: "wrap",
   width: "900px",
-  maxWidth: "100%",
+  maxWidth: "96%",
   margin: "0 auto",
   height: "60vh",
   marginTop: "20vh",
   boxShadow: "0px 10px 34px -15px rgba(0, 0, 0, 0.24)",
   background: "#ffffff",
+  "@media (max-width: 700px)": {
+    marginTop: "100px",
+    "&>div": {
+      width: "100%",
+    },
+  },
 };
-
 export const wrapperFormBox: SxProps = {
   width: "52%",
   padding: "40px",
@@ -20,6 +25,7 @@ export const wrapperFormBox: SxProps = {
   },
   "& form>div": {
     marginBottom: "20px",
+    position: "relative",
   },
 };
 
@@ -35,7 +41,7 @@ export const formBox: SxProps = {
     width: "100%",
     height: "40px",
     marginTop: "10px",
-    padding: "0 20px",
+    padding: "0 40px 0 20px",
     outline: "none",
   },
   "& button": {
@@ -45,13 +51,19 @@ export const formBox: SxProps = {
     height: "45px",
     marginTop: "40px",
   },
+  "& svg": {
+    position: "absolute",
+    right: "12px",
+    top: "38px",
+    opacity: "0.6",
+    cursor: "pointer",
+  },
 };
 export const welcomeBox: SxProps = {
   width: "48%",
   color: "#ffffff",
   textAlign: "center",
-  padding: "20px",
-  paddingTop: "20vh",
+  padding: "20vh 20px 20px 20px",
   "& p": {
     margin: "15px auto",
   },
@@ -62,5 +74,8 @@ export const welcomeBox: SxProps = {
     padding: "7px 15px",
     display: "inline-block",
     textDecoration: "none",
+  },
+  "@media (max-width: 700px)": {
+    paddingTop: "30px",
   },
 };

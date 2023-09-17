@@ -6,14 +6,27 @@ import { useMutation } from "@tanstack/react-query";
 import { getOtpService, loginService } from "../../services/login.api";
 import useAppDispatch from "../../hooks/useDispatch";
 import { userToken } from "../../redux/slices/userSlice";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const [showVerify, setShowVerify] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPass, setShowPass] = useState<boolean>(false);
+  const [type, setType] = useState<string>("password");
   const loginQuery = useMutation(loginService);
   const getOtpQuery = useMutation(getOtpService);
   const dispatch = useAppDispatch();
+
+  const handleShow = () => {
+    setShowPass(!showPass);
+    setType("text");
+  };
+  const handleHide = () => {
+    setShowPass(!showPass);
+    setType("password");
+  };
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,13 +75,18 @@ const Login = () => {
               <label htmlFor="password">PASSWORD</label>
               <br />
               <input
-                type="password"
+                type={type}
                 id="password"
                 placeholder="Please Enter Your Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {!showPass ? (
+                <RemoveRedEyeIcon onClick={handleShow} />
+              ) : (
+                <VisibilityOffIcon onClick={handleHide} />
+              )}
             </Box>
             <Button
               type="submit"
