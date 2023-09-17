@@ -22,7 +22,7 @@ const TopBar = () => {
       <Box sx={wrapperIcons}>
         <Typography>
           <AccountCircleIcon />
-          minoobinesh705@gmail.com
+          Welcome Aref
         </Typography>
         <Typography>
           <CalendarMonthIcon />

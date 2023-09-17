@@ -12,6 +12,10 @@ export const wrapperContent: SxProps = {
   padding: "120px 50px 50px 50px",
   height: "calc(100vh - 66px)",
   overflowY: "scroll",
+  "@media (max-width:1000px)": {
+    width: "100%",
+    left: "0",
+  },
 };
 
 export const wrapperItems: SxProps = {
@@ -50,12 +54,24 @@ export const wrapperItems: SxProps = {
     "& svg": {
       right: "15px",
       borderRadius: "50%",
-      fontSize: "70px",
+      fontSize: "55px",
       padding: "10px",
       color: "#fff",
       position: "absolute",
       top: "15px",
       opacity: "0.7",
+    },
+  },
+  "@media (max-width:1400px)": {
+    justifyContent: "center",
+    "&>div": {
+      width: "35%",
+      margin: "20px auto",
+    },
+  },
+  "@media (max-width:500px)": {
+    "&>div": {
+      width: "100%",
     },
   },
 };
