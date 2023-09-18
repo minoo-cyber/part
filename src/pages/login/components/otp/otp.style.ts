@@ -18,8 +18,7 @@ export const formBox: SxProps = {
 export const wrapperInput: SxProps = {
   display: "flex",
   flexWrap: "wrap",
-  justifyContent: "center",
-  flexFlow: "row-reverse",
+  justifyContent: "space-between",
   "& input": {
     background: "rgba(0, 0, 0, 0.05)",
     borderRadius: "50%",
@@ -27,10 +26,9 @@ export const wrapperInput: SxProps = {
     fontWeight: "700",
     width: "45px",
     height: "45px",
-    margin: "10px",
     outline: "none",
     border: "none",
     fontSize: "1.4rem",
-    "@media (max-width: 400px)": { margin: "2px" },
+    margin: "2px",
   },
 };

@@ -11,6 +11,8 @@ const TopBar = () => {
   let month = newDate.getMonth() + 1;
   let year = newDate.getFullYear();
 
+  const handleLogOut = () => {};
+
   return (
     <Grid
       sx={{
@@ -29,7 +31,7 @@ const TopBar = () => {
           {`${year}/${month < 10 ? `0${month}` : `${month}`}/${date}`}
         </Typography>
         <Typography>
-          <LogoutIcon />
+          <LogoutIcon onClick={handleLogOut} />
           Log Out
         </Typography>
       </Box>

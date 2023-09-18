@@ -1,12 +1,6 @@
 import { FC } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import {
-  ChangeEvent,
-  SyntheticEvent,
-  createRef,
-  useEffect,
-  useState,
-} from "react";
+import { SyntheticEvent, useState } from "react";
 import { formBox, wrapperInput } from "./otp.style";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpValidation } from "../../../../services/login.api";
@@ -19,81 +13,16 @@ interface IProps {
 const Otp: FC<IProps> = (email) => {
   const navigate = useNavigate();
   const getOtpValidationQuery = useMutation(getOtpValidation);
-  const numberOfInputs = 6;
-  const [inputRefsArray] = useState(() =>
-    Array.from({ length: numberOfInputs }, () => createRef<HTMLInputElement>())
-  );
-  const [currentIndex, setCurrentIndex] = useState(numberOfInputs - 1);
-  const [activeButton, setActiveButton] = useState<boolean>(false);
-  const [letters, setLetters] = useState(() =>
-    Array.from({ length: numberOfInputs }, () => "")
-  );
-  const [lettersReverse, setLettersReverse] = useState(() =>
-    Array.from({ length: numberOfInputs }, () => "")
-  );
-  const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Backspace") {
-    }
-  };
 
-  const onChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number
-  ) => {
-    if (e.currentTarget.value === "" || e.currentTarget.value) {
-      const { value } = e.target;
-      setCurrentIndex((prevIndex) => {
-        const nextIndex = prevIndex > 0 ? prevIndex - 1 : 0;
-        const nextInput = inputRefsArray?.[nextIndex]?.current;
-        nextInput?.focus();
-        nextInput?.select();
-        return nextIndex;
-      });
-      setLetters((letters) =>
-        letters.map((letter, letterIndex) =>
-          letterIndex === index ? value : letter
-        )
-      );
-      setLettersReverse((letters: any) =>
-        letters
-          .reverse()
-          .map((letter: any, letterIndex: any) =>
-            letterIndex === index ? value : letter
-          )
-      );
-    }
-  };
-
-  useEffect(() => {
-    const lettersString = letters.reduce<string>(
-      (prev, current) => `${current}${prev}`,
-      ""
-    );
-
-    if (lettersString.length === 5) {
-      setActiveButton(true);
-    }
-  }, [letters]);
-
-  useEffect(() => {
-    if (inputRefsArray?.[numberOfInputs - 1]?.current) {
-      inputRefsArray?.[numberOfInputs - 1]?.current?.focus();
-    }
-  }, [inputRefsArray]);
-
-  useEffect(() => {
-    if (inputRefsArray?.[numberOfInputs - 1]?.current) {
-      inputRefsArray?.[numberOfInputs - 1]?.current?.focus();
-    }
-    window.addEventListener("keyup", onKeyUp, false);
-    return () => {
-      window.removeEventListener("keyup", onKeyUp);
-    };
-  }, [inputRefsArray]);
+  const [segments, setSegments] = useState(["", "", "", "", "", ""]);
+  function onPaste(event: any) {
+    const pasted = event.clipboardData.getData("text/plain");
+    setSegments(pasted.split("").slice(0, segments.length));
+  }
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let otp = lettersReverse.reverse().toString().replace(/,/g, "");
+    let otp = segments.toString().replace(/,/g, "");
     getOtpValidationQuery.mutate(
       {
         email: email.email,
@@ -105,7 +34,6 @@ const Otp: FC<IProps> = (email) => {
         },
       }
     );
-    otp = lettersReverse.reverse().toString().replace(/,/g, "");
   };
 
   return (
@@ -113,21 +41,9 @@ const Otp: FC<IProps> = (email) => {
       <Typography variant="h5"> Sign In</Typography>
       <Typography>Please Enter Your Verify Code</Typography>
       <Box sx={wrapperInput}>
-        {inputRefsArray.map((ref, index) => {
-          return (
-            <input
-              ref={ref}
-              type="text"
-              key={index}
-              id={`box${index}-1`}
-              onChange={(e) => onChange(e, index)}
-              onClick={() => {
-                setCurrentIndex(index);
-              }}
-              value={letters[index]}
-            />
-          );
-        })}
+        {segments.map((s, key, ref) => (
+          <input disabled type="text" key={key} value={s} onPaste={onPaste} />
+        ))}
       </Box>
       <Button
         type="submit"
