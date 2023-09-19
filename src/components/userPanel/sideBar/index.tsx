@@ -80,7 +80,7 @@ const SideBar = () => {
               <AdminPanelSettingsIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Admin Panel</NavLink>
+              <NavLink to="/user">Admin Panel</NavLink>
             </ListItemText>
           </MenuItem>
         </MenuList>
