@@ -4,6 +4,9 @@ import { topBarBox, wrapperIcons } from "./topBar.style";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useAppDispatch from "../../../hooks/useDispatch";
+import { clearUserToken } from "../../../redux/slices/userSlice";
+import { useNavigate } from "react-router";
 
 const TopBar = () => {
   let newDate = new Date();
@@ -11,7 +14,12 @@ const TopBar = () => {
   let month = newDate.getMonth() + 1;
   let year = newDate.getFullYear();
 
-  const handleLogOut = () => {};
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const handleLogOut = () => {
+    dispatch(clearUserToken());
+    navigate("/");
+  };
 
   return (
     <Grid
@@ -30,8 +38,8 @@ const TopBar = () => {
           <CalendarMonthIcon />
           {`${year}/${month < 10 ? `0${month}` : `${month}`}/${date}`}
         </Typography>
-        <Typography>
-          <LogoutIcon onClick={handleLogOut} />
+        <Typography onClick={handleLogOut}>
+          <LogoutIcon />
           Log Out
         </Typography>
       </Box>
