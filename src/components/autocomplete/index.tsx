@@ -1,6 +1,6 @@
 import { Autocomplete } from "@mui/lab";
 import { AutocompleteProps, ChipTypeMap, Grid } from "@mui/material";
-import { wrapperBox } from "./customAutocomplete.style";
+import { wrapperBox } from "./autocomplete.style";
 
 interface IProps<
   T,

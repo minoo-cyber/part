@@ -4,7 +4,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import Card from "../../components/card";
 import Layout from "../../components/layout";
 import { TabContext } from "@mui/lab";
-import CustomAutocomplete from "../../components/customAutocomplete";
+import CustomAutocomplete from "../../components/autocomplete";
+import InvoicesSearch from "./components/invoicesSearch";
 
 const Invoices = () => {
   const [value, setValue] = useState("1");
@@ -27,11 +28,7 @@ const Invoices = () => {
             <Tab value="2" label="New Invoice" />
           </Tabs>
           <TabPanel value="1">
-            <CustomAutocomplete
-              value=""
-              options={[]}
-              renderInput={(params) => <TextField {...params} label="TEST" />}
-            />
+            <InvoicesSearch />
           </TabPanel>
           <TabPanel value="2"></TabPanel>
         </TabContext>
