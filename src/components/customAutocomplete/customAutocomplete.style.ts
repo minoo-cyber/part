@@ -7,8 +7,8 @@ export const wrapperBox: SxProps = {
     border: "none",
     width: "100%",
     height: "40px",
-    marginTop: "10px",
-    padding: "0 40px 0 20px",
-    outline: "none",
+  },
+  "& fieldset": {
+    border: "none",
   },
 };
