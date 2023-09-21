@@ -37,7 +37,7 @@ export const wrapperIcons: SxProps = {
     },
   },
   "@media (max-width: 800px)": {
-    "& p:nth-child(1),& p:nth-child(2)": {
+    "& p:nth-of-type(1),& p:nth-of-type(2)": {
       display: "none",
     },
   },

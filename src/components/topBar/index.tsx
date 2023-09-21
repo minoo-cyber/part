@@ -4,8 +4,8 @@ import { topBarBox, wrapperIcons } from "./topBar.style";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import useAppDispatch from "../../../hooks/useDispatch";
-import { clearUserToken } from "../../../redux/slices/userSlice";
+import useAppDispatch from "../../hooks/useDispatch";
+import { clearUserToken } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router";
 
 const TopBar = () => {

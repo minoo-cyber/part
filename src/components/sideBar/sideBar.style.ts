@@ -9,22 +9,22 @@ export const sideBarBox: SxProps = {
   padding: "66px 30px 30px 30px",
   "& li": {
     margin: "30px auto",
-    "&:nth-child(1) svg": {
+    "&:nth-of-type(1) svg": {
       color: "#5e72e4",
     },
-    "&:nth-child(3) svg": {
+    "&:nth-of-type(2) svg": {
       color: "#5e72e4",
     },
-    "&:nth-child(4) svg": {
+    "&:nth-of-type(3) svg": {
       color: "#fb6340",
     },
-    "&:nth-child(5) svg": {
+    "&:nth-of-type(4) svg": {
       color: "#ffd600",
     },
-    "&:nth-child(6) svg": {
+    "&:nth-of-type(5) svg": {
       color: "#11cdef",
     },
-    "&:nth-child(7) svg": {
+    "&:nth-of-type(6) svg": {
       color: "#f5365c",
     },
   },
@@ -46,22 +46,22 @@ export const hideSideBar: SxProps = {
   transition: "all 300ms",
   "& li": {
     margin: "30px auto",
-    "&:nth-child(1) svg": {
+    "&:nth-of-type(1) svg": {
       color: "#5e72e4",
     },
-    "&:nth-child(3) svg": {
+    "&:nth-of-type(2) svg": {
       color: "#5e72e4",
     },
-    "&:nth-child(4) svg": {
+    "&:nth-of-type(3) svg": {
       color: "#fb6340",
     },
-    "&:nth-child(5) svg": {
+    "&:nth-of-type(4) svg": {
       color: "#ffd600",
     },
-    "&:nth-child(6) svg": {
+    "&:nth-of-type(5) svg": {
       color: "#11cdef",
     },
-    "&:nth-child(7) svg": {
+    "&:nth-of-type(6) svg": {
       color: "#f5365c",
     },
   },

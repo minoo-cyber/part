@@ -13,22 +13,22 @@ export const wrapperItems: SxProps = {
     position: "relative",
     fontSize: "1.2rem",
     color: "#777777",
-    "&:nth-child(1)": {
+    "&:nth-of-type(1)": {
       "& svg": {
         background: "#5e72e4",
       },
     },
-    "&:nth-child(2)": {
+    "&:nth-of-type(2)": {
       "& svg": {
         background: "#11cdef",
       },
     },
-    "&:nth-child(3)": {
+    "&:nth-of-type(3)": {
       "& svg": {
         background: "#fb6340",
       },
     },
-    "&:nth-child(4)": {
+    "&:nth-of-type(4)": {
       "& svg": {
         background: "#ffd600",
       },

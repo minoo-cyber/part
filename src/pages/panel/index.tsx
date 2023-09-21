@@ -1,15 +1,15 @@
 import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
-import { wrapperItems, wrapperStatus } from "./userPanelstyle";
+import { wrapperItems, wrapperStatus } from "./panel.style";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
-import UserPanelLayout from "../../components/userPanelLayout";
+import Layout from "../../components/layout";
 
-const UserPanel = () => {
+const Panel = () => {
   return (
-    <UserPanelLayout>
+    <Layout>
       <Grid sx={wrapperItems}>
         <Box>
           <AssignmentIndIcon />
@@ -29,8 +29,8 @@ const UserPanel = () => {
         </Box>
       </Grid>
       <Grid sx={wrapperStatus}>status</Grid>
-    </UserPanelLayout>
+    </Layout>
   );
 };
 
-export default UserPanel;
+export default Panel;

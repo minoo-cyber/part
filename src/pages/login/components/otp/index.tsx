@@ -30,7 +30,7 @@ const Otp: FC<IProps> = (email) => {
       },
       {
         onSuccess(data) {
-          navigate("/userPanel");
+          navigate("/panel");
         },
       }
     );

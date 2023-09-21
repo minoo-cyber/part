@@ -12,6 +12,10 @@ export const wrapperContent: SxProps = {
   padding: "120px 50px 50px 50px",
   height: "calc(100vh - 66px)",
   overflowY: "scroll",
+  "&>div": {
+    maxWidth: "1400px",
+    margin: "0 auto",
+  },
   "@media (max-width:1000px)": {
     width: "100%",
     left: "0",

@@ -39,7 +39,7 @@ const SideBar = () => {
               <Dashboard fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Dashboard</NavLink>
+              <NavLink to="/panel">Dashboard</NavLink>
             </ListItemText>
           </MenuItem>
           <Divider />
@@ -48,7 +48,7 @@ const SideBar = () => {
               <AssignmentIndIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Create/Modify Clients</NavLink>
+              <NavLink to="/panel">Create/Modify Clients</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
@@ -56,7 +56,7 @@ const SideBar = () => {
               <LibraryAddIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Add/Search Item</NavLink>
+              <NavLink to="/panel">Add/Search Item</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
@@ -64,7 +64,7 @@ const SideBar = () => {
               <FactCheckIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Invoices</NavLink>
+              <NavLink to="/invoices">Invoices</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
@@ -72,7 +72,7 @@ const SideBar = () => {
               <StopScreenShareIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/userPanel">Pending Queries</NavLink>
+              <NavLink to="/panel">Pending Queries</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>

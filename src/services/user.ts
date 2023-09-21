@@ -7,5 +7,7 @@ interface IUser {
   roleModels: string[];
 }
 
+export const rolesService = () => axiosInstance.get("/user/roles");
+
 export const addUserService = (addModel: IUser) =>
   axiosInstance.post("/user", addModel);
