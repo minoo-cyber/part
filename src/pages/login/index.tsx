@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, FormLabel, Grid, Typography } from "@mui/material";
 import { formBox, welcomeBox, wrapperBox, wrapperFormBox } from "./login.style";
 import { SyntheticEvent, useState } from "react";
 import Otp from "./components/otp";
@@ -8,13 +8,15 @@ import useAppDispatch from "../../hooks/useDispatch";
 import { userToken } from "../../redux/slices/userSlice";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CustomInput from "../../components/input";
+import CustomButton from "../../components/button";
 
 const Login = () => {
   const [showVerify, setShowVerify] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPass, setShowPass] = useState<boolean>(false);
-  const [type, setType] = useState<string>("password");
+  const [type, setType] = useState<any>("password");
   const loginQuery = useMutation(loginService);
   const getOtpQuery = useMutation(getOtpService);
   const dispatch = useAppDispatch();
@@ -60,35 +62,35 @@ const Login = () => {
           <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
             <Typography variant="h5"> Sign In</Typography>
             <Box>
-              <label htmlFor="email">EMAIL</label>
-              <br />
-              <input
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <CustomInput
+                value={email}
+                handleChange={(e) => setEmail(e.target.value)}
                 type="text"
                 id="email"
+                fieldName="email"
                 placeholder="Please Enter Your Email"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </Box>
             <Box>
-              <label htmlFor="password">PASSWORD</label>
-              <br />
-              <input
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <CustomInput
+                value={password}
+                handleChange={(e) => setPassword(e.target.value)}
                 type={type}
                 id="password"
                 placeholder="Please Enter Your Password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
+
               {!showPass ? (
                 <RemoveRedEyeIcon onClick={handleShow} />
               ) : (
                 <VisibilityOffIcon onClick={handleHide} />
               )}
             </Box>
-            <Button
+            <CustomButton
               type="submit"
               sx={{
                 backgroundColor: (theme) =>
@@ -96,7 +98,7 @@ const Login = () => {
               }}
             >
               Continue
-            </Button>
+            </CustomButton>
           </Grid>
         ) : (
           <Otp email={email} />

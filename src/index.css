@@ -9,3 +9,6 @@ body {
 a {
   text-decoration: none !important;
 }
+label {
+  font-size: 1rem !important;
+}

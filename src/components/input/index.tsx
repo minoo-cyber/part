@@ -1,5 +1,6 @@
 import { FormControl, Grid, TextField } from "@mui/material";
 import React, { ChangeEvent, FC, forwardRef, RefObject, useState } from "react";
+import { wrapperBox } from "./input.style";
 
 interface IProps {
   value: any;
@@ -7,11 +8,10 @@ interface IProps {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   type: "tel" | "text" | "password" | "number" | "file";
-  sx?: any;
   id?: string;
-  maxlength?: number;
   placeholder?: string;
   required?: boolean;
+  readOnly?: boolean;
   autoComplete?: string;
   fieldName?: string;
 }
@@ -22,37 +22,39 @@ const CustomInput: FC<IProps> = forwardRef<RefObject<HTMLInputElement>, IProps>(
       value,
       handleChange,
       type,
-      sx,
       id,
-      maxlength,
       placeholder,
       required,
-      autoComplete,
+      readOnly,
       fieldName,
     } = props;
 
-    const [readOnly, setReadonly] = useState<boolean>(autoComplete === "off");
-    const onFocusHandler = () => {
-      autoComplete === "off" && setReadonly(false);
+    const onChangeCustom = (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      handleChange?: (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      ) => void
+    ) => {
+      if (typeof handleChange === "function") {
+        handleChange(e);
+      }
     };
 
     return (
-      <Grid item container component={FormControl}>
-        <Grid item xs={12}>
-          <TextField
-            id={id ? id : `${fieldName}-input`}
-            type={type}
-            value={value}
-            inputRef={ref}
-            fullWidth
-            onChange={(e) => handleChange}
-            onFocus={onFocusHandler}
-            InputProps={{
-              readOnly: readOnly,
-            }}
-            placeholder={placeholder}
-          />
-        </Grid>
+      <Grid sx={wrapperBox}>
+        <TextField
+          id={id ? id : `${fieldName}-input`}
+          type={type}
+          value={value}
+          inputRef={ref}
+          fullWidth
+          onChange={(e) => onChangeCustom(e, handleChange)}
+          InputProps={{
+            readOnly,
+            required,
+          }}
+          placeholder={placeholder}
+        />
       </Grid>
     );
   }

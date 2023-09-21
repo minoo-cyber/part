@@ -5,6 +5,7 @@ import { formBox, wrapperInput } from "./otp.style";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpValidation } from "../../../../services/login.api";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../../../../components/button";
 
 interface IProps {
   email: string;
@@ -45,14 +46,14 @@ const Otp: FC<IProps> = (email) => {
           <input disabled type="text" key={key} value={s} onPaste={onPaste} />
         ))}
       </Box>
-      <Button
+      <CustomButton
         type="submit"
         sx={{
           backgroundColor: (theme) => theme.palette.primary.main + "!important",
         }}
       >
         Sign In
-      </Button>
+      </CustomButton>
     </Grid>
   );
 };
