@@ -41,10 +41,9 @@ const User = () => {
   const [age, setAge] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    console.log(event.target);
     setAge(event.target.value as string);
   };
-  console.log(rolesQuery);
+
   return (
     <Layout>
       <Card>

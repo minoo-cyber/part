@@ -9,6 +9,8 @@ export const sideBarBox: SxProps = {
   padding: "66px 30px 30px 30px",
   "& li": {
     margin: "30px auto",
+    position: "relative",
+    padding: "10px",
     "&:nth-of-type(1) svg": {
       color: "#5e72e4",
     },
@@ -27,6 +29,14 @@ export const sideBarBox: SxProps = {
     "&:nth-of-type(6) svg": {
       color: "#f5365c",
     },
+  },
+  "& a": {
+    position: "absolute",
+    width: "100%",
+    left: "0",
+    top: "0",
+    height: "100%",
+    padding: "8px 0 0 40px",
   },
   "@media (max-width:1000px)": {
     left: "-300px",
@@ -46,6 +56,8 @@ export const hideSideBar: SxProps = {
   transition: "all 300ms",
   "& li": {
     margin: "30px auto",
+    position: "relative",
+    padding: "10px",
     "&:nth-of-type(1) svg": {
       color: "#5e72e4",
     },
@@ -64,6 +76,14 @@ export const hideSideBar: SxProps = {
     "&:nth-of-type(6) svg": {
       color: "#f5365c",
     },
+  },
+  "& a": {
+    position: "absolute",
+    width: "100%",
+    left: "0",
+    top: "0",
+    height: "100%",
+    padding: "8px 0 0 40px",
   },
 };
 

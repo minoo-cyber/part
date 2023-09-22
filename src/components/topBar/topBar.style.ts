@@ -18,6 +18,9 @@ export const topBarBox: SxProps = {
       opacity: "0",
     },
   },
+  "@media (max-width: 800px)": {
+    padding: "5px 25px",
+  },
 };
 
 export const wrapperIcons: SxProps = {
@@ -40,9 +43,7 @@ export const wrapperIcons: SxProps = {
     "& p:nth-of-type(1),& p:nth-of-type(2)": {
       display: "none",
     },
-  },
-  "@media (max-width:360px)": {
-    "& p": {
+    "& p:nth-of-type(3)": {
       fontSize: "0",
     },
   },

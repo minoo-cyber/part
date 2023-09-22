@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import { formBox, wrapperInput } from "./otp.style";
 import { useMutation } from "@tanstack/react-query";

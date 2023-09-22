@@ -11,7 +11,7 @@ interface IProps {
   id?: string;
   placeholder?: string;
   required?: boolean;
-  readOnly?: boolean;
+  readOnly?: boolean | undefined;
   autoComplete?: string;
   fieldName?: string;
 }
