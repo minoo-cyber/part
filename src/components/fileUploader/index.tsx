@@ -1,6 +1,7 @@
 import React from "react";
 import clsx from "clsx";
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
+import { wrapperFile } from "./file.style";
 
 export type FileUploadProps = {
   imageButton?: boolean;
@@ -84,7 +85,7 @@ export const FileUploader: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <>
+    <Grid sx={wrapperFile}>
       <input
         onChange={handleChange}
         accept={accept}
@@ -94,22 +95,8 @@ export const FileUploader: React.FC<FileUploadProps> = ({
       />
 
       <label htmlFor="file-upload" {...dragEvents}>
-        <Box width={width} height={height} bgcolor={backgroundColor}>
-          {imageButton && (
-            <Box position="absolute" height={height} width={width}>
-              <img alt="file upload" src={imageUrl} style={imageStyle} />
-            </Box>
-          )}
-
-          {(!imageButton || isDragOver || isMouseOver) && (
-            <>
-              <Box height={height} width={width}>
-                <Typography>{labelText}</Typography>
-              </Box>
-            </>
-          )}
-        </Box>
+        {labelText}
       </label>
-    </>
+    </Grid>
   );
 };

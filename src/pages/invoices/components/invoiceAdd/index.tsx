@@ -41,6 +41,8 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       <Grid item xs={4} px={2}>
         <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
         <FileUploader {...fileUploadProp} />
+      </Grid>
+      <Grid item xs={4} px={2} mt={4.7}>
         <Typography>{test}</Typography>
       </Grid>
       <Grid container sx={{ justifyContent: "center" }}>
