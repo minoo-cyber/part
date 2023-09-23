@@ -37,7 +37,7 @@ export const formBox: SxProps = {
   "& svg": {
     position: "absolute",
     right: "12px",
-    top: "38px",
+    top: "41px",
     opacity: "0.6",
     cursor: "pointer",
   },

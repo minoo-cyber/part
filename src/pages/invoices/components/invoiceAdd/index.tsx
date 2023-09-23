@@ -53,7 +53,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
               theme.palette.primary.main + "!important",
           }}
         >
-          Search
+          Add
         </CustomButton>
       </Grid>
       <InvoiceDetails readOnly={readOnly.readOnly} />
