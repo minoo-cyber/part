@@ -1,20 +1,7 @@
 import { SxProps } from "@mui/material";
 
 export const formBox: SxProps = {
-  "& label": {
-    fontSize: "0.8rem",
-    marginLeft: "10px",
-  },
-  "& input": {
-    background: "rgba(0, 0, 0, 0.05)",
-    borderRadius: "30px",
-    border: "none",
-    width: "100%",
-    height: "40px",
-    marginTop: "10px",
-    padding: "0 40px 0 20px",
-    outline: "none",
-  },
+  position: "relative",
   "& button": {
     color: "#fff",
     width: "200px",
@@ -31,5 +18,16 @@ export const fieldWrraper: SxProps = {
   "&>div": {
     margin: "20px auto",
     width: "40%",
+  },
+};
+
+export const wrapperPass: SxProps = {
+  position: "relative",
+  "& svg": {
+    position: "absolute",
+    right: "12px",
+    top: "42px",
+    opacity: "0.6",
+    cursor: "pointer",
   },
 };

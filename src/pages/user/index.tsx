@@ -1,124 +1,34 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
-import { fieldWrraper, formBox } from "./user.style";
+import { Tab, Tabs } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { addUserService, rolesService } from "../../services/user";
 import Layout from "../../components/layout";
-import { SelectChangeEvent } from "@mui/material/Select";
 import Card from "../../components/card";
+import { TabContext, TabPanel } from "@mui/lab";
+import AddUser from "./addUser";
 
 const User = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [fullName, setFullName] = useState<string>("");
-  const [role, setRole] = useState("");
-  const [type, setType] = useState<string>("password");
-  const addUserQuery = useMutation(addUserService);
-  const rolesQuery = useQuery({ queryKey: ["roles"], queryFn: rolesService });
-
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    addUserQuery.mutate(
-      {
-        email: email,
-        password: password,
-        fullName: fullName,
-        roleModels: [role],
-      },
-      {
-        onSuccess(data) {},
-      }
-    );
-  };
-  const [age, setAge] = useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+  const [value, setValue] = useState("1");
+  const handleChange = (event: SyntheticEvent, newValue: string) => {
+    setValue(newValue);
   };
 
   return (
     <Layout>
       <Card>
-        <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
-          <Typography variant="h5"> User</Typography>
-          <Box sx={fieldWrraper}>
-            <Box>
-              <label htmlFor="fullName">FULLNAME</label>
-              <br />
-              <input
-                type="text"
-                id="fullName"
-                placeholder="Please Enter Your FullName"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-            </Box>
-            <Box>
-              <label htmlFor="role">ROLE</label>
-              <br />
-
-              {/* <input
-              type="text"
-              id="role"
-              placeholder="Please Enter Your Role"
-              required
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            /> */}
-              <FormControl fullWidth>
-                <Select value={age} label="role" onChange={handleChange}>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Box>
-              <label htmlFor="email">EMAIL</label>
-              <br />
-              <input
-                type="text"
-                id="email"
-                placeholder="Please Enter Your Email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Box>
-            <Box>
-              <label htmlFor="password">PASSWORD</label>
-              <br />
-              <input
-                type={type}
-                id="password"
-                placeholder="Please Enter Your Password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Box>
-          </Box>
-          <center>
-            <Button
-              type="submit"
-              sx={{
-                backgroundColor: (theme) =>
-                  theme.palette.primary.main + "!important",
-              }}
-            >
-              Add User
-            </Button>
-          </center>
-        </Grid>
+        <TabContext value={value}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            textColor="secondary"
+            indicatorColor="secondary"
+          >
+            <Tab value="1" label="Add User" />
+            <Tab value="2" label="Users List" />
+          </Tabs>
+          <TabPanel value="1">
+            <AddUser />
+          </TabPanel>
+          <TabPanel value="2"></TabPanel>
+        </TabContext>
       </Card>
     </Layout>
   );

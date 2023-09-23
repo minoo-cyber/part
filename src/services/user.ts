@@ -8,6 +8,7 @@ interface IUser {
 }
 
 export const rolesService = () => axiosInstance.get("/user/roles");
+export const getAllUserService = () => axiosInstance.get("/user/all");
 
 export const addUserService = (addModel: IUser) =>
   axiosInstance.post("/user", addModel);
