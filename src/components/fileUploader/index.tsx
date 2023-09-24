@@ -1,6 +1,5 @@
 import React from "react";
-import clsx from "clsx";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { wrapperFile } from "./file.style";
 
 export type FileUploadProps = {
@@ -27,15 +26,7 @@ export const FileUploader: React.FC<FileUploadProps> = ({
   imageButton = false,
   hoverLabel = "Click or drag to upload file",
   dropLabel = "Drop file here",
-  width = "600px",
-  height = "100px",
-  backgroundColor = "#fff",
-  image: {
-    url = "",
-    imageStyle = {
-      height: "inherit",
-    },
-  } = {},
+  image: { url = "" } = {},
   onChange,
   onDrop,
 }) => {

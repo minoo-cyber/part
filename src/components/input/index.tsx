@@ -1,5 +1,5 @@
-import { FormControl, Grid, TextField } from "@mui/material";
-import React, { ChangeEvent, FC, forwardRef, RefObject, useState } from "react";
+import { Grid, TextField } from "@mui/material";
+import React, { ChangeEvent, FC, forwardRef, RefObject } from "react";
 import { wrapperBox } from "./input.style";
 
 interface IProps {

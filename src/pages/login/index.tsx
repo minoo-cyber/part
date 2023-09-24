@@ -62,24 +62,22 @@ const Login = () => {
           <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
             <Typography variant="h5"> Sign In</Typography>
             <Box>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <CustomInput
                 value={email}
                 handleChange={(e) => setEmail(e.target.value)}
                 type="text"
-                id="email"
                 fieldName="email"
                 placeholder="Please Enter Your Email"
                 required
               />
             </Box>
             <Box>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel>Password</FormLabel>
               <CustomInput
                 value={password}
                 handleChange={(e) => setPassword(e.target.value)}
                 type={type}
-                id="password"
                 placeholder="Please Enter Your Password"
                 required
               />

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  FormLabel,
-  Grid,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Box, Button, FormLabel, Grid, MenuItem } from "@mui/material";
 import CustomInput from "../../../components/input";
 import CustomSelect from "../../../components/select";
 import { SyntheticEvent, useState } from "react";
@@ -78,12 +71,11 @@ const AddUser = () => {
     <Grid container component="form" sx={formBox} onSubmit={handleSubmit}>
       <Grid item xs={12} sx={fieldWrraper}>
         <Box>
-          <FormLabel htmlFor="fullName">FullName</FormLabel>
+          <FormLabel>FullName</FormLabel>
           <CustomInput
             value={fullName}
             handleChange={(e) => setFullName(e.target.value)}
             type="text"
-            id="fullName"
             fieldName="fullName"
             placeholder="Please Enter Your FullName"
           />
@@ -100,23 +92,21 @@ const AddUser = () => {
           </CustomSelect>
         </Box>
         <Box>
-          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormLabel>Email</FormLabel>
           <CustomInput
             value={email}
             handleChange={(e) => setEmail(e.target.value)}
             type="text"
-            id="email"
             fieldName="email"
             placeholder="Please Enter Your Email"
           />
         </Box>
         <Box sx={wrapperPass}>
-          <FormLabel htmlFor="password">Password</FormLabel>
+          <FormLabel>Password</FormLabel>
           <CustomInput
             value={password}
             handleChange={(e) => setPassword(e.target.value)}
             type={type}
-            id="password"
             fieldName="password"
             placeholder="Please Enter Your Password"
           />

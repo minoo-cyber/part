@@ -1,4 +1,4 @@
-import * as React from "react";
+import { FC, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -25,8 +25,13 @@ import {
   randomId,
   randomArrayItem,
 } from "@mui/x-data-grid-generator";
+import { wrapperBox } from "./invoiceTable.style";
 
-const InvoiceTable = () => {
+interface IProps {
+  readOnly: boolean;
+}
+
+const InvoiceTable: FC<IProps> = (readOnly) => {
   const roles = ["Market", "Finance", "Development"];
   const randomRole = () => {
     return randomArrayItem(roles);
@@ -100,10 +105,8 @@ const InvoiceTable = () => {
       </GridToolbarContainer>
     );
   }
-  const [rows, setRows] = React.useState(initialRows);
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {}
-  );
+  const [rows, setRows] = useState(initialRows);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
@@ -168,7 +171,7 @@ const InvoiceTable = () => {
       field: "itemDescription",
       headerName: "item Description",
       width: 200,
-      editable: true,
+      editable: readOnly.readOnly ? false : true,
       type: "text",
     },
     {
@@ -180,7 +183,7 @@ const InvoiceTable = () => {
     {
       field: "supplier",
       headerName: "Supplier",
-      editable: true,
+      editable: readOnly.readOnly ? false : true,
       type: "text",
     },
     {
@@ -195,12 +198,7 @@ const InvoiceTable = () => {
       editable: false,
       type: "text",
     },
-    {
-      field: "coast",
-      headerName: "Coast",
-      editable: false,
-      type: "text",
-    },
+
     {
       field: "coast",
       headerName: "Coast",
@@ -268,19 +266,7 @@ const InvoiceTable = () => {
   ];
 
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: "100%",
-        marginTop: "30px",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
+    <Box sx={wrapperBox}>
       <DataGrid
         rows={rows}
         columns={columns}

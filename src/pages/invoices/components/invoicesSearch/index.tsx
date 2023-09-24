@@ -17,19 +17,17 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
     <>
       <Grid container component="form">
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="batchId">Batch Id</FormLabel>
+          <FormLabel>Batch Id</FormLabel>
           <CustomInput
             value={batchId}
             handleChange={(e) => setBatchId(e.target.value)}
             type="text"
-            id="batchId"
             placeholder="Please Enter BatchId"
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="clientName">Client Name</FormLabel>
+          <FormLabel>Client Name</FormLabel>
           <CustomAutocomplete
-            id="clientName"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -37,9 +35,8 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="company">Company</FormLabel>
+          <FormLabel>Company</FormLabel>
           <CustomAutocomplete
-            id="company"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -57,9 +54,9 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
             Search
           </CustomButton>
         </Grid>
-        <InvoiceDetails readOnly={readOnly.readOnly} />
       </Grid>
-      <InvoiceTable />
+      <InvoiceDetails readOnly={readOnly.readOnly} />
+      <InvoiceTable readOnly={readOnly.readOnly} />
     </>
   );
 };

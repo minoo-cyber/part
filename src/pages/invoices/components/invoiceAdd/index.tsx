@@ -3,11 +3,14 @@ import { FormLabel, Grid, TextField, Typography } from "@mui/material";
 import CustomAutocomplete from "../../../../components/autocomplete";
 import CustomButton from "../../../../components/button";
 import InvoiceDetails from "../invoiceDetails";
-import CustomInput from "../../../../components/input";
+
 import {
   FileUploadProps,
   FileUploader,
 } from "../../../../components/fileUploader";
+import InvoiceTable from "../invoiceTable";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 interface IProps {
   readOnly: boolean;
@@ -26,38 +29,80 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       setTest(`${event.dataTransfer.files[0].name}`);
     },
   };
+  const handlePrintDocument = () => {
+    const input = document.getElementById("divToPrint");
+    //@ts-ignore
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      //@ts-ignore
+      pdf.addImage(imgData, "JPEG", 0, 0, 200, 200);
+      pdf.save("download.pdf");
+    });
+  };
   return (
-    <Grid container component="form">
-      <Grid item xs={4} px={2}>
-        <FormLabel htmlFor="company">Company</FormLabel>
-        <CustomAutocomplete
-          id="company"
-          value=""
-          options={[]}
-          renderInput={(params) => <TextField {...params} />}
-          sx={{ mt: 1.3 }}
-        />
+    <>
+      <Grid container component="form">
+        <Grid item xs={4} px={2}>
+          <FormLabel>Company</FormLabel>
+          <CustomAutocomplete
+            value=""
+            options={[]}
+            renderInput={(params) => <TextField {...params} />}
+            sx={{ mt: 1.3 }}
+          />
+        </Grid>
+        <Grid item xs={4} px={2}>
+          <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
+          <FileUploader {...fileUploadProp} />
+        </Grid>
+        <Grid item xs={4} px={2} mt={4.7}>
+          <Typography>{test}</Typography>
+        </Grid>
+        <Grid container sx={{ justifyContent: "center" }}>
+          <CustomButton
+            type="submit"
+            sx={{
+              backgroundColor: (theme) =>
+                theme.palette.primary.main + "!important",
+            }}
+          >
+            Add
+          </CustomButton>
+        </Grid>
       </Grid>
-      <Grid item xs={4} px={2}>
-        <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
-        <FileUploader {...fileUploadProp} />
+      <Grid id="divToPrint">
+        <InvoiceDetails readOnly={readOnly.readOnly} />
+        <InvoiceTable readOnly={readOnly.readOnly} />
       </Grid>
-      <Grid item xs={4} px={2} mt={4.7}>
-        <Typography>{test}</Typography>
-      </Grid>
-      <Grid container sx={{ justifyContent: "center" }}>
+      <Grid
+        container
+        sx={{
+          justifyContent: "center",
+          "&>div": {
+            margin: "10px",
+          },
+        }}
+      >
         <CustomButton
-          type="submit"
+          sx={{
+            backgroundColor: (theme) =>
+              theme.palette.primary.main + "!important",
+          }}
+          onClick={handlePrintDocument}
+        >
+          Preview
+        </CustomButton>
+        <CustomButton
           sx={{
             backgroundColor: (theme) =>
               theme.palette.primary.main + "!important",
           }}
         >
-          Add
+          Submit
         </CustomButton>
       </Grid>
-      <InvoiceDetails readOnly={readOnly.readOnly} />
-    </Grid>
+    </>
   );
 };
 export default InvoiceAdd;

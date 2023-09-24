@@ -15,18 +15,12 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
       </Typography>
       <Grid container mb={3}>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="batchNumber">Batch Number</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="batchNumber"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Batch Number</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="invoicedBy">InvoicedBy</FormLabel>
+          <FormLabel>InvoicedBy</FormLabel>
           <CustomAutocomplete
-            id="invoicedBy"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -35,9 +29,8 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="port">Port</FormLabel>
+          <FormLabel>Port</FormLabel>
           <CustomAutocomplete
-            id="port"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -48,47 +41,26 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="orderNumber">Order Number</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="orderNumber"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Order Number</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="oepartment">Oepartment</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="oepartment"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Oepartment</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="markingNumber">Marking Number</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="markingNumber"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Marking Number</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="profit">Profit</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="profit"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Profit</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="client">Client</FormLabel>
+          <FormLabel>Client</FormLabel>
           <CustomAutocomplete
-            id="client"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -97,9 +69,8 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="company">T/A Company</FormLabel>
+          <FormLabel>T/A Company</FormLabel>
           <CustomAutocomplete
-            id="company"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -110,9 +81,8 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="companyName">Company Name</FormLabel>
+          <FormLabel>Company Name</FormLabel>
           <CustomAutocomplete
-            id="companyName"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -121,9 +91,8 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          <FormLabel htmlFor="agent">Agent</FormLabel>
+          <FormLabel>Agent</FormLabel>
           <CustomAutocomplete
-            id="agent"
             value=""
             options={[]}
             renderInput={(params) => <TextField {...params} />}
@@ -132,14 +101,8 @@ const InvoiceDetails: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={4} px={2}>
-          {" "}
-          <FormLabel htmlFor="invoiceNumber">Invoice Number</FormLabel>
-          <CustomInput
-            value=""
-            type="text"
-            id="invoiceNumber"
-            readOnly={readOnly.readOnly}
-          />
+          <FormLabel>Invoice Number</FormLabel>
+          <CustomInput value="" type="text" readOnly={readOnly.readOnly} />
         </Grid>
       </Grid>
     </>

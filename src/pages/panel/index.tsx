@@ -1,4 +1,4 @@
-import { Box, FormLabel, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 import { wrapperCompany, wrapperItems } from "./panel.style";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
