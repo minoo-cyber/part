@@ -73,7 +73,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       </Grid>
       <Grid id="divToPrint">
         <InvoiceDetails readOnly={readOnly.readOnly} />
-        <InvoiceTable readOnly={readOnly.readOnly} />
+        <InvoiceTable />
       </Grid>
       <Grid
         container

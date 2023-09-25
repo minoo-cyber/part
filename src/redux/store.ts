@@ -8,7 +8,6 @@ import { PersistConfig, persistReducer, persistStore } from "redux-persist";
 const persistConfig: PersistConfig<CombinedState<RootState>, any, any, any> = {
   key: "root",
   storage,
-  whitelist: ["user", "toast", "person", "theme", "discussion"],
   blacklist: ["toast"],
 };
 
