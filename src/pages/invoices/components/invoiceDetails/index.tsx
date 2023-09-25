@@ -12,11 +12,8 @@ interface IProps {
 const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
   return (
     <>
-      <Typography variant="h5" my={4}>
-        Invoice Details
-      </Typography>
       <Grid container mb={3}>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Batch Number</FormLabel>
           <CustomInput
             value={data?.batchNumber ? data?.batchNumber : ""}
@@ -24,7 +21,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>InvoicedBy</FormLabel>
           <CustomAutocomplete
             value={data?.invoicedBy ? data?.invoicedBy : ""}
@@ -34,7 +31,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Port</FormLabel>
           <CustomAutocomplete
             value={data?.port ? data?.port : ""}
@@ -46,7 +43,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
         </Grid>
       </Grid>
       <Grid container mb={3}>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Order Number</FormLabel>
           <CustomInput
             value={data?.orderNumber ? data?.orderNumber : ""}
@@ -54,7 +51,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Department</FormLabel>
           <CustomInput
             value={data?.department ? data?.department : ""}
@@ -62,7 +59,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Marking Number</FormLabel>
           <CustomInput
             value={data?.markingNumber ? data?.markingNumber : ""}
@@ -72,21 +69,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
         </Grid>
       </Grid>
       <Grid container mb={3}>
-        <Grid item xs={4} px={2}>
-          <FormLabel>Profit</FormLabel>
-          <CustomInput value="" type="text" readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={4} px={2}>
-          <FormLabel>Client</FormLabel>
-          <CustomAutocomplete
-            value={data?.client ? data?.client : ""}
-            options={[]}
-            renderInput={(params) => <TextField {...params} />}
-            sx={{ mt: 1.3 }}
-            readOnly={readOnly}
-          />
-        </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>T/A Company</FormLabel>
           <CustomAutocomplete
             value={data?.tacompany ? data?.tacompany : ""}
@@ -96,33 +79,33 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <FormLabel>Invoice Number</FormLabel>
+          <CustomInput
+            value={data?.invoiceNumber ? data?.invoiceNumber : ""}
+            type="text"
+            readOnly={readOnly}
+          />
+        </Grid>
       </Grid>
       <Grid container mb={3}>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
+          <FormLabel>Client</FormLabel>
+          <CustomAutocomplete
+            value={data?.client ? data?.client : ""}
+            options={[]}
+            renderInput={(params) => <TextField {...params} />}
+            sx={{ mt: 1.3 }}
+            readOnly={readOnly}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
           <FormLabel>Company Name</FormLabel>
           <CustomAutocomplete
             value={data?.companyName ? data?.companyName : ""}
             options={[]}
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
-            readOnly={readOnly}
-          />
-        </Grid>
-        <Grid item xs={4} px={2}>
-          <FormLabel>Agent</FormLabel>
-          <CustomAutocomplete
-            value=""
-            options={[]}
-            renderInput={(params) => <TextField {...params} />}
-            sx={{ mt: 1.3 }}
-            readOnly={readOnly}
-          />
-        </Grid>
-        <Grid item xs={4} px={2}>
-          <FormLabel>Invoice Number</FormLabel>
-          <CustomInput
-            value={data?.invoiceNumber ? data?.invoiceNumber : ""}
-            type="text"
             readOnly={readOnly}
           />
         </Grid>

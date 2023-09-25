@@ -1,5 +1,13 @@
-import { FC, useState } from "react";
-import { FormLabel, Grid, TextField, Typography } from "@mui/material";
+import { FC, SyntheticEvent, useState } from "react";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormLabel,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CustomAutocomplete from "../../../../components/autocomplete";
 import CustomButton from "../../../../components/button";
 import InvoiceDetails from "../invoiceDetails";
@@ -18,6 +26,11 @@ interface IProps {
 
 const InvoiceAdd: FC<IProps> = (readOnly) => {
   const [test, setTest] = useState<string>();
+  const [expanded, setExpanded] = useState<string | false>("panel1");
+  const handleChange =
+    (panel: string) => (event: SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
   const fileUploadProp: FileUploadProps = {
     accept: "image/*",
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,12 +43,10 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
     },
   };
   const handlePrintDocument = () => {
-    const input = document.getElementById("divToPrint");
-    //@ts-ignore
+    let input: any = document.getElementById("divToPrint");
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF();
-      //@ts-ignore
       pdf.addImage(imgData, "JPEG", 0, 0, 200, 200);
       pdf.save("download.pdf");
     });
@@ -43,7 +54,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
   return (
     <>
       <Grid container component="form">
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Company</FormLabel>
           <CustomAutocomplete
             value=""
@@ -52,11 +63,11 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
             sx={{ mt: 1.3 }}
           />
         </Grid>
-        <Grid item xs={4} px={2}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
           <FileUploader {...fileUploadProp} />
         </Grid>
-        <Grid item xs={4} px={2} mt={4.7}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2} mt={4.7}>
           <Typography>{test}</Typography>
         </Grid>
         <Grid container sx={{ justifyContent: "center" }}>
@@ -67,13 +78,33 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
                 theme.palette.primary.main + "!important",
             }}
           >
-            Add
+            Add Invoice
           </CustomButton>
         </Grid>
       </Grid>
       <Grid id="divToPrint">
-        <InvoiceDetails readOnly={readOnly.readOnly} />
-        <InvoiceTable />
+        <Accordion
+          expanded={expanded === "panel1"}
+          onChange={handleChange("panel1")}
+        >
+          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+            <Typography variant="h6">Invoice Details</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <InvoiceDetails readOnly={readOnly.readOnly} />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded === "panel2"}
+          onChange={handleChange("panel2")}
+        >
+          <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+            <Typography variant="h6">Invoice Rows</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <InvoiceTable readOnly={readOnly.readOnly} />
+          </AccordionDetails>
+        </Accordion>
       </Grid>
       <Grid
         container
