@@ -72,7 +72,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
     <>
       <Grid container component="form" onSubmit={handleSearch}>
         <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-          <FormLabel>Batch Id</FormLabel>
+          <FormLabel>Batch Id Search</FormLabel>
           <CustomInput
             value={batchId}
             handleChange={(e) => setBatchId(e.target.value)}
@@ -82,7 +82,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-          <FormLabel>Client Name</FormLabel>
+          <FormLabel>Client Name Search</FormLabel>
           <CustomAutocomplete
             value=""
             options={[]}
@@ -91,7 +91,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-          <FormLabel>Company</FormLabel>
+          <FormLabel>Company Search</FormLabel>
           <CustomAutocomplete
             value=""
             options={[]}

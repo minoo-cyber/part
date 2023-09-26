@@ -87,6 +87,16 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             readOnly={readOnly}
           />
         </Grid>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <FormLabel>Date</FormLabel>
+          <CustomInput value={""} type="text" readOnly={readOnly} />
+        </Grid>
+      </Grid>
+      <Grid container mb={3}>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <FormLabel>Total Invoice Price</FormLabel>
+          <CustomInput value={""} type="text" readOnly={readOnly} />
+        </Grid>
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
@@ -97,6 +107,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
             readOnly={readOnly}
+            freeSolo
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
@@ -107,6 +118,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
             readOnly={readOnly}
+            freeSolo
           />
         </Grid>
       </Grid>

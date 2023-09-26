@@ -11,6 +11,12 @@ interface IProps {
 const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
   const columns: GridColDef[] = [
     {
+      field: "id",
+      headerName: "Id",
+      width: 90,
+      editable: false,
+    },
+    {
       field: "impa",
       headerName: "Impa",
       width: 90,
@@ -29,12 +35,6 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
       editable: false,
     },
     {
-      field: "supplier",
-      headerName: "Supplier",
-      width: 110,
-      editable: false,
-    },
-    {
       field: "qty",
       headerName: "Qty",
       width: 90,
@@ -43,12 +43,6 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
     {
       field: "pack",
       headerName: "Pack",
-      width: 90,
-      editable: false,
-    },
-    {
-      field: "cost",
-      headerName: "Ccost",
       width: 90,
       editable: false,
     },
@@ -77,15 +71,7 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
       <DataGrid
         rows={rows ? rows : []}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
         pageSizeOptions={[5]}
-        checkboxSelection
         disableRowSelectionOnClick
       />
     </Box>

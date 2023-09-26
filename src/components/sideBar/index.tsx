@@ -45,18 +45,10 @@ const SideBar = () => {
           <Divider />
           <MenuItem>
             <ListItemIcon>
-              <AssignmentIndIcon fontSize="small" />
+              <StopScreenShareIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/panel">Create/Modify Clients</NavLink>
-            </ListItemText>
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <LibraryAddIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-              <NavLink to="/panel">Add/Search Item</NavLink>
+              <NavLink to="/panel">Pending Queries</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
@@ -69,10 +61,18 @@ const SideBar = () => {
           </MenuItem>
           <MenuItem>
             <ListItemIcon>
-              <StopScreenShareIcon fontSize="small" />
+              <AssignmentIndIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/panel">Pending Queries</NavLink>
+              <NavLink to="/panel">Create/Modify Clients</NavLink>
+            </ListItemText>
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <LibraryAddIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              <NavLink to="/panel">Add/Search Item</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
