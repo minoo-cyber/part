@@ -43,7 +43,7 @@ const Otp: FC<IProps> = (email) => {
       <Typography>Please Enter Your Verify Code</Typography>
       <Box sx={wrapperInput}>
         {segments.map((s, key, ref) => (
-          <input disabled type="text" key={key} value={s} onPaste={onPaste} />
+          <input type="text" key={key} value={s} onPaste={onPaste} />
         ))}
       </Box>
       <CustomButton

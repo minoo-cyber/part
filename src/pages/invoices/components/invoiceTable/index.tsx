@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { IInvoiceSubModels } from "../../../../services/invoice.api";
+import CustomInput from "../../../../components/input";
 
 interface IProps {
   readOnly?: boolean;
@@ -9,6 +10,8 @@ interface IProps {
 }
 
 const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
+  const [filterRows, setFilterRows] = useState(rows);
+  const [filterKeyword, setFilterKeyword] = useState<string>();
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -60,21 +63,49 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
     },
   ];
 
+  const handleFilter = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFilterKeyword(e?.target.value);
+    const keyword = e.target.value;
+    if (keyword !== "") {
+      const results =
+        rows &&
+        rows.filter((item) => {
+          return (
+            item.impa.toLowerCase().startsWith(keyword.toLowerCase()) ||
+            item.itemDescription.toLowerCase().startsWith(keyword.toLowerCase())
+          );
+        });
+      setFilterRows(results);
+    } else {
+      setFilterRows(rows);
+    }
+  };
+
   return (
-    <Box
-      sx={{
-        height: 400,
-        position: "relative",
-        top: "20px",
-      }}
-    >
-      <DataGrid
-        rows={rows ? rows : []}
-        columns={columns}
-        pageSizeOptions={[5]}
-        disableRowSelectionOnClick
+    <>
+      <CustomInput
+        value={filterKeyword}
+        handleChange={handleFilter}
+        type="text"
+        placeholder="Filter By ImpaCode && ItemDescription"
       />
-    </Box>
+
+      <Box
+        sx={{
+          height: 500,
+          mt: 3,
+        }}
+      >
+        <DataGrid
+          rows={filterRows ? filterRows : rows ? rows : []}
+          columns={columns}
+          pageSizeOptions={[5]}
+          disableRowSelectionOnClick
+        />
+      </Box>
+    </>
   );
 };
 

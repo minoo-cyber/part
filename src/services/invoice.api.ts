@@ -23,14 +23,14 @@ export interface IInvoiceSubModels {
   del: boolean;
   item: number;
   impa: string;
-  itemDescription?: string;
+  itemDescription: string;
   text: string;
   supplier: string;
   qty: number;
   pack: string;
-  cost?: number;
+  cost: number;
   sell: number;
-  extSell?: number;
+  extSell: number;
 }
 
 export const invoiceSearchService = (param: ISearchParam) =>
