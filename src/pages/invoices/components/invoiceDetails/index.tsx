@@ -1,15 +1,21 @@
-import { FC } from "react";
-import { FormLabel, Grid, TextField, Typography } from "@mui/material";
+import { FC, useState } from "react";
+import { FormLabel, Grid, TextField } from "@mui/material";
 import CustomInput from "../../../../components/input";
 import CustomAutocomplete from "../../../../components/autocomplete";
-import { ISearchRes } from "../../../../services/invoice.api";
+import { ISearchRes, clientService } from "../../../../services/invoice.api";
+import { useMutation } from "@tanstack/react-query";
 
 interface IProps {
   readOnly: boolean;
   data?: ISearchRes;
+  companyName?: string;
 }
 
-const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
+const InvoiceDetails: FC<IProps> = ({
+  readOnly,
+  data,
+  companyName,
+}: IProps) => {
   return (
     <>
       <Grid container mb={3}>
@@ -107,7 +113,7 @@ const InvoiceDetails: FC<IProps> = ({ readOnly, data }: IProps) => {
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
             readOnly={readOnly}
-            freeSolo
+            freeSolo={readOnly ? true : false}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} mb={1} px={2}>

@@ -134,10 +134,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
           <Typography variant="h6">Invoice Rows</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <InvoiceTable
-            readOnly={readOnly.readOnly}
-            rows={data?.invoiceSubModels}
-          />
+          <InvoiceTable rows={data?.invoiceSubModels} />
         </AccordionDetails>
       </Accordion>
     </>

@@ -33,5 +33,25 @@ export interface IInvoiceSubModels {
   extSell: number;
 }
 
+export interface IAddParam {
+  companyName: string | undefined;
+  clientName: string;
+  invoiceModels: IInvoiceAddModels[];
+}
+
+export interface IInvoiceAddModels {
+  itemDesc: string;
+  qty: number;
+}
+
 export const invoiceSearchService = (param: ISearchParam) =>
   axiosInstance.post<ISearchRes[]>("/invoice/search", param);
+
+export const companyNameService = (title: string) =>
+  axiosInstance.get<string[]>(`/invoice/company?companyName=${title}`);
+
+export const clientService = (companyName: string) =>
+  axiosInstance.get<string[]>(`/invoice/client/${companyName}`);
+
+export const addInvoiceService = (param: IAddParam) =>
+  axiosInstance.post("/invoice/send-invoices", param);

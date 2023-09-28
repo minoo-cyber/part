@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, useState } from "react";
-import Box from "@mui/material/Box";
+import { ChangeEvent, FC, useMemo, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { IInvoiceSubModels } from "../../../../services/invoice.api";
 import CustomInput from "../../../../components/input";
+import { Box } from "@mui/material";
+import { AgGridReact } from "ag-grid-react";
 
 interface IProps {
   readOnly?: boolean;
@@ -23,7 +24,7 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
       field: "impa",
       headerName: "Impa",
       width: 90,
-      editable: false,
+      editable: true,
     },
     {
       field: "itemDescription",
@@ -62,7 +63,6 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
       editable: false,
     },
   ];
-
   const handleFilter = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

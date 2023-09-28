@@ -1,8 +1,9 @@
-import { FC, SyntheticEvent, useState } from "react";
+import { FC, SyntheticEvent, useEffect, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   FormLabel,
   Grid,
   TextField,
@@ -19,14 +20,61 @@ import {
 import InvoiceTable from "../invoiceTable";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useMutation } from "@tanstack/react-query";
+import {
+  addInvoiceService,
+  clientService,
+  companyNameService,
+} from "../../../../services/invoice.api";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 interface IProps {
   readOnly: boolean;
 }
 
 const InvoiceAdd: FC<IProps> = (readOnly) => {
-  const [test, setTest] = useState<string>();
+  const companyQuery = useMutation(companyNameService);
+  const addInvoiceQuery = useMutation(addInvoiceService);
+  const [companyName, setCompanyName] = useState<string | undefined>("");
+  const [companyData, setCompanyData] = useState<string[]>();
+  const [fileName, setFileName] = useState<string>();
   const [expanded, setExpanded] = useState<string | false>("panel1");
+  const [clientName, setClientName] = useState<string>("");
+  const [clientData, setClientData] = useState<string[]>();
+  const clientQuery = useMutation(clientService);
+  let rawRows1: any = [];
+  let rawRows2: any = [];
+  let arr1: any = [];
+  let arr2: any = [];
+  let arr3: any = [];
+  const onPaste = (event: any) => {
+    const pasted1 = event.clipboardData.getData("text");
+    rawRows1 = pasted1.split("\n");
+  };
+  const onPaste2 = (event: any) => {
+    const pasted2 = event.clipboardData.getData("text");
+    rawRows2 = pasted2.split("\n");
+    for (let i = 0; i < rawRows1.length; i++) {
+      if (rawRows1[i] !== "ADDITIONAL ITEMS" && rawRows2[i] !== ".") {
+        arr3.push({ itemDesc: rawRows1[i], qty: rawRows2[i] });
+      }
+    }
+  };
+
+  useEffect(() => {}, [rawRows1, rawRows2]);
+
+  useEffect(() => {
+    if (companyName) {
+      clientQuery.mutate(companyName, {
+        onSuccess(data) {
+          if (data.data) {
+            setClientData(data.data);
+          }
+        },
+      });
+    }
+  }, [companyName]);
+
   const handleChange =
     (panel: string) => (event: SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false);
@@ -35,11 +83,11 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
     accept: "image/*",
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files !== null && event.target?.files?.length > 0) {
-        setTest(`${event.target.value}`);
+        setFileName(`${event.target.value}`);
       }
     },
     onDrop: (event: React.DragEvent<HTMLElement>) => {
-      setTest(`${event.dataTransfer.files[0].name}`);
+      setFileName(`${event.dataTransfer.files[0].name}`);
     },
   };
   const handlePrintDocument = () => {
@@ -51,25 +99,171 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       pdf.save("download.pdf");
     });
   };
+
+  useEffect(() => {
+    if (companyName && companyName.length >= 3) {
+      companyQuery.mutate(companyName, {
+        onSuccess(data) {
+          if (data.data) {
+            setCompanyData(data.data);
+          }
+        },
+      });
+    }
+  }, [companyName]);
+
+  const [data, setData] = useState([]);
+  let test: any = [];
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addInvoiceQuery.mutate(
+      {
+        companyName: companyName,
+        clientName: clientName,
+        invoiceModels: arr3,
+      },
+      {
+        onSuccess(data) {
+          Object.values(data.data?.map).map((item: any) => {
+            item.map((item2: any) => test.push(item2));
+          });
+          setData(test);
+        },
+      }
+    );
+  };
+
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "Id",
+      width: 50,
+      editable: false,
+    },
+    {
+      field: "impaCode",
+      headerName: "Impa Code",
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "itemDesc",
+      headerName: "Item Description",
+      width: 300,
+      editable: true,
+    },
+    {
+      field: "extraText",
+      headerName: "Extra Text",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "pkg",
+      headerName: "pkg",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "qty",
+      headerName: "Qty",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "itemSell",
+      headerName: "Item Sell",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+      width: 110,
+      editable: true,
+    },
+  ];
+
   return (
     <>
-      <Grid container component="form">
-        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+      <Grid container component="form" onSubmit={handleSubmit}>
+        <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
           <FormLabel>Company</FormLabel>
           <CustomAutocomplete
-            value=""
-            options={[]}
+            value={companyName}
+            onInputChange={(event: object, value: string, reason: string) => {
+              setCompanyName(value);
+            }}
+            options={
+              companyData
+                ? companyData.map((item, index) => ({
+                    label: item,
+                    id: index,
+                  }))
+                : []
+            }
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+        <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
+          <FormLabel>Client</FormLabel>
+          <CustomAutocomplete
+            value={clientName}
+            onInputChange={(event: object, value: string, reason: string) => {
+              setClientName(value);
+            }}
+            options={
+              clientData
+                ? clientData.map((item, index) => ({
+                    label: item,
+                    id: index,
+                  }))
+                : []
+            }
+            renderInput={(params) => <TextField {...params} />}
+            sx={{ mt: 1.3 }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} mb={4} px={2} mt={2}>
+          <FormLabel>Item Description</FormLabel>
+          <br />
+          <textarea
+            placeholder="Paste Item Description here..."
+            onPaste={onPaste}
+            style={{
+              minHeight: "150px",
+              maxHeight: "250px",
+              minWidth: "100%",
+              maxWidth: "100%",
+              padding: "10px",
+              marginTop: "10px",
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} mb={2} px={2} mt={2}>
+          <FormLabel>Qty</FormLabel>
+          <textarea
+            placeholder="Paste Item Qty here..."
+            onPaste={onPaste2}
+            style={{
+              minHeight: "150px",
+              maxHeight: "250px",
+              minWidth: "100%",
+              maxWidth: "100%",
+              padding: "10px",
+              marginTop: "10px",
+            }}
+          />
+        </Grid>
+
+        {/* <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
           <FileUploader {...fileUploadProp} />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2} mt={4.7}>
-          <Typography>{test}</Typography>
-        </Grid>
+          <Typography>{fileName}</Typography>
+        </Grid> */}
         <Grid container sx={{ justifyContent: "center" }}>
           <CustomButton
             type="submit"
@@ -82,7 +276,19 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
           </CustomButton>
         </Grid>
       </Grid>
-      <Grid id="divToPrint">
+      {data.length > 0 && (
+        <div style={{ minHeight: "600px", marginTop: "20px" }}>
+          <Grid container>
+            <DataGrid
+              rows={data ? data : []}
+              getRowId={(row) => row.batchId}
+              columns={columns}
+              disableRowSelectionOnClick
+            />
+          </Grid>
+        </div>
+      )}
+      {/* <Grid id="divToPrint">
         <Accordion
           expanded={expanded === "panel1"}
           onChange={handleChange("panel1")}
@@ -90,9 +296,6 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
             <Typography variant="h6">Invoice Details</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            <InvoiceDetails readOnly={readOnly.readOnly} />
-          </AccordionDetails>
         </Accordion>
         <Accordion
           expanded={expanded === "panel2"}
@@ -102,11 +305,11 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
             <Typography variant="h6">Invoice Rows</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <InvoiceTable readOnly={readOnly.readOnly} />
+            <PastTable />
           </AccordionDetails>
         </Accordion>
-      </Grid>
-      <Grid
+      </Grid> */}
+      {/* <Grid
         container
         sx={{
           justifyContent: "center",
@@ -132,7 +335,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
         >
           Submit
         </CustomButton>
-      </Grid>
+      </Grid> */}
     </>
   );
 };
