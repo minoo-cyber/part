@@ -15,7 +15,6 @@ import { useState } from "react";
 import CustomButton from "../../../../components/button";
 import InvoiceDetails from "../invoiceDetails";
 import InvoiceTable from "../invoiceTable";
-import ClipboardPaste from "../../../../components/copy";
 import {
   ISearchRes,
   invoiceSearchService,
@@ -35,10 +34,12 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
   const [loading, setLoading] = useState<boolean>(false);
   const searchQuery = useMutation(invoiceSearchService);
   const [expanded, setExpanded] = useState<string | false>("panel1");
+
   const handleChange =
     (panel: string) => (event: SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false);
     };
+
   const handleSearch = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -54,6 +55,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
             setData(data.data[0]);
             setLoading(false);
           } else {
+            setData(undefined);
             setLoading(false);
             dispatch(
               setToast({

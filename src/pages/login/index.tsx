@@ -10,6 +10,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomInput from "../../components/input";
 import CustomButton from "../../components/button";
+import Toast from "../../components/toast/Toast";
 
 const Login = () => {
   const [showVerify, setShowVerify] = useState<boolean>(false);
@@ -56,65 +57,68 @@ const Login = () => {
   };
 
   return (
-    <Grid sx={wrapperBox}>
-      <Grid sx={wrapperFormBox}>
-        {!showVerify ? (
-          <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
-            <Typography variant="h5"> Sign In</Typography>
-            <Box>
-              <FormLabel>Email</FormLabel>
-              <CustomInput
-                value={email}
-                handleChange={(e) => setEmail(e.target.value)}
-                type="text"
-                fieldName="email"
-                placeholder="Please Enter Your Email"
-                required
-              />
-            </Box>
-            <Box>
-              <FormLabel>Password</FormLabel>
-              <CustomInput
-                value={password}
-                handleChange={(e) => setPassword(e.target.value)}
-                type={type}
-                placeholder="Please Enter Your Password"
-                required
-              />
+    <>
+      <Grid sx={wrapperBox}>
+        <Grid sx={wrapperFormBox}>
+          {!showVerify ? (
+            <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
+              <Typography variant="h5"> Sign In</Typography>
+              <Box>
+                <FormLabel>Email</FormLabel>
+                <CustomInput
+                  value={email}
+                  handleChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  fieldName="email"
+                  placeholder="Please Enter Your Email"
+                  required
+                />
+              </Box>
+              <Box>
+                <FormLabel>Password</FormLabel>
+                <CustomInput
+                  value={password}
+                  handleChange={(e) => setPassword(e.target.value)}
+                  type={type}
+                  placeholder="Please Enter Your Password"
+                  required
+                />
 
-              {!showPass ? (
-                <RemoveRedEyeIcon onClick={handleShow} />
-              ) : (
-                <VisibilityOffIcon onClick={handleHide} />
-              )}
-            </Box>
-            <CustomButton
-              type="submit"
-              sx={{
-                backgroundColor: (theme) =>
-                  theme.palette.primary.main + "!important",
-              }}
-            >
-              Continue
-            </CustomButton>
-          </Grid>
-        ) : (
-          <Otp email={email} />
-        )}
+                {!showPass ? (
+                  <RemoveRedEyeIcon onClick={handleShow} />
+                ) : (
+                  <VisibilityOffIcon onClick={handleHide} />
+                )}
+              </Box>
+              <CustomButton
+                type="submit"
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.primary.main + "!important",
+                }}
+              >
+                Continue
+              </CustomButton>
+            </Grid>
+          ) : (
+            <Otp email={email} />
+          )}
+        </Grid>
+        <Grid
+          sx={{
+            ...welcomeBox,
+            backgroundColor: (theme) => theme.palette.primary.main,
+          }}
+        >
+          <Typography variant="h4">Welcome to login</Typography>
+          <Typography>
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid
-        sx={{
-          ...welcomeBox,
-          backgroundColor: (theme) => theme.palette.primary.main,
-        }}
-      >
-        <Typography variant="h4">Welcome to login</Typography>
-        <Typography>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry
-        </Typography>
-      </Grid>
-    </Grid>
+      <Toast />
+    </>
   );
 };
 

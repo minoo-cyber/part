@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getOtpValidation } from "../../../../services/login.api";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../../../components/button";
+import Toast from "../../../../components/toast/Toast";
 
 interface IProps {
   email: string;
@@ -38,23 +39,27 @@ const Otp: FC<IProps> = (email) => {
   };
 
   return (
-    <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
-      <Typography variant="h5"> Sign In</Typography>
-      <Typography>Please Enter Your Verify Code</Typography>
-      <Box sx={wrapperInput}>
-        {segments.map((s, key, ref) => (
-          <input type="text" key={key} value={s} onPaste={onPaste} />
-        ))}
-      </Box>
-      <CustomButton
-        type="submit"
-        sx={{
-          backgroundColor: (theme) => theme.palette.primary.main + "!important",
-        }}
-      >
-        Sign In
-      </CustomButton>
-    </Grid>
+    <>
+      <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
+        <Typography variant="h5"> Sign In</Typography>
+        <Typography>Please Enter Your Verify Code</Typography>
+        <Box sx={wrapperInput}>
+          {segments.map((s, key, ref) => (
+            <input type="text" key={key} value={s} onPaste={onPaste} />
+          ))}
+        </Box>
+        <CustomButton
+          type="submit"
+          sx={{
+            backgroundColor: (theme) =>
+              theme.palette.primary.main + "!important",
+          }}
+        >
+          Sign In
+        </CustomButton>
+      </Grid>
+      <Toast />
+    </>
   );
 };
 
