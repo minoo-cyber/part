@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent } from "react";
+import { SyntheticEvent } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -23,11 +23,7 @@ import { setToast } from "../../../../redux/slices/toastSlice";
 import InvoiceDetails from "./components/details";
 import InvoiceTable from "./components/table";
 
-interface IProps {
-  readOnly: boolean;
-}
-
-const InvoicesSearch: FC<IProps> = (readOnly) => {
+const InvoicesSearch = () => {
   const dispatch = useAppDispatch();
   const [batchId, setBatchId] = useState<string>("");
   const [data, setData] = useState<ISearchRes>();

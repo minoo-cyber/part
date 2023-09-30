@@ -15,7 +15,6 @@ interface IProps {
 const Otp: FC<IProps> = (email) => {
   const navigate = useNavigate();
   const getOtpValidationQuery = useMutation(getOtpValidation);
-
   const [segments, setSegments] = useState(["", "", "", "", "", ""]);
   function onPaste(event: any) {
     const pasted = event.clipboardData.getData("text/plain");
@@ -44,7 +43,7 @@ const Otp: FC<IProps> = (email) => {
         <Typography variant="h5"> Sign In</Typography>
         <Typography>Please Enter Your Verify Code</Typography>
         <Box sx={wrapperInput}>
-          {segments.map((s, key, ref) => (
+          {segments.map((s, key) => (
             <input type="text" key={key} value={s} onPaste={onPaste} />
           ))}
         </Box>

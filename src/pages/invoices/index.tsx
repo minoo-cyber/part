@@ -9,15 +9,8 @@ import InvoiceAdd from "./components/invoiceAdd";
 
 const Invoices = () => {
   const [value, setValue] = useState("1");
-  const [readOnly, setReadOnly] = useState<boolean>(true);
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
-    if (value === "1") {
-      setReadOnly(false);
-    }
-    if (value === "2") {
-      setReadOnly(true);
-    }
   };
 
   return (
@@ -34,10 +27,10 @@ const Invoices = () => {
             <Tab value="2" label="New Invoice" />
           </Tabs>
           <TabPanel value="1">
-            <InvoicesSearch readOnly={readOnly} />
+            <InvoicesSearch />
           </TabPanel>
           <TabPanel value="2">
-            <InvoiceAdd readOnly={readOnly} />
+            <InvoiceAdd />
           </TabPanel>
         </TabContext>
       </Card>

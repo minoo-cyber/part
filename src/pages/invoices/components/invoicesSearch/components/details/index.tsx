@@ -7,7 +7,7 @@ interface IProps {
   data?: ISearchRes;
 }
 
-const InvoiceDetails: FC<IProps> = ({ data }: IProps) => {
+const SearchDetails: FC<IProps> = ({ data }: IProps) => {
   return (
     <>
       <Grid container mb={3}>
@@ -112,4 +112,4 @@ const InvoiceDetails: FC<IProps> = ({ data }: IProps) => {
   );
 };
 
-export default InvoiceDetails;
+export default SearchDetails;

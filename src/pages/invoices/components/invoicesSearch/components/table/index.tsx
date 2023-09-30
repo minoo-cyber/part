@@ -9,7 +9,7 @@ interface IProps {
   rows?: IInvoiceSubModels[];
 }
 
-const InvoiceTable: FC<IProps> = ({ rows }: IProps) => {
+const SearchTable: FC<IProps> = ({ rows }: IProps) => {
   const [filterRows, setFilterRows] = useState(rows);
   const [filterKeyword, setFilterKeyword] = useState<string>();
   const columns: GridColDef[] = [
@@ -104,4 +104,4 @@ const InvoiceTable: FC<IProps> = ({ rows }: IProps) => {
   );
 };
 
-export default InvoiceTable;
+export default SearchTable;
