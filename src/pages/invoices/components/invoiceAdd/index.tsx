@@ -6,18 +6,19 @@ import {
   Box,
   FormLabel,
   Grid,
+  IconButton,
+  Modal,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import CustomAutocomplete from "../../../../components/autocomplete";
 import CustomButton from "../../../../components/button";
-import InvoiceDetails from "../invoiceDetails";
 
 import {
   FileUploadProps,
   FileUploader,
 } from "../../../../components/fileUploader";
-import InvoiceTable from "../invoiceTable";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useMutation } from "@tanstack/react-query";
@@ -26,7 +27,13 @@ import {
   clientService,
   companyNameService,
 } from "../../../../services/invoice.api";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRowParams,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface IProps {
   readOnly: boolean;
@@ -37,6 +44,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
   const addInvoiceQuery = useMutation(addInvoiceService);
   const [companyName, setCompanyName] = useState<string | undefined>("");
   const [companyData, setCompanyData] = useState<string[]>();
+  const [addData, setAddData] = useState([]);
   const [fileName, setFileName] = useState<string>();
   const [expanded, setExpanded] = useState<string | false>("panel1");
   const [clientName, setClientName] = useState<string>("");
@@ -113,7 +121,11 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
   }, [companyName]);
 
   const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
+  const [open, setOpen] = useState(false);
   let test: any = [];
+  let test2: any = [];
+  let test3: any = [];
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     addInvoiceQuery.mutate(
@@ -124,15 +136,28 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       },
       {
         onSuccess(data) {
-          Object.values(data.data?.map).map((item: any) => {
-            item.map((item2: any) => test.push(item2));
-          });
-          setData(test);
+          setAddData(data.data?.map);
+          // Object.values(data.data?.map).map((item: any) => {
+          //   if (item.length > 1) {
+          //     setOpen(true);
+          //     item.map((item2: any, index: any) => test2.push(item2));
+          //   } else {
+          //     setOpen(false);
+          //     item.map((item2: any) => test.push(item2));
+          //   }
+          // });
+          // test2.map((item3: any, index: any) => {
+          //   return (item3.Id = index), test3.push(item3);
+          // });
+
+          // setData2(test3);
+          // setData(test);
         },
       }
     );
   };
-
+  const [rows, setRows] = useState([]);
+  const [selectionModel, setSelectionModel] = useState([]);
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -183,7 +208,10 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
       editable: true,
     },
   ];
-
+  console.log(data, "data");
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+  const [deletedRows, setDeletedRows] = useState<any>([]);
   return (
     <>
       <Grid container component="form" onSubmit={handleSubmit}>
@@ -276,7 +304,53 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
           </CustomButton>
         </Grid>
       </Grid>
-      {data.length > 0 && (
+      <div className="gameStatistics">
+        {Object.keys(addData).map((key: any) => {
+          return (
+            <div key={key}>
+              <Typography
+                variant="h6"
+                mb={1}
+                mt={3}
+                sx={{
+                  color: (theme) => theme.palette.primary.main + "!important",
+                }}
+              >
+                {key}
+              </Typography>
+              {[addData[key]].map((item: any) => {
+                return (
+                  <DataGrid
+                    rows={item ? item : []}
+                    getRowId={(row) => row.batchId}
+                    columns={columns}
+                    disableRowSelectionOnClick
+                    checkboxSelection
+                    hideFooter={true}
+                    //@ts-ignore
+                    onSelectionModelChange={(ids) => {
+                      setSelectionModel(ids);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+      {/* {data2.length > 0 && (
+        <Grid container>
+          <DataGrid
+            rows={data2 ? data2 : []}
+            getRowId={(row) => row.Id}
+            columns={columns}
+            disableRowSelectionOnClick
+            checkboxSelection
+          />
+        </Grid>
+      )} */}
+
+      {/* {data.length > 0 && !open && (
         <div style={{ minHeight: "600px", marginTop: "20px" }}>
           <Grid container>
             <DataGrid
@@ -287,7 +361,7 @@ const InvoiceAdd: FC<IProps> = (readOnly) => {
             />
           </Grid>
         </div>
-      )}
+      )} */}
       {/* <Grid id="divToPrint">
         <Accordion
           expanded={expanded === "panel1"}

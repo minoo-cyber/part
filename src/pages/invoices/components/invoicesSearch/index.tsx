@@ -13,8 +13,6 @@ import CustomAutocomplete from "../../../../components/autocomplete";
 import CustomInput from "../../../../components/input";
 import { useState } from "react";
 import CustomButton from "../../../../components/button";
-import InvoiceDetails from "../invoiceDetails";
-import InvoiceTable from "../invoiceTable";
 import {
   ISearchRes,
   invoiceSearchService,
@@ -22,6 +20,8 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import useAppDispatch from "../../../../hooks/useDispatch";
 import { setToast } from "../../../../redux/slices/toastSlice";
+import InvoiceDetails from "./components/details";
+import InvoiceTable from "./components/table";
 
 interface IProps {
   readOnly: boolean;
@@ -123,7 +123,7 @@ const InvoicesSearch: FC<IProps> = (readOnly) => {
           <Typography variant="h6">Invoice Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <InvoiceDetails readOnly={readOnly.readOnly} data={data} />
+          <InvoiceDetails data={data} />
         </AccordionDetails>
       </Accordion>
       <Accordion

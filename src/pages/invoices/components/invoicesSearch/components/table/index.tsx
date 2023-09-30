@@ -1,16 +1,15 @@
-import { ChangeEvent, FC, useMemo, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { IInvoiceSubModels } from "../../../../services/invoice.api";
-import CustomInput from "../../../../components/input";
+import { IInvoiceSubModels } from "../../../../../../services/invoice.api";
+import CustomInput from "../../../../../../components/input";
 import { Box } from "@mui/material";
-import { AgGridReact } from "ag-grid-react";
+import { wrapperBox } from "./table.style";
 
 interface IProps {
-  readOnly?: boolean;
   rows?: IInvoiceSubModels[];
 }
 
-const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
+const InvoiceTable: FC<IProps> = ({ rows }: IProps) => {
   const [filterRows, setFilterRows] = useState(rows);
   const [filterKeyword, setFilterKeyword] = useState<string>();
   const columns: GridColDef[] = [
@@ -63,6 +62,7 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
       editable: false,
     },
   ];
+
   const handleFilter = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -92,12 +92,7 @@ const InvoiceTable: FC<IProps> = ({ readOnly, rows }: IProps) => {
         placeholder="Filter By ImpaCode && ItemDescription"
       />
 
-      <Box
-        sx={{
-          height: 500,
-          mt: 3,
-        }}
-      >
+      <Box sx={wrapperBox}>
         <DataGrid
           rows={filterRows ? filterRows : rows ? rows : []}
           columns={columns}
