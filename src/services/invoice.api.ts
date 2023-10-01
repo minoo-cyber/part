@@ -17,6 +17,8 @@ export interface ISearchRes {
   invoiceNumber: string;
   invoiceSubModels: IInvoiceSubModels[];
   tacompany: string;
+  totalAmount: string;
+  date: Date | string;
 }
 
 export interface IInvoiceSubModels {

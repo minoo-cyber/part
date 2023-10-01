@@ -84,12 +84,7 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
-          if (data.data) {
-            setAddData(data.data?.map);
-            Object.keys(data.data?.map).map((key: any) => {
-              setAddInfo([data.data.map[key]]);
-            });
-          }
+          setAddData(data.data?.map);
         },
       }
     );
@@ -179,7 +174,7 @@ const InvoiceAdd = () => {
                 >
                   {key}
                 </Typography>
-                {addInfo.map((item: any) => {
+                {[addData[key]].map((item: any) => {
                   return <AddTable infoData={item} />;
                 })}
               </Box>

@@ -1,7 +1,6 @@
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
@@ -20,6 +19,8 @@ import {
 import { randomId } from "@mui/x-data-grid-generator";
 import { FC, useState } from "react";
 import { Grid } from "@mui/material";
+import CropSquareIcon from "@mui/icons-material/CropSquare";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 interface IProps {
   infoData: any;
@@ -27,6 +28,8 @@ interface IProps {
 
 const AddTable: FC<IProps> = ({ infoData }: IProps) => {
   const [rows, setRows] = useState(infoData);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [showIcon, setShowIcon] = useState<boolean>(false);
   const columns: GridColDef[] = [
     {
       field: "actions",
@@ -64,9 +67,15 @@ const AddTable: FC<IProps> = ({ infoData }: IProps) => {
             color="inherit"
           />,
           <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
+            icon={
+              !showIcon ? (
+                <CropSquareIcon />
+              ) : (
+                <CheckBoxIcon style={{ color: "green" }} />
+              )
+            }
+            label="Select"
+            onClick={handleSelectClick(id)}
             color="inherit"
           />,
         ];
@@ -150,8 +159,6 @@ const AddTable: FC<IProps> = ({ infoData }: IProps) => {
     );
   }
 
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
     event
@@ -169,8 +176,13 @@ const AddTable: FC<IProps> = ({ infoData }: IProps) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row: any) => row.rowNum !== id));
+  const handleSelectClick = (id: GridRowId) => () => {
+    setRows(rows.filter((row: any) => row.rowNum === id));
+    console.log(
+      rows.filter((row: any) => row.rowNum === id),
+      "rows"
+    );
+    setShowIcon(true);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {

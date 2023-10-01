@@ -14,25 +14,25 @@ const SearchDetails: FC<IProps> = ({ data }: IProps) => {
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Batch Number</FormLabel>
           <CustomInput
-            value={data?.batchNumber ? data?.batchNumber : ""}
+            value={data?.batchNumber ? data.batchNumber : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>InvoicedBy</FormLabel>
           <CustomInput
-            value={data?.invoicedBy ? data?.invoicedBy : ""}
+            value={data?.invoicedBy ? data.invoicedBy : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Port</FormLabel>
           <CustomInput
-            value={data?.port ? data?.port : ""}
+            value={data?.port ? data.port : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
       </Grid>
@@ -40,25 +40,25 @@ const SearchDetails: FC<IProps> = ({ data }: IProps) => {
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Order Number</FormLabel>
           <CustomInput
-            value={data?.orderNumber ? data?.orderNumber : ""}
+            value={data?.orderNumber ? data.orderNumber : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Department</FormLabel>
           <CustomInput
-            value={data?.department ? data?.department : ""}
+            value={data?.department ? data.department : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Marking Number</FormLabel>
           <CustomInput
-            value={data?.markingNumber ? data?.markingNumber : ""}
+            value={data?.markingNumber ? data.markingNumber : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
       </Grid>
@@ -66,45 +66,53 @@ const SearchDetails: FC<IProps> = ({ data }: IProps) => {
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>T/A Company</FormLabel>
           <CustomInput
-            value={data?.tacompany ? data?.tacompany : ""}
+            value={data?.tacompany ? data.tacompany : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Invoice Number</FormLabel>
           <CustomInput
-            value={data?.invoiceNumber ? data?.invoiceNumber : ""}
+            value={data?.invoiceNumber ? data.invoiceNumber : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Date</FormLabel>
-          <CustomInput value={""} type="text" readOnly />
+          <CustomInput
+            value={data?.date ? data.date : ""}
+            type="text"
+            readOnly={true}
+          />
         </Grid>
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
           <FormLabel>Total Invoice Price</FormLabel>
-          <CustomInput value={""} type="text" readOnly />
+          <CustomInput
+            value={data?.totalAmount ? data.totalAmount : ""}
+            type="text"
+            readOnly={true}
+          />
         </Grid>
       </Grid>
       <Grid container mb={3}>
         <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
           <FormLabel>Client</FormLabel>
           <CustomInput
-            value={data?.client ? data?.client : ""}
+            value={data?.client ? data.client : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} mb={1} px={2}>
           <FormLabel>Company Name</FormLabel>
           <CustomInput
-            value={data?.companyName ? data?.companyName : ""}
+            value={data?.companyName ? data.companyName : ""}
             type="text"
-            readOnly
+            readOnly={true}
           />
         </Grid>
       </Grid>
