@@ -6,11 +6,15 @@ import Layout from "../../components/layout";
 import { TabContext } from "@mui/lab";
 import InvoicesSearch from "./components/invoicesSearch";
 import InvoiceAdd from "./components/invoiceAdd";
+import { setInvoiceClearData } from "../../redux/slices/invoiceSlice";
+import useAppDispatch from "../../hooks/useDispatch";
 
 const Invoices = () => {
   const [value, setValue] = useState("1");
+  const dispatch = useAppDispatch();
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
+    dispatch(setInvoiceClearData());
   };
 
   return (

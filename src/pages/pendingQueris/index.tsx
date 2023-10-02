@@ -1,31 +1,26 @@
+import { useState } from "react";
+import Layout from "../../components/layout";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
-  GridRowModesModel,
-  GridRowModes,
   DataGrid,
-  GridColDef,
   GridActionsCellItem,
+  GridColDef,
   GridEventListener,
+  GridRowEditStopReasons,
   GridRowId,
   GridRowModel,
-  GridRowEditStopReasons,
+  GridRowModes,
+  GridRowModesModel,
 } from "@mui/x-data-grid";
-import { FC, useState } from "react";
-import { Grid } from "@mui/material";
+import useAppDispatch from "../../hooks/useDispatch";
+import useAppSelector from "../../hooks/useSelector";
+import { setInvoiceInfoDSelect } from "../../redux/slices/invoiceSlice";
+import { Box, Card, Grid, Typography } from "@mui/material";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
-import useAppSelector from "../../../../../../hooks/useSelector";
-import useAppDispatch from "../../../../../../hooks/useDispatch";
-import { setInvoiceInfoDSelect } from "../../../../../../redux/slices/invoiceSlice";
 
-interface IProps {
-  title: string;
-  showIcon: boolean;
-  setShowIcon: (showIcon: boolean) => void;
-}
-
-const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
+const PendingQueris = () => {
   const columns: GridColDef[] = [
     {
       field: "actions",
@@ -140,14 +135,13 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
   };
 
   const handleSelectClick = (id: GridRowId) => () => {
-    if (data[title].length > 1) {
-      const selected = data[title].filter((row: any) => row.rowNum === id);
-      var key = title;
-      var obj: any = {};
-      obj[key] = selected;
-      dispatch(setInvoiceInfoDSelect(obj));
-      setShowIcon(false);
-    }
+    // if (data[key].length > 1) {
+    //   const selected = data[key].filter((row: any) => row.rowNum === id);
+    //   var key = title;
+    //   var obj: any = {};
+    //   obj[key] = selected;
+    //   dispatch(setInvoiceInfoDSelect(obj));
+    // }
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -156,21 +150,25 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = data[title].find((row: any) => row.rowNum !== id);
+    // const editedRow = data[title].find((row: any) => row.rowNum !== id);
     // if (editedRow!.isNew) {
-    dispatch(
-      setInvoiceInfoDSelect(data[title].filter((row: any) => row.rowNum !== id))
-    );
+    //   dispatch(
+    //     setInvoiceInfoDSelect(
+    //       data[title].filter((row: any) => row.rowNum !== id)
+    //     )
+    //   );
     // }
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    const test = [updatedRow];
-    var key = title;
-    var obj: any = {};
-    obj[key] = test;
-    dispatch(setInvoiceInfoDSelect(obj));
+    const test = updatedRow;
+
+    // var key = title;
+    // var obj: any = {};
+    // obj[key] = test;
+
+    // dispatch(setInvoiceInfoDSelect(obj));
     return updatedRow;
   };
   const handleSaveClick = (id: GridRowId) => () => {
@@ -182,22 +180,40 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
   };
 
   return (
-    <>
-      <Grid item xs={12}>
-        <DataGrid
-          rows={data[title] ? data[title] : []}
-          columns={columns}
-          getRowId={(row) => row.rowNum}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          hideFooter={true}
-        />
-      </Grid>
-    </>
+    <Layout>
+      <Card>
+        <Grid item xs={12} p={3}>
+          {Object.keys(data).map((key: any) => {
+            return (
+              <Box key={key}>
+                <Typography
+                  variant="h6"
+                  mb={1}
+                  mt={3}
+                  sx={{
+                    color: (theme) => theme.palette.primary.main + "!important",
+                  }}
+                >
+                  {key}
+                </Typography>
+                <DataGrid
+                  rows={data[key] ? data[key] : []}
+                  columns={columns}
+                  getRowId={(row) => row.rowNum}
+                  editMode="row"
+                  rowModesModel={rowModesModel}
+                  onRowModesModelChange={handleRowModesModelChange}
+                  onRowEditStop={handleRowEditStop}
+                  processRowUpdate={processRowUpdate}
+                  hideFooter={true}
+                />
+              </Box>
+            );
+          })}
+        </Grid>
+      </Card>
+    </Layout>
   );
 };
 
-export default AddTable;
+export default PendingQueris;

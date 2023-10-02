@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import User from "./pages/user";
 import Invoices from "./pages/invoices";
+import PendingQueris from "./pages/pendingQueris";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -22,6 +24,7 @@ const App = () => {
               <Route path="/panel" element={<Panel />} />
               <Route path="/user" element={<User />} />
               <Route path="/invoices" element={<Invoices />} />
+              <Route path="/pending" element={<PendingQueris />} />
             </Routes>
           </BrowserRouter>
         </QueryClientProvider>

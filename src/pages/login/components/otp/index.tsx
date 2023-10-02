@@ -16,6 +16,7 @@ const Otp: FC<IProps> = (email) => {
   const navigate = useNavigate();
   const getOtpValidationQuery = useMutation(getOtpValidation);
   const [segments, setSegments] = useState(["", "", "", "", "", ""]);
+
   function onPaste(event: any) {
     const pasted = event.clipboardData.getData("text/plain");
     setSegments(pasted.split("").slice(0, segments.length));

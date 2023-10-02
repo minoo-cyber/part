@@ -48,7 +48,7 @@ const SideBar = () => {
               <StopScreenShareIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/panel">Pending Queries</NavLink>
+              <NavLink to="/pending">Pending Queries</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>

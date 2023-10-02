@@ -10,16 +10,26 @@ import {
 } from "../../../../services/invoice.api";
 import { wrapperText } from "./add.style";
 import AddTable from "./components/table";
+import useAppDispatch from "../../../../hooks/useDispatch";
+import { setInvoiceData } from "../../../../redux/slices/invoiceSlice";
+import useAppSelector from "../../../../hooks/useSelector";
+import { setToast } from "../../../../redux/slices/toastSlice";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useNavigate } from "react-router";
 
 const InvoiceAdd = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { data } = useAppSelector((state) => state.invoice);
   const [companyName, setCompanyName] = useState<string | undefined>("");
   const [companyData, setCompanyData] = useState<string[]>();
   const [clientName, setClientName] = useState<string>("");
   const [clientData, setClientData] = useState<string[]>();
+  const [showIcon, setShowIcon] = useState<boolean>(false);
+  const [showButton, setShowButton] = useState<boolean>(false);
   const [itemList, setItemList] = useState([]);
   const [qtyList, setQtyList] = useState([]);
-  const [addData, setAddData] = useState<string[]>([]);
-  const [addInfo, setAddInfo] = useState<string[]>([]);
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
   const clientQuery = useMutation(clientService);
@@ -42,6 +52,16 @@ const InvoiceAdd = () => {
   const handleQty = (event: any) => {
     const qtyItem = event.target.value;
     setQtyList(qtyItem.split("\n"));
+  };
+
+  const handlePdfDocument = () => {
+    let input: any = document.getElementById("divToPrint");
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "JPEG", 0, 0, 200, 200);
+      pdf.save("download.pdf");
+    });
   };
 
   useEffect(() => {
@@ -70,6 +90,7 @@ const InvoiceAdd = () => {
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setShowIcon(true);
     let invoiceModels = [];
     for (let i = 0; i < itemList.length; i++) {
       if (itemList[i] !== "ADDITIONAL ITEMS" && qtyList[i] !== ".") {
@@ -84,10 +105,26 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
-          setAddData(data.data?.map);
+          if (Object.keys(data?.data?.map).length !== 0) {
+            dispatch(setInvoiceData(data.data?.map));
+            setShowButton(true);
+          }
+          if (data?.data?.notFoundedItems.length > 0) {
+            dispatch(
+              setToast({
+                open: true,
+                type: "error",
+                text: "Not Founded Item",
+              })
+            );
+          }
         },
       }
     );
+  };
+
+  const handlePending = () => {
+    navigate("/pending");
   };
 
   return (
@@ -161,26 +198,66 @@ const InvoiceAdd = () => {
           </CustomButton>
         </Grid>
         <Grid item xs={12}>
-          {Object.keys(addData).map((key: any) => {
-            return (
-              <Box key={key}>
-                <Typography
-                  variant="h6"
-                  mb={1}
-                  mt={3}
-                  sx={{
-                    color: (theme) => theme.palette.primary.main + "!important",
-                  }}
-                >
-                  {key}
-                </Typography>
-                {[addData[key]].map((item: any) => {
-                  return <AddTable infoData={item} />;
-                })}
-              </Box>
-            );
-          })}
+          <Box id="divToPrint">
+            {Object.keys(data).map((key: any) => {
+              return (
+                <Box key={key}>
+                  <Typography
+                    variant="h6"
+                    mb={1}
+                    mt={3}
+                    sx={{
+                      color: (theme) =>
+                        theme.palette.primary.main + "!important",
+                    }}
+                  >
+                    {key}
+                  </Typography>
+                  {[data[key]].map((item: any) => {
+                    return (
+                      <AddTable
+                        title={key}
+                        key={key}
+                        showIcon={showIcon}
+                        setShowIcon={setShowIcon}
+                      />
+                    );
+                  })}
+                </Box>
+              );
+            })}
+          </Box>
         </Grid>
+        {showButton && (
+          <Grid
+            container
+            sx={{
+              justifyContent: "center",
+              "&>div": {
+                margin: "10px",
+              },
+            }}
+          >
+            <CustomButton
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.primary.main + "!important",
+              }}
+              onClick={handlePdfDocument}
+            >
+              Preview
+            </CustomButton>
+            <CustomButton
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.primary.main + "!important",
+              }}
+              onClick={handlePending}
+            >
+              Pending
+            </CustomButton>
+          </Grid>
+        )}
       </Grid>
     </>
   );
