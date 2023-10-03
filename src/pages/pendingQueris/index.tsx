@@ -16,9 +16,9 @@ import {
 } from "@mui/x-data-grid";
 import useAppDispatch from "../../hooks/useDispatch";
 import useAppSelector from "../../hooks/useSelector";
-import { setInvoiceInfoDSelect } from "../../redux/slices/invoiceSlice";
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
+import Card from "../../components/card";
 
 const PendingQueris = () => {
   const columns: GridColDef[] = [
