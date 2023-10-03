@@ -140,8 +140,8 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
   };
 
   const handleSelectClick = (id: GridRowId) => () => {
-    if (data[title].length > 1) {
-      const selected = data[title].filter((row: any) => row.rowNum === id);
+    if (data.map[title].length > 1) {
+      const selected = data.map[title].filter((row: any) => row.rowNum === id);
       var key = title;
       var obj: any = {};
       obj[key] = selected;
@@ -149,19 +149,30 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
       setShowIcon(false);
     }
   };
-
+  const handleRowClick = (id: any) => {
+    if (data.map[title].length > 1) {
+      const selected = data.map[title].filter((row: any) => row.rowNum === id);
+      var key = title;
+      var obj: any = {};
+      obj[key] = selected;
+      dispatch(setInvoiceInfoDSelect(obj));
+      setShowIcon(false);
+    }
+  };
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = data[title].find((row: any) => row.rowNum !== id);
-    // if (editedRow!.isNew) {
-    dispatch(
-      setInvoiceInfoDSelect(data[title].filter((row: any) => row.rowNum !== id))
-    );
-    // }
+    const editedRow = data.map[title].find((row: any) => row.rowNum !== id);
+    if (editedRow?.isNew) {
+      dispatch(
+        setInvoiceInfoDSelect(
+          data.map[title].filter((row: any) => row.rowNum !== id)
+        )
+      );
+    }
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
@@ -185,11 +196,14 @@ const AddTable: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
     <>
       <Grid item xs={12}>
         <DataGrid
-          rows={data[title] ? data[title] : []}
+          rows={data.map[title] ? data.map[title] : []}
           columns={columns}
           getRowId={(row) => row.rowNum}
           editMode="row"
           rowModesModel={rowModesModel}
+          onRowClick={(rows) => {
+            handleRowClick(rows.id);
+          }}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}

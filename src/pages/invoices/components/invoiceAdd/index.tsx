@@ -14,9 +14,9 @@ import useAppDispatch from "../../../../hooks/useDispatch";
 import { setInvoiceData } from "../../../../redux/slices/invoiceSlice";
 import useAppSelector from "../../../../hooks/useSelector";
 import { setToast } from "../../../../redux/slices/toastSlice";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { useNavigate } from "react-router";
+import PreviewModal from "./components/previewModal";
+import { sendPendingService } from "../../../../services/pending.api";
 
 const InvoiceAdd = () => {
   const dispatch = useAppDispatch();
@@ -28,12 +28,15 @@ const InvoiceAdd = () => {
   const [clientData, setClientData] = useState<string[]>();
   const [showIcon, setShowIcon] = useState<boolean>(false);
   const [showButton, setShowButton] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [qtyList, setQtyList] = useState([]);
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
   const clientQuery = useMutation(clientService);
+  const sendPendingQuery = useMutation(sendPendingService);
 
+  const handleOpen = () => setOpen(true);
   const onPasteItem = (event: any) => {
     const pastedItem = event.clipboardData.getData("text");
     setItemList(pastedItem.split("\n"));
@@ -52,16 +55,6 @@ const InvoiceAdd = () => {
   const handleQty = (event: any) => {
     const qtyItem = event.target.value;
     setQtyList(qtyItem.split("\n"));
-  };
-
-  const handlePdfDocument = () => {
-    let input: any = document.getElementById("divToPrint");
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0, 200, 200);
-      pdf.save("download.pdf");
-    });
   };
 
   useEffect(() => {
@@ -106,7 +99,7 @@ const InvoiceAdd = () => {
       {
         onSuccess(data) {
           if (Object.keys(data?.data?.map).length !== 0) {
-            dispatch(setInvoiceData(data.data?.map));
+            dispatch(setInvoiceData(data.data));
             setShowButton(true);
           }
           if (data?.data?.notFoundedItems.length > 0) {
@@ -124,7 +117,20 @@ const InvoiceAdd = () => {
   };
 
   const handlePending = () => {
-    navigate("/pending");
+    sendPendingQuery.mutate(
+      {
+        id: 0,
+        companyName: data.companyName,
+        clientName: data.clientName,
+        markingNumber: 0,
+        pendingInvoiceSubModels: data.map,
+      },
+      {
+        onSuccess(data) {
+          navigate("/pending");
+        },
+      }
+    );
   };
 
   return (
@@ -199,7 +205,7 @@ const InvoiceAdd = () => {
         </Grid>
         <Grid item xs={12}>
           <Box id="divToPrint">
-            {Object.keys(data).map((key: any) => {
+            {Object.keys(data?.map).map((key: any) => {
               return (
                 <Box key={key}>
                   <Typography
@@ -213,7 +219,7 @@ const InvoiceAdd = () => {
                   >
                     {key}
                   </Typography>
-                  {[data[key]].map((item: any) => {
+                  {[data.map[key]].map((item: any) => {
                     return (
                       <AddTable
                         title={key}
@@ -243,10 +249,11 @@ const InvoiceAdd = () => {
                 backgroundColor: (theme) =>
                   theme.palette.primary.main + "!important",
               }}
-              onClick={handlePdfDocument}
+              onClick={handleOpen}
             >
               Preview
             </CustomButton>
+            <PreviewModal open={open} setOpen={setOpen} />
             <CustomButton
               sx={{
                 backgroundColor: (theme) =>
@@ -254,7 +261,7 @@ const InvoiceAdd = () => {
               }}
               onClick={handlePending}
             >
-              Pending
+              Add Pending
             </CustomButton>
           </Grid>
         )}

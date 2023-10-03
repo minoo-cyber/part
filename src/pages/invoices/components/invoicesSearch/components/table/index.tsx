@@ -16,7 +16,7 @@ const SearchTable: FC<IProps> = ({ rows }: IProps) => {
     {
       field: "id",
       headerName: "Id",
-      width: 90,
+      width: 40,
       editable: false,
     },
     {
@@ -28,7 +28,7 @@ const SearchTable: FC<IProps> = ({ rows }: IProps) => {
     {
       field: "itemDescription",
       headerName: "Item Description",
-      width: 250,
+      width: 400,
       editable: false,
     },
     {

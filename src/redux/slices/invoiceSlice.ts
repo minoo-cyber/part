@@ -17,7 +17,7 @@ export const invoiceSlice = createSlice({
       state.data = action.payload;
     },
     setInvoiceInfoDSelect: (state, action: PayloadAction) => {
-      state.data = Object.assign(state.data, action.payload);
+      state.data.map = Object.assign(state.data.map, action.payload);
     },
     setInvoiceClearData: (state) => {
       state.data = [];
