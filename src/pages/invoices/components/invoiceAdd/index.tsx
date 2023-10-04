@@ -14,19 +14,17 @@ import useAppDispatch from "../../../../hooks/useDispatch";
 import { setInvoiceData } from "../../../../redux/slices/invoiceSlice";
 import useAppSelector from "../../../../hooks/useSelector";
 import { setToast } from "../../../../redux/slices/toastSlice";
-import { useNavigate } from "react-router";
 import PreviewModal from "./components/previewModal";
-import { sendPendingService } from "../../../../services/pending.api";
+import CustomInput from "../../../../components/input";
 
 const InvoiceAdd = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { data } = useAppSelector((state) => state.invoice);
   const [companyName, setCompanyName] = useState<string | undefined>("");
   const [companyData, setCompanyData] = useState<string[]>();
   const [clientName, setClientName] = useState<string>("");
   const [clientData, setClientData] = useState<string[]>();
-  const [showIcon, setShowIcon] = useState<boolean>(false);
+  const [markingNumber, setMarkingNumber] = useState<string>("0");
   const [showButton, setShowButton] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
@@ -34,9 +32,28 @@ const InvoiceAdd = () => {
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
   const clientQuery = useMutation(clientService);
-  const sendPendingQuery = useMutation(sendPendingService);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    let arrayLength: any = [];
+    Object.values(data?.map).map((item: any) => {
+      arrayLength.push(item.length);
+    });
+    for (var i = 0; i < arrayLength.length; i++) {
+      if (arrayLength[i] !== 1) {
+        setOpen(false);
+        dispatch(
+          setToast({
+            open: true,
+            type: "error",
+            text: "Each List Shoud Have Only One Row",
+          })
+        );
+      } else {
+        setOpen(true);
+      }
+    }
+  };
+
   const onPasteItem = (event: any) => {
     const pastedItem = event.clipboardData.getData("text");
     setItemList(pastedItem.split("\n"));
@@ -83,7 +100,6 @@ const InvoiceAdd = () => {
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setShowIcon(true);
     let invoiceModels = [];
     for (let i = 0; i < itemList.length; i++) {
       if (itemList[i] !== "ADDITIONAL ITEMS" && qtyList[i] !== ".") {
@@ -103,6 +119,7 @@ const InvoiceAdd = () => {
             setShowButton(true);
           }
           if (data?.data?.notFoundedItems.length > 0) {
+            // dispatch(setInvoiceData(data.data));
             dispatch(
               setToast({
                 open: true,
@@ -111,23 +128,6 @@ const InvoiceAdd = () => {
               })
             );
           }
-        },
-      }
-    );
-  };
-
-  const handlePending = () => {
-    sendPendingQuery.mutate(
-      {
-        id: 0,
-        companyName: data.companyName,
-        clientName: data.clientName,
-        markingNumber: 0,
-        pendingInvoiceSubModels: data.map,
-      },
-      {
-        onSuccess(data) {
-          navigate("/pending");
         },
       }
     );
@@ -203,36 +203,39 @@ const InvoiceAdd = () => {
             Add Invoice
           </CustomButton>
         </Grid>
+      </Grid>
+      <Grid container>
+        {showButton && (
+          <Grid item xs={12} sm={6} md={4} mt={4}>
+            <FormLabel>Marking Number</FormLabel>
+            <CustomInput
+              value={markingNumber}
+              handleChange={(e) => setMarkingNumber(e.target.value)}
+              type="text"
+              placeholder="Please Enter Marking Number"
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
-          <Box id="divToPrint">
-            {Object.keys(data?.map).map((key: any) => {
-              return (
-                <Box key={key}>
-                  <Typography
-                    variant="h6"
-                    mb={1}
-                    mt={3}
-                    sx={{
-                      color: (theme) =>
-                        theme.palette.primary.main + "!important",
-                    }}
-                  >
-                    {key}
-                  </Typography>
-                  {[data.map[key]].map((item: any) => {
-                    return (
-                      <AddTable
-                        title={key}
-                        key={key}
-                        showIcon={showIcon}
-                        setShowIcon={setShowIcon}
-                      />
-                    );
-                  })}
-                </Box>
-              );
-            })}
-          </Box>
+          {Object.keys(data?.map).map((key: any) => {
+            return (
+              <Box key={key}>
+                <Typography
+                  variant="h6"
+                  mb={1}
+                  mt={3}
+                  sx={{
+                    color: (theme) => theme.palette.primary.main + "!important",
+                  }}
+                >
+                  {key}
+                </Typography>
+                {[data.map[key]].map((item: any) => {
+                  return <AddTable title={key} key={key} />;
+                })}
+              </Box>
+            );
+          })}
         </Grid>
         {showButton && (
           <Grid
@@ -253,16 +256,11 @@ const InvoiceAdd = () => {
             >
               Preview
             </CustomButton>
-            <PreviewModal open={open} setOpen={setOpen} />
-            <CustomButton
-              sx={{
-                backgroundColor: (theme) =>
-                  theme.palette.primary.main + "!important",
-              }}
-              onClick={handlePending}
-            >
-              Add Pending
-            </CustomButton>
+            <PreviewModal
+              open={open}
+              setOpen={setOpen}
+              markingNumber={markingNumber}
+            />
           </Grid>
         )}
       </Grid>

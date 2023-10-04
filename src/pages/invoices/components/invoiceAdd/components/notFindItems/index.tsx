@@ -14,15 +14,18 @@ import {
 } from "@mui/x-data-grid";
 import { FC, useState } from "react";
 import { Grid } from "@mui/material";
+import CropSquareIcon from "@mui/icons-material/CropSquare";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import useAppDispatch from "../../../../../../hooks/useDispatch";
 import { setInvoiceInfoDSelect } from "../../../../../../redux/slices/invoiceSlice";
 
 interface IProps {
   title: string;
+  showIcon: boolean;
+  setShowIcon: (showIcon: boolean) => void;
 }
 
-const AddTable: FC<IProps> = ({ title }: IProps) => {
+const NotFindItems: FC<IProps> = ({ title, showIcon, setShowIcon }: IProps) => {
   const columns: GridColDef[] = [
     {
       field: "actions",
@@ -57,6 +60,13 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            // icon={showIcon ? <CropSquareIcon /> : <CheckBoxIcon />}
+            icon={<CropSquareIcon />}
+            label="Select"
+            onClick={handleSelectClick(id)}
             color="inherit"
           />,
         ];
@@ -129,6 +139,16 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
+  const handleSelectClick = (id: GridRowId) => () => {
+    if (data.map[title].length > 1) {
+      const selected = data.map[title].filter((row: any) => row.rowNum === id);
+      var key = title;
+      var obj: any = {};
+      obj[key] = selected;
+      dispatch(setInvoiceInfoDSelect(obj));
+      setShowIcon(false);
+    }
+  };
   const handleRowClick = (id: any) => {
     if (data.map[title].length > 1) {
       const selected = data.map[title].filter((row: any) => row.rowNum === id);
@@ -136,6 +156,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
       var obj: any = {};
       obj[key] = selected;
       dispatch(setInvoiceInfoDSelect(obj));
+      setShowIcon(false);
     }
   };
   const handleCancelClick = (id: GridRowId) => () => {
@@ -193,4 +214,4 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
   );
 };
 
-export default AddTable;
+export default NotFindItems;

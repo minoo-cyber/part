@@ -1,19 +1,58 @@
 import { Box, FormLabel, Grid, Modal, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { wrapperBox } from "./modal.style";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import CustomInput from "../../../../../../components/input";
+import CustomButton from "../../../../../../components/button";
+import { useMutation } from "@tanstack/react-query";
+import { sendPendingService } from "../../../../../../services/pending.api";
+import useAppDispatch from "../../../../../../hooks/useDispatch";
+import { setToast } from "../../../../../../redux/slices/toastSlice";
 
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  markingNumber: string;
 }
 
-const PreviewModal: FC<IProps> = ({ open, setOpen }: IProps) => {
+const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
+  const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.invoice);
-  const handleClose = () => setOpen(false);
-  console.log(Object.values(data), "data");
+  const sendPendingQuery = useMutation(sendPendingService);
+
+  const handlePending = () => {
+    let subModels: any = [];
+    Object.values(data.map).map((item: any) => {
+      item.map((itemInfo: any) => {
+        subModels.push(itemInfo);
+      });
+    });
+    sendPendingQuery.mutate(
+      {
+        id: 0,
+        companyName: data.companyName,
+        clientName: data.clientName,
+        markingNumber: Number(markingNumber),
+        pendingInvoiceSubModels: subModels,
+      },
+      {
+        onSuccess(data) {
+          dispatch(
+            setToast({
+              open: true,
+              type: "success",
+              text: "Invoice Added To Pending Queris successfully",
+            })
+          );
+          setOpen(false);
+        },
+      }
+    );
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const columns: GridColDef[] = [
     {
       field: "rowNum",
@@ -108,6 +147,34 @@ const PreviewModal: FC<IProps> = ({ open, setOpen }: IProps) => {
             </Box>
           );
         })}
+        <Grid
+          container
+          sx={{
+            justifyContent: "center",
+            "&>div": {
+              margin: "10px",
+            },
+          }}
+        >
+          <CustomButton
+            sx={{
+              backgroundColor: (theme) =>
+                theme.palette.primary.main + "!important",
+            }}
+            onClick={handleClose}
+          >
+            Back
+          </CustomButton>
+          <CustomButton
+            onClick={handlePending}
+            sx={{
+              backgroundColor: (theme) =>
+                theme.palette.primary.main + "!important",
+            }}
+          >
+            Add Pending
+          </CustomButton>
+        </Grid>
       </Box>
     </Modal>
   );
