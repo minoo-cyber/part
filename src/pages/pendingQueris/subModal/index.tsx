@@ -1,10 +1,13 @@
 import { Box, Grid, Modal } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { wrapperBox } from "./modal.style";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 import {
   DataGrid,
+  GridActionsCellItem,
   GridColDef,
+  GridRowId,
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
@@ -14,9 +17,15 @@ interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   subData: any;
+  setModalData: any;
 }
 
-const SubModal: FC<IProps> = ({ open, setOpen, subData }: IProps) => {
+const SubModal: FC<IProps> = ({
+  open,
+  setOpen,
+  subData,
+  setModalData,
+}: IProps) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -30,6 +39,23 @@ const SubModal: FC<IProps> = ({ open, setOpen, subData }: IProps) => {
   }
 
   const columns: GridColDef[] = [
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
     {
       field: "id",
       headerName: "Id",
@@ -73,6 +99,9 @@ const SubModal: FC<IProps> = ({ open, setOpen, subData }: IProps) => {
       editable: true,
     },
   ];
+  const handleDeleteClick = (id: GridRowId) => () => {
+    setModalData(subData.filter((row: any) => row.id !== id));
+  };
 
   return (
     <Modal

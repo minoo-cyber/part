@@ -265,7 +265,12 @@ const PendingQueris = () => {
                 </Grid>
               );
             })}
-            <SubModal open={open} setOpen={setOpen} subData={modalData} />
+            <SubModal
+              open={open}
+              setOpen={setOpen}
+              subData={modalData}
+              setModalData={setModalData}
+            />
           </>
           {/* <button onClick={handleDownload}>pdf</button> */}
         </Grid>
