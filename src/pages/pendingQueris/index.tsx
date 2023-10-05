@@ -267,7 +267,7 @@ const PendingQueris = () => {
             })}
             <SubModal open={open} setOpen={setOpen} subData={modalData} />
           </>
-          <button onClick={handleDownload}>pdf</button>
+          {/* <button onClick={handleDownload}>pdf</button> */}
         </Grid>
       </Card>
     </Layout>
