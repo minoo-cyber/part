@@ -4,6 +4,8 @@ export interface IPendingParam {
   id: number;
   companyName: string;
   clientName: string;
+  createdDate?: string;
+  totalAmount?: string;
   markingNumber: number;
   pendingInvoiceSubModels?: IPendingModels[];
 }
@@ -28,3 +30,10 @@ export const getPendingService = () => axiosInstance.get("/pending");
 
 export const pendingSearchService = (param: IPendingPSearch) =>
   axiosInstance.post<IPendingParam[]>("/pending/search", param);
+
+export const pendingExportService = (batchId: number) =>
+  axiosInstance
+    .get(`/export/delivery-pocket/${batchId}`, {
+      responseType: "blob",
+    })
+    .then((data) => new Blob([data.data], { type: "pdf" }));

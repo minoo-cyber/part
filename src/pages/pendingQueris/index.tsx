@@ -3,6 +3,7 @@ import Layout from "../../components/layout";
 import {
   IPendingParam,
   getPendingService,
+  pendingExportService,
   pendingSearchService,
 } from "../../services/pending.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -70,6 +71,7 @@ const PendingQueris = () => {
   const dispatch = useAppDispatch();
   const companyQuery = useMutation(companyNameService);
   const clientQuery = useMutation(clientService);
+  const exportQuery = useMutation(pendingExportService);
   const pendingSearchQuery = useMutation(pendingSearchService);
   const [pendingData, setPendingData] = useState<IPendingParam[]>();
   const [companyName, setCompanyName] = useState<string | undefined>();
@@ -116,7 +118,7 @@ const PendingQueris = () => {
       },
       {
         onSuccess(data) {
-          if (data.data) {
+          if (data.data.length > 1) {
             setPendingData(data.data);
           } else {
             setPendingData(undefined);
@@ -136,6 +138,24 @@ const PendingQueris = () => {
   const handleOpen = (index: any) => {
     setModalData(pendingData?.[index].pendingInvoiceSubModels);
     setOpen(true);
+  };
+
+  const handleDownload = () => {
+    exportQuery.mutate(37248, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
+      },
+    });
   };
 
   return (
@@ -215,11 +235,19 @@ const PendingQueris = () => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={4} px={2} my={1}>
                     <FormLabel>Submit Date</FormLabel>
-                    <CustomInput value="" type="text" readOnly />
+                    <CustomInput
+                      value={item.createdDate}
+                      type="text"
+                      readOnly
+                    />
                   </Grid>
                   <Grid item xs={12} sm={6} md={4} px={2} my={1}>
                     <FormLabel>Total Price</FormLabel>
-                    <CustomInput value="" type="text" readOnly />
+                    <CustomInput
+                      value={item.totalAmount}
+                      type="text"
+                      readOnly
+                    />
                   </Grid>
                   <Grid
                     item
@@ -239,6 +267,7 @@ const PendingQueris = () => {
             })}
             <SubModal open={open} setOpen={setOpen} subData={modalData} />
           </>
+          <button onClick={handleDownload}>pdf</button>
         </Grid>
       </Card>
     </Layout>
