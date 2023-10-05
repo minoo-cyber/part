@@ -5,7 +5,7 @@ export interface IPendingParam {
   companyName: string;
   clientName: string;
   markingNumber: number;
-  pendingInvoiceSubModels: IPendingModels[];
+  pendingInvoiceSubModels?: IPendingModels[];
 }
 export interface IPendingModels {
   impaCode: string;
@@ -16,7 +16,15 @@ export interface IPendingModels {
   itemSell: number;
 }
 
+export interface IPendingPSearch {
+  companyName: string | undefined;
+  clientName: string | undefined;
+}
+
 export const sendPendingService = (param: IPendingParam) =>
   axiosInstance.post("/pending", param);
 
 export const getPendingService = () => axiosInstance.get("/pending");
+
+export const pendingSearchService = (param: IPendingPSearch) =>
+  axiosInstance.post<IPendingParam[]>("/pending/search", param);

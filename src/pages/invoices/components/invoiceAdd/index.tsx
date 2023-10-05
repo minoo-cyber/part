@@ -119,7 +119,6 @@ const InvoiceAdd = () => {
             setShowButton(true);
           }
           if (data?.data?.notFoundedItems.length > 0) {
-            // dispatch(setInvoiceData(data.data));
             dispatch(
               setToast({
                 open: true,

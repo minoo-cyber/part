@@ -1,7 +1,12 @@
 import { Box, FormLabel, Grid, Modal, Typography } from "@mui/material";
 import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { wrapperBox } from "./modal.style";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import CustomInput from "../../../../../../components/input";
 import CustomButton from "../../../../../../components/button";
@@ -104,6 +109,14 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
     },
   ];
 
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  }
+
   return (
     <Modal
       open={open}
@@ -141,6 +154,9 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
                     getRowId={(row) => row.rowNum}
                     columns={columns}
                     hideFooter={true}
+                    slots={{
+                      toolbar: CustomToolbar,
+                    }}
                   />
                 );
               })}

@@ -138,6 +138,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
       dispatch(setInvoiceInfoDSelect(obj));
     }
   };
+
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
