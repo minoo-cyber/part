@@ -25,7 +25,6 @@ const InvoiceAdd = () => {
   const [clientName, setClientName] = useState<string>("");
   const [clientData, setClientData] = useState<string[]>();
   const [markingNumber, setMarkingNumber] = useState<string>("0");
-  const [showButton, setShowButton] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [qtyList, setQtyList] = useState([]);
@@ -116,7 +115,6 @@ const InvoiceAdd = () => {
         onSuccess(data) {
           if (Object.keys(data?.data?.map).length !== 0) {
             dispatch(setInvoiceData(data.data));
-            setShowButton(true);
           }
           if (data?.data?.notFoundedItems.length > 0) {
             dispatch(
@@ -204,7 +202,7 @@ const InvoiceAdd = () => {
         </Grid>
       </Grid>
       <Grid container>
-        {showButton && (
+        {Object.values(data?.map).length > 0 && (
           <Grid item xs={12} sm={6} md={4} mt={4}>
             <FormLabel>Marking Number</FormLabel>
             <CustomInput
@@ -236,7 +234,7 @@ const InvoiceAdd = () => {
             );
           })}
         </Grid>
-        {showButton && (
+        {Object.values(data?.map).length > 0 && (
           <Grid
             container
             sx={{
@@ -259,6 +257,10 @@ const InvoiceAdd = () => {
               open={open}
               setOpen={setOpen}
               markingNumber={markingNumber}
+              setCompanyName={setCompanyName}
+              setClientName={setClientName}
+              setQtyList={setQtyList}
+              setItemList={setItemList}
             />
           </Grid>
         )}

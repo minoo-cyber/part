@@ -1,12 +1,7 @@
 import { Box, FormLabel, Grid, Modal, Typography } from "@mui/material";
-import { FC, SyntheticEvent, useEffect, useState } from "react";
+import { FC } from "react";
 import { wrapperBox } from "./modal.style";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import CustomInput from "../../../../../../components/input";
 import CustomButton from "../../../../../../components/button";
@@ -14,14 +9,27 @@ import { useMutation } from "@tanstack/react-query";
 import { sendPendingService } from "../../../../../../services/pending.api";
 import useAppDispatch from "../../../../../../hooks/useDispatch";
 import { setToast } from "../../../../../../redux/slices/toastSlice";
+import { setInvoiceClearData } from "../../../../../../redux/slices/invoiceSlice";
 
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  setCompanyName: any;
+  setClientName: any;
+  setQtyList: any;
+  setItemList: any;
   markingNumber: string;
 }
 
-const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
+const PreviewModal: FC<IProps> = ({
+  open,
+  setOpen,
+  markingNumber,
+  setCompanyName,
+  setClientName,
+  setQtyList,
+  setItemList,
+}: IProps) => {
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.invoice);
   const sendPendingQuery = useMutation(sendPendingService);
@@ -43,6 +51,11 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
       },
       {
         onSuccess(data) {
+          dispatch(setInvoiceClearData());
+          setCompanyName("");
+          setClientName("");
+          setQtyList([]);
+          setItemList([]);
           dispatch(
             setToast({
               open: true,
@@ -58,6 +71,7 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   const columns: GridColDef[] = [
     {
       field: "rowNum",
@@ -109,14 +123,6 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
     },
   ];
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarExport />
-      </GridToolbarContainer>
-    );
-  }
-
   return (
     <Modal
       open={open}
@@ -154,9 +160,6 @@ const PreviewModal: FC<IProps> = ({ open, setOpen, markingNumber }: IProps) => {
                     getRowId={(row) => row.rowNum}
                     columns={columns}
                     hideFooter={true}
-                    slots={{
-                      toolbar: CustomToolbar,
-                    }}
                   />
                 );
               })}

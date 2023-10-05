@@ -1,13 +1,5 @@
-import {
-  useEffect,
-  useState,
-  SyntheticEvent,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
+import { useEffect, useState, SyntheticEvent } from "react";
 import Layout from "../../components/layout";
-import Card from "../../components/card";
 import {
   IPendingParam,
   getPendingService,
@@ -23,6 +15,8 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import SubModal from "./subModal";
 import useAppDispatch from "../../hooks/useDispatch";
 import { setToast } from "../../redux/slices/toastSlice";
+import Card from "../../components/card";
+import { wrapperBox } from "./pending.style";
 
 const PendingQueris = () => {
   const columns: GridColDef[] = [
@@ -42,34 +36,33 @@ const PendingQueris = () => {
       field: "itemDesc",
       headerName: "Item Description",
       width: 400,
-      editable: false,
+      editable: true,
     },
     {
       field: "extraDescription",
       headerName: "Text",
       width: 200,
-      editable: false,
+      editable: true,
     },
     {
       field: "qty",
       headerName: "Qty",
       width: 90,
-      editable: false,
+      editable: true,
     },
     {
       field: "pkg",
       headerName: "Pkg",
       width: 90,
-      editable: false,
+      editable: true,
     },
     {
       field: "itemSell",
       headerName: "Sell",
       width: 90,
-      editable: false,
+      editable: true,
     },
   ];
-
   const getPendingQuery = useQuery({
     queryKey: ["getPending"],
     queryFn: getPendingService,
@@ -78,15 +71,16 @@ const PendingQueris = () => {
   const companyQuery = useMutation(companyNameService);
   const clientQuery = useMutation(clientService);
   const pendingSearchQuery = useMutation(pendingSearchService);
-  const [pendingData, setPendingData] = useState<IPendingParam>();
+  const [pendingData, setPendingData] = useState<IPendingParam[]>();
   const [companyName, setCompanyName] = useState<string | undefined>();
   const [companyData, setCompanyData] = useState<string[]>();
   const [clientName, setClientName] = useState<string>();
   const [clientData, setClientData] = useState<string[]>();
   const [open, setOpen] = useState(false);
+  const [modalData, setModalData] = useState<any>();
 
   useEffect(() => {
-    setPendingData(getPendingQuery?.data?.data?.[0]);
+    setPendingData(getPendingQuery?.data?.data);
   }, [getPendingQuery?.data?.data]);
 
   useEffect(() => {
@@ -122,8 +116,8 @@ const PendingQueris = () => {
       },
       {
         onSuccess(data) {
-          if (data.data?.[0]) {
-            setPendingData(data.data?.[0]);
+          if (data.data) {
+            setPendingData(data.data);
           } else {
             setPendingData(undefined);
             dispatch(
@@ -139,15 +133,9 @@ const PendingQueris = () => {
     );
   };
 
-  const handleRowClick = (id: any) => {
+  const handleOpen = (index: any) => {
+    setModalData(pendingData?.[index].pendingInvoiceSubModels);
     setOpen(true);
-    // if (data.map[title].length > 1) {
-    //   const selected = data.map[title].filter((row: any) => row.rowNum === id);
-    //   var key = title;
-    //   var obj: any = {};
-    //   obj[key] = selected;
-    //   dispatch(setInvoiceInfoDSelect(obj));
-    // }
   };
 
   return (
@@ -204,50 +192,53 @@ const PendingQueris = () => {
             </CustomButton>
           </Grid>
         </Grid>
-        <Grid container mt={3}>
-          <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-            <FormLabel>Company Name</FormLabel>
-            <CustomInput
-              value={pendingData?.companyName ? pendingData?.companyName : ""}
-              type="text"
-              readOnly
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-            <FormLabel>Client Name</FormLabel>
-            <CustomInput
-              value={pendingData?.clientName ? pendingData?.clientName : ""}
-              type="text"
-              readOnly
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-            <FormLabel>Marking Number</FormLabel>
-            <CustomInput
-              value={
-                pendingData?.markingNumber ? pendingData?.markingNumber : 0
-              }
-              type="text"
-              readOnly
-            />
-          </Grid>
-        </Grid>
         <Grid mt={3}>
-          <DataGrid
-            rows={
-              pendingData?.pendingInvoiceSubModels
-                ? pendingData?.pendingInvoiceSubModels
-                : []
-            }
-            columns={columns}
-            pageSizeOptions={[5]}
-            disableRowSelectionOnClick
-            onRowClick={(rows) => {
-              handleRowClick(rows.id);
-            }}
-          />
-
-          {/* <SubModal open={open} setOpen={setOpen} /> */}
+          <>
+            {pendingData?.map((item, index) => {
+              return (
+                <Grid container sx={wrapperBox}>
+                  <Grid item xs={12} sm={6} md={4} px={2} my={1}>
+                    <FormLabel>Id</FormLabel>
+                    <CustomInput value={item.id} type="text" readOnly />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={4} px={2} my={1}>
+                    <FormLabel>Company Name</FormLabel>
+                    <CustomInput
+                      value={item.companyName}
+                      type="text"
+                      readOnly
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={4} px={2} my={1}>
+                    <FormLabel>Client Name</FormLabel>
+                    <CustomInput value={item.clientName} type="text" readOnly />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={4} px={2} my={1}>
+                    <FormLabel>Submit Date</FormLabel>
+                    <CustomInput value="" type="text" readOnly />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={4} px={2} my={1}>
+                    <FormLabel>Total Price</FormLabel>
+                    <CustomInput value="" type="text" readOnly />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    px={2}
+                    my={1}
+                    sx={{ textAlign: "right" }}
+                  >
+                    <CustomButton onClick={() => handleOpen(index)}>
+                      Details
+                    </CustomButton>
+                  </Grid>
+                </Grid>
+              );
+            })}
+            <SubModal open={open} setOpen={setOpen} subData={modalData} />
+          </>
         </Grid>
       </Card>
     </Layout>
