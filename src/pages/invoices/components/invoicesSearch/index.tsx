@@ -1,4 +1,4 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useEffect } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -15,6 +15,8 @@ import { useState } from "react";
 import CustomButton from "../../../../components/button";
 import {
   ISearchRes,
+  clientService,
+  companyNameService,
   invoiceSearchService,
 } from "../../../../services/invoice.api";
 import { useMutation } from "@tanstack/react-query";
@@ -26,10 +28,40 @@ import InvoiceTable from "./components/table";
 const InvoicesSearch = () => {
   const dispatch = useAppDispatch();
   const [batchId, setBatchId] = useState<string>("");
+  const [companyName, setCompanyName] = useState<string | undefined>("");
+  const [companyData, setCompanyData] = useState<string[]>();
+  const [clientName, setClientName] = useState<string>("");
+  const [clientData, setClientData] = useState<string[]>();
   const [data, setData] = useState<ISearchRes>();
   const [loading, setLoading] = useState<boolean>(false);
   const searchQuery = useMutation(invoiceSearchService);
   const [expanded, setExpanded] = useState<string | false>("panel1");
+  const companyQuery = useMutation(companyNameService);
+  const clientQuery = useMutation(clientService);
+
+  useEffect(() => {
+    if (companyName) {
+      clientQuery.mutate(companyName, {
+        onSuccess(data) {
+          if (data.data) {
+            setClientData(data.data);
+          }
+        },
+      });
+    }
+  }, [companyName]);
+
+  useEffect(() => {
+    if (companyName && companyName.length >= 3) {
+      companyQuery.mutate(companyName, {
+        onSuccess(data) {
+          if (data.data) {
+            setCompanyData(data.data);
+          }
+        },
+      });
+    }
+  }, [companyName]);
 
   const handleChange =
     (panel: string) => (event: SyntheticEvent, newExpanded: boolean) => {
@@ -42,8 +74,8 @@ const InvoicesSearch = () => {
     searchQuery.mutate(
       {
         batchId: Number(batchId),
-        clientName: "",
-        companyName: "",
+        clientName: clientName,
+        companyName: companyName,
       },
       {
         onSuccess(data) {
@@ -79,20 +111,40 @@ const InvoicesSearch = () => {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-          <FormLabel>Client Name Search</FormLabel>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <FormLabel>Company Name Search</FormLabel>
           <CustomAutocomplete
-            value=""
-            options={[]}
+            value={companyName}
+            onInputChange={(event: object, value: string, reason: string) => {
+              setCompanyName(value);
+            }}
+            options={
+              companyData
+                ? companyData.map((item, index) => ({
+                    label: item,
+                    id: index,
+                  }))
+                : []
+            }
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
-          <FormLabel>Company Search</FormLabel>
+        <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <FormLabel>Client Name Search</FormLabel>
           <CustomAutocomplete
-            value=""
-            options={[]}
+            value={clientName}
+            onInputChange={(event: object, value: string, reason: string) => {
+              setClientName(value);
+            }}
+            options={
+              clientData
+                ? clientData.map((item, index) => ({
+                    label: item,
+                    id: index,
+                  }))
+                : []
+            }
             renderInput={(params) => <TextField {...params} />}
             sx={{ mt: 1.3 }}
           />

@@ -3,7 +3,9 @@ import Layout from "../../components/layout";
 import {
   IPendingParam,
   getPendingService,
-  pendingExportService,
+  pendingExportDelService,
+  pendingExportPickService,
+  pendingExportPlainService,
   pendingSearchService,
 } from "../../services/pending.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,6 +20,7 @@ import useAppDispatch from "../../hooks/useDispatch";
 import { setToast } from "../../redux/slices/toastSlice";
 import Card from "../../components/card";
 import { wrapperBox } from "./pending.style";
+import { setPendingSubData } from "../../redux/slices/pendingSlice";
 
 const PendingQueris = () => {
   const columns: GridColDef[] = [
@@ -71,7 +74,9 @@ const PendingQueris = () => {
   const dispatch = useAppDispatch();
   const companyQuery = useMutation(companyNameService);
   const clientQuery = useMutation(clientService);
-  const exportQuery = useMutation(pendingExportService);
+  const exportDelQuery = useMutation(pendingExportDelService);
+  const exportPlainQuery = useMutation(pendingExportPlainService);
+  const exportPickQuery = useMutation(pendingExportPickService);
   const pendingSearchQuery = useMutation(pendingSearchService);
   const [pendingData, setPendingData] = useState<IPendingParam[]>();
   const [companyName, setCompanyName] = useState<string | undefined>();
@@ -79,7 +84,7 @@ const PendingQueris = () => {
   const [clientName, setClientName] = useState<string>();
   const [clientData, setClientData] = useState<string[]>();
   const [open, setOpen] = useState(false);
-  const [modalData, setModalData] = useState<any>();
+  const [modaldata, setModalData] = useState<any>();
 
   useEffect(() => {
     setPendingData(getPendingQuery?.data?.data);
@@ -136,12 +141,49 @@ const PendingQueris = () => {
   };
 
   const handleOpen = (index: any) => {
-    setModalData(pendingData?.[index].pendingInvoiceSubModels);
+    setModalData(pendingData?.[index]);
+    //@ts-ignore
+    dispatch(setPendingSubData(pendingData?.[index]?.pendingInvoiceSubModels));
     setOpen(true);
   };
 
-  const handleDownload = () => {
-    exportQuery.mutate(37248, {
+  const handleDownloadDel = () => {
+    exportDelQuery.mutate(37248, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
+      },
+    });
+  };
+  const handleDownloadPlain = () => {
+    exportPlainQuery.mutate(37248, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
+      },
+    });
+  };
+
+  const handleDownloadPick = () => {
+    exportPickQuery.mutate(37248, {
       onSuccess(data) {
         if (data) {
           //@ts-ignore
@@ -268,11 +310,13 @@ const PendingQueris = () => {
             <SubModal
               open={open}
               setOpen={setOpen}
-              subData={modalData}
+              data={modaldata}
               setModalData={setModalData}
             />
           </>
-          {/* <button onClick={handleDownload}>pdf</button> */}
+          {/* <button onClick={handleDownloadDel}>pdf1</button>
+          <button onClick={handleDownloadPlain}>pdf2</button>
+          <button onClick={handleDownloadPick}>pdf3</button> */}
         </Grid>
       </Card>
     </Layout>

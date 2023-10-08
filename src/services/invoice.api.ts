@@ -3,7 +3,7 @@ import axiosInstance from "../config/axios-instance";
 interface ISearchParam {
   batchId: number;
   clientName: string;
-  companyName: string;
+  companyName: string | undefined;
 }
 export interface ISearchRes {
   batchNumber: number;
@@ -46,6 +46,17 @@ export interface IInvoiceAddModels {
   qty: number;
 }
 
+export interface IAmountParam {
+  impaCode: string;
+  batchId: number;
+}
+
+export interface IAmountRes {
+  itemDesc: string;
+  pkg: string;
+  impaCode: string;
+  itemSell: number;
+}
 export const invoiceSearchService = (param: ISearchParam) =>
   axiosInstance.post<ISearchRes[]>("/invoice/search", param);
 
@@ -57,3 +68,9 @@ export const clientService = (companyName: string) =>
 
 export const addInvoiceService = (param: IAddParam) =>
   axiosInstance.post("/invoice/send-invoices", param);
+
+export const itemDesService = (item: string) =>
+  axiosInstance.get(`/invoice/item?item=${item}`);
+
+export const itemAmountService = (param: IAmountParam) =>
+  axiosInstance.post<IAmountRes>("/invoice/item-amount", param);

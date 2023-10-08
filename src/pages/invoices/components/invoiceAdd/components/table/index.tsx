@@ -164,6 +164,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
     dispatch(setInvoiceInfoDSelect(obj));
     return updatedRow;
   };
+
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };

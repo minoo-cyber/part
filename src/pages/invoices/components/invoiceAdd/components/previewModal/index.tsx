@@ -68,6 +68,7 @@ const PreviewModal: FC<IProps> = ({
       }
     );
   };
+
   const handleClose = () => {
     setOpen(false);
   };

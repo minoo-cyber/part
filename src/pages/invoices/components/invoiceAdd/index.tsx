@@ -7,15 +7,18 @@ import {
   addInvoiceService,
   clientService,
   companyNameService,
+  itemDesService,
 } from "../../../../services/invoice.api";
 import { wrapperText } from "./add.style";
-import AddTable from "./components/table";
 import useAppDispatch from "../../../../hooks/useDispatch";
 import { setInvoiceData } from "../../../../redux/slices/invoiceSlice";
 import useAppSelector from "../../../../hooks/useSelector";
 import { setToast } from "../../../../redux/slices/toastSlice";
 import PreviewModal from "./components/previewModal";
 import CustomInput from "../../../../components/input";
+import NotFindITable from "./components/notFindITable";
+import AddTable from "./components/table";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 const InvoiceAdd = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +31,10 @@ const InvoiceAdd = () => {
   const [open, setOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [qtyList, setQtyList] = useState([]);
+  const [itemDes, setItemDes] = useState<string | undefined>("");
+  const [itemDesData, setItemDesData] = useState<string[]>();
+  const [filterData, setFilterData] = useState<string[]>();
+  const itemDesQuery = useMutation(itemDesService);
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
   const clientQuery = useMutation(clientService);
@@ -113,9 +120,9 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
-          if (Object.keys(data?.data?.map).length !== 0) {
-            dispatch(setInvoiceData(data.data));
-          }
+          // if (Object.keys(data?.data?.map).length !== 0) {
+          dispatch(setInvoiceData(data.data));
+          // }
           if (data?.data?.notFoundedItems.length > 0) {
             dispatch(
               setToast({
@@ -129,6 +136,70 @@ const InvoiceAdd = () => {
       }
     );
   };
+  useEffect(() => {
+    if (itemDes && itemDes.length >= 3) {
+      itemDesQuery.mutate(itemDes, {
+        onSuccess(data) {
+          if (data.data) {
+            setItemDesData(data.data);
+            setFilterData(
+              data.data?.filter((item: any) => item.itemDesc === itemDes)
+            );
+          }
+        },
+      });
+    }
+  }, [itemDes, data.data]);
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "Id",
+      width: 50,
+      editable: false,
+    },
+    {
+      field: "impaCode",
+      headerName: "Impa Code",
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "itemDesc",
+      headerName: "Item Description",
+      width: 400,
+      editable: true,
+    },
+    {
+      field: "extraText",
+      headerName: "Extra Text",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "pkg",
+      headerName: "pkg",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "qty",
+      headerName: "Qty",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "itemSell",
+      headerName: "Item Sell",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+      width: 110,
+      editable: true,
+    },
+  ];
 
   return (
     <>
@@ -234,6 +305,59 @@ const InvoiceAdd = () => {
             );
           })}
         </Grid>
+        {/* <Grid item xs={12}>
+          {data?.notFoundedItems &&
+            data.notFoundedItems.map((item: any, index: any) => {
+              return (
+                <Box key={index}>
+                  <Typography
+                    variant="h6"
+                    mb={1}
+                    mt={3}
+                    sx={{
+                      color: (theme) =>
+                        theme.palette.primary.main + "!important",
+                    }}
+                  >
+                    {item.itemDesc}
+                  </Typography>
+                  <CustomAutocomplete
+                    value={itemDes}
+                    onInputChange={(
+                      event: object,
+                      value: string,
+                      reason: string
+                    ) => {
+                      setItemDes(value);
+                    }}
+                    options={
+                      itemDesData
+                        ? itemDesData.map((item, index) => ({
+                            //@ts-ignore
+                            label: item.itemDesc,
+                            //@ts-ignore
+                            id: item.id,
+                          }))
+                        : []
+                    }
+                    renderInput={(params) => <TextField {...params} />}
+                    sx={{ mt: 1.3 }}
+                  />{" "}
+                  <DataGrid
+                    rows={filterData ? filterData : []}
+                    columns={columns}
+                    editMode="row"
+                    hideFooter={true}
+                  /> */}
+        {/* <NotFindITable
+                    title={item.itemDesc}
+                    notFindData={item}
+                    index={index}
+                  /> */}
+        {/* </Box>
+              );
+            })}
+        </Grid> */}
         {Object.values(data?.map).length > 0 && (
           <Grid
             container
