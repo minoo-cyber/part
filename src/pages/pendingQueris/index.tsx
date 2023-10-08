@@ -3,9 +3,6 @@ import Layout from "../../components/layout";
 import {
   IPendingParam,
   getPendingService,
-  pendingExportDelService,
-  pendingExportPickService,
-  pendingExportPlainService,
   pendingSearchService,
 } from "../../services/pending.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,7 +11,7 @@ import CustomAutocomplete from "../../components/autocomplete";
 import { clientService, companyNameService } from "../../services/invoice.api";
 import CustomButton from "../../components/button";
 import CustomInput from "../../components/input";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import SubModal from "./subModal";
 import useAppDispatch from "../../hooks/useDispatch";
 import { setToast } from "../../redux/slices/toastSlice";
@@ -74,9 +71,6 @@ const PendingQueris = () => {
   const dispatch = useAppDispatch();
   const companyQuery = useMutation(companyNameService);
   const clientQuery = useMutation(clientService);
-  const exportDelQuery = useMutation(pendingExportDelService);
-  const exportPlainQuery = useMutation(pendingExportPlainService);
-  const exportPickQuery = useMutation(pendingExportPickService);
   const pendingSearchQuery = useMutation(pendingSearchService);
   const [pendingData, setPendingData] = useState<IPendingParam[]>();
   const [companyName, setCompanyName] = useState<string | undefined>();
@@ -145,59 +139,6 @@ const PendingQueris = () => {
     //@ts-ignore
     dispatch(setPendingSubData(pendingData?.[index]?.pendingInvoiceSubModels));
     setOpen(true);
-  };
-
-  const handleDownloadDel = () => {
-    exportDelQuery.mutate(37248, {
-      onSuccess(data) {
-        if (data) {
-          //@ts-ignore
-          function download(url, filename) {
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(data);
-            link.download = "file";
-            link.click();
-          }
-          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
-        } else {
-        }
-      },
-    });
-  };
-  const handleDownloadPlain = () => {
-    exportPlainQuery.mutate(37248, {
-      onSuccess(data) {
-        if (data) {
-          //@ts-ignore
-          function download(url, filename) {
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(data);
-            link.download = "file";
-            link.click();
-          }
-          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
-        } else {
-        }
-      },
-    });
-  };
-
-  const handleDownloadPick = () => {
-    exportPickQuery.mutate(37248, {
-      onSuccess(data) {
-        if (data) {
-          //@ts-ignore
-          function download(url, filename) {
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(data);
-            link.download = "file";
-            link.click();
-          }
-          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
-        } else {
-        }
-      },
-    });
   };
 
   return (
@@ -307,16 +248,8 @@ const PendingQueris = () => {
                 </Grid>
               );
             })}
-            <SubModal
-              open={open}
-              setOpen={setOpen}
-              data={modaldata}
-              setModalData={setModalData}
-            />
+            <SubModal open={open} setOpen={setOpen} data={modaldata} />
           </>
-          {/* <button onClick={handleDownloadDel}>pdf1</button>
-          <button onClick={handleDownloadPlain}>pdf2</button>
-          <button onClick={handleDownloadPick}>pdf3</button> */}
         </Grid>
       </Card>
     </Layout>

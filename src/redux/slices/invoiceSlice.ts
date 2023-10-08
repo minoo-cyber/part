@@ -16,8 +16,14 @@ export const invoiceSlice = createSlice({
     setInvoiceData: (state, action: PayloadAction) => {
       state.data = action.payload;
     },
-    setInvoiceInfoDSelect: (state, action: PayloadAction) => {
+    setInvoiceInfoSelect: (state, action: PayloadAction) => {
       state.data.map = Object.assign(state.data.map, action.payload);
+    },
+    setInvoiceNotFind: (state, action: PayloadAction) => {
+      state.data.notFoundedItems = Object.assign(
+        state.data.notFoundedItems,
+        action.payload
+      );
     },
     setInvoiceClearData: (state) => {
       state.data = [];
@@ -25,7 +31,11 @@ export const invoiceSlice = createSlice({
   },
 });
 
-export const { setInvoiceData, setInvoiceInfoDSelect, setInvoiceClearData } =
-  invoiceSlice.actions;
+export const {
+  setInvoiceData,
+  setInvoiceInfoSelect,
+  setInvoiceClearData,
+  setInvoiceNotFind,
+} = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

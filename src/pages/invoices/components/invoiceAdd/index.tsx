@@ -11,12 +11,14 @@ import {
 } from "../../../../services/invoice.api";
 import { wrapperText } from "./add.style";
 import useAppDispatch from "../../../../hooks/useDispatch";
-import { setInvoiceData } from "../../../../redux/slices/invoiceSlice";
+import {
+  setInvoiceData,
+  setInvoiceNotFind,
+} from "../../../../redux/slices/invoiceSlice";
 import useAppSelector from "../../../../hooks/useSelector";
 import { setToast } from "../../../../redux/slices/toastSlice";
 import PreviewModal from "./components/previewModal";
 import CustomInput from "../../../../components/input";
-import NotFindITable from "./components/notFindITable";
 import AddTable from "./components/table";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
@@ -142,14 +144,21 @@ const InvoiceAdd = () => {
         onSuccess(data) {
           if (data.data) {
             setItemDesData(data.data);
-            setFilterData(
-              data.data?.filter((item: any) => item.itemDesc === itemDes)
+            dispatch(
+              setInvoiceNotFind(
+                data.data?.filter((item: any) => item.itemDesc === itemDes)
+              )
             );
           }
         },
       });
     }
   }, [itemDes, data.data]);
+
+  const handleChange = (e: SyntheticEvent<Element, Event>, value: string) => {
+    setItemDes(value);
+  };
+
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -323,12 +332,9 @@ const InvoiceAdd = () => {
                   </Typography>
                   <CustomAutocomplete
                     value={itemDes}
-                    onInputChange={(
-                      event: object,
-                      value: string,
-                      reason: string
-                    ) => {
-                      setItemDes(value);
+                    onInputChange={(e, value) => {
+                      //@ts-ignore
+                      handleChange(e, value);
                     }}
                     options={
                       itemDesData
@@ -344,7 +350,7 @@ const InvoiceAdd = () => {
                     sx={{ mt: 1.3 }}
                   />{" "}
                   <DataGrid
-                    rows={filterData ? filterData : []}
+                    rows={[item] ? [item] : []}
                     columns={columns}
                     editMode="row"
                     hideFooter={true}

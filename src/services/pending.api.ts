@@ -54,21 +54,21 @@ export const pendingSearchService = (param: IPendingSearch) =>
 export const pendingSaveService = (param: ISave) =>
   axiosInstance.post("/invoice/save", param);
 
-export const pendingExportDelService = (batchId: number) =>
+export const pendingExportDelService = (batchId: number | undefined) =>
   axiosInstance
     .get(`/export/delivery-pocket/${batchId}`, {
       responseType: "blob",
     })
     .then((data) => new Blob([data.data], { type: data.data.type }));
 
-export const pendingExportPlainService = (batchId: number) =>
+export const pendingExportPlainService = (batchId: number | undefined) =>
   axiosInstance
     .get(`/export/plain-paper/${batchId}`, {
       responseType: "blob",
     })
     .then((data) => new Blob([data.data], { type: data.data.type }));
 
-export const pendingExportPickService = (batchId: number) =>
+export const pendingExportPickService = (batchId: number | undefined) =>
   axiosInstance
     .get(`/export/pick-report/${batchId}`, {
       responseType: "blob",

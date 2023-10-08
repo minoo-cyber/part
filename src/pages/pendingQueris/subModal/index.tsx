@@ -17,37 +17,32 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import CustomButton from "../../../components/button";
-import { useMutation } from "@tanstack/react-query";
 import {
   pendingExportPickService,
+  pendingExportPlainService,
   pendingSaveService,
 } from "../../../services/pending.api";
+import CustomButton from "../../../components/button";
+import { useMutation } from "@tanstack/react-query";
 import CustomInput from "../../../components/input";
 import useAppSelector from "../../../hooks/useSelector";
-import {
-  setPendingEdit,
-  setPendingSubData,
-} from "../../../redux/slices/pendingSlice";
+import { setPendingSubData } from "../../../redux/slices/pendingSlice";
 import useAppDispatch from "../../../hooks/useDispatch";
 import { setToast } from "../../../redux/slices/toastSlice";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   data: any;
-  setModalData: any;
 }
 
-const SubModal: FC<IProps> = ({
-  open,
-  setOpen,
-  data,
-  setModalData,
-}: IProps) => {
+const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   const dispatch = useAppDispatch();
   const { pendingData } = useAppSelector((state) => state.pending);
   const exportDelQuery = useMutation(pendingExportPickService);
+  const exportPlainQuery = useMutation(pendingExportPlainService);
+  const exportPickQuery = useMutation(pendingExportPickService);
   const saveQuery = useMutation(pendingSaveService);
   const [dateEntered, setDateEntered] = useState<string>("");
   const [departDate, setDepartDate] = useState<string>("");
@@ -56,6 +51,7 @@ const SubModal: FC<IProps> = ({
   const [category, setCategory] = useState<string>("");
   const [markup, setMarkup] = useState<string>("");
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [batchId, setBatchId] = useState<number>();
 
   const handleClose = () => {
     setOpen(false);
@@ -208,6 +204,7 @@ const SubModal: FC<IProps> = ({
     };
     saveQuery.mutate(model, {
       onSuccess(data) {
+        setBatchId(data.data);
         dispatch(
           setToast({
             open: true,
@@ -215,7 +212,59 @@ const SubModal: FC<IProps> = ({
             text: "Invoices Saved Successfully",
           })
         );
-        setOpen(false);
+      },
+    });
+  };
+
+  const handleDownloadDel = () => {
+    exportDelQuery.mutate(batchId, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
+      },
+    });
+  };
+  const handleDownloadPlain = () => {
+    exportPlainQuery.mutate(batchId, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
+      },
+    });
+  };
+
+  const handleDownloadPick = () => {
+    exportPickQuery.mutate(batchId, {
+      onSuccess(data) {
+        if (data) {
+          //@ts-ignore
+          function download(url, filename) {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(data);
+            link.download = "file";
+            link.click();
+          }
+          download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
+        } else {
+        }
       },
     });
   };
@@ -339,6 +388,34 @@ const SubModal: FC<IProps> = ({
               Finalize
             </CustomButton>
           </Grid>
+          {batchId && (
+            <Grid
+              container
+              sx={{
+                justifyContent: "center",
+                "&>div": {
+                  margin: "10px",
+                },
+                "& button": {
+                  border: "1px solid #0678a2",
+                  color: "#0678a2",
+                  "& svg": {
+                    marginRight: "5px",
+                  },
+                },
+              }}
+            >
+              <CustomButton onClick={handleDownloadDel}>
+                <CloudDownloadIcon /> Delivery Pocket
+              </CustomButton>
+              <CustomButton onClick={handleDownloadPlain}>
+                <CloudDownloadIcon /> Plain Paper
+              </CustomButton>
+              <CustomButton onClick={handleDownloadPick}>
+                <CloudDownloadIcon /> Pick Report
+              </CustomButton>
+            </Grid>
+          )}
         </Grid>
       </Box>
     </Modal>

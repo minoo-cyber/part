@@ -16,7 +16,7 @@ import { FC, useState } from "react";
 import { Grid } from "@mui/material";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import useAppDispatch from "../../../../../../hooks/useDispatch";
-import { setInvoiceInfoDSelect } from "../../../../../../redux/slices/invoiceSlice";
+import { setInvoiceInfoSelect } from "../../../../../../redux/slices/invoiceSlice";
 
 interface IProps {
   title: string;
@@ -135,7 +135,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
       var key = title;
       var obj: any = {};
       obj[key] = selected;
-      dispatch(setInvoiceInfoDSelect(obj));
+      dispatch(setInvoiceInfoSelect(obj));
     }
   };
 
@@ -148,7 +148,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
     const editedRow = data.map[title].find((row: any) => row.rowNum !== id);
     if (editedRow?.isNew) {
       dispatch(
-        setInvoiceInfoDSelect(
+        setInvoiceInfoSelect(
           data.map[title].filter((row: any) => row.rowNum !== id)
         )
       );
@@ -161,7 +161,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
     var key = title;
     var obj: any = {};
     obj[key] = test;
-    dispatch(setInvoiceInfoDSelect(obj));
+    dispatch(setInvoiceInfoSelect(obj));
     return updatedRow;
   };
 
