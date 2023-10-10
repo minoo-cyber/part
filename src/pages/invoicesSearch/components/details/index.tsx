@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { FormLabel, Grid } from "@mui/material";
-import { ISearchRes } from "../../../../../../services/invoice.api";
-import CustomInput from "../../../../../../components/input";
+import { ISearchRes } from "../../../../services/invoice.api";
+import CustomInput from "../../../../components/input";
 
 interface IProps {
   data?: ISearchRes;

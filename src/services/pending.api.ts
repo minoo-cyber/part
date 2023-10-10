@@ -1,4 +1,5 @@
 import axiosInstance from "../config/axios-instance";
+import dayjs, { Dayjs } from "dayjs";
 
 export interface IPendingParam {
   id: number;
@@ -25,8 +26,8 @@ export interface IPendingSearch {
 export interface ISave {
   clientName: string;
   companyName: string;
-  dateEntered: string;
-  departDate: string;
+  dateEntered: Dayjs | null;
+  departDate: Dayjs | null;
   port: string;
   invoiceNumber: string;
   category: string;
@@ -53,6 +54,9 @@ export const pendingSearchService = (param: IPendingSearch) =>
 
 export const pendingSaveService = (param: ISave) =>
   axiosInstance.post("/invoice/save", param);
+
+export const portService = (name: string) =>
+  axiosInstance.get<string[]>(`/port?name=${name}`);
 
 export const pendingExportDelService = (batchId: number | undefined) =>
   axiosInstance

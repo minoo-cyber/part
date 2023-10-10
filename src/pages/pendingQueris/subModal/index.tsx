@@ -1,5 +1,14 @@
-import { Box, FormLabel, Grid, Modal } from "@mui/material";
-import { FC, useState, SyntheticEvent } from "react";
+import {
+  Box,
+  FormLabel,
+  Grid,
+  InputLabel,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { FC, useState, SyntheticEvent, useEffect } from "react";
 import { wrapperBox } from "./modal.style";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
@@ -18,9 +27,11 @@ import {
   GridToolbarExport,
 } from "@mui/x-data-grid";
 import {
+  pendingExportDelService,
   pendingExportPickService,
   pendingExportPlainService,
   pendingSaveService,
+  portService,
 } from "../../../services/pending.api";
 import CustomButton from "../../../components/button";
 import { useMutation } from "@tanstack/react-query";
@@ -30,6 +41,12 @@ import { setPendingSubData } from "../../../redux/slices/pendingSlice";
 import useAppDispatch from "../../../hooks/useDispatch";
 import { setToast } from "../../../redux/slices/toastSlice";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import CustomAutocomplete from "../../../components/autocomplete";
 
 interface IProps {
   open: boolean;
@@ -40,22 +57,39 @@ interface IProps {
 const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   const dispatch = useAppDispatch();
   const { pendingData } = useAppSelector((state) => state.pending);
-  const exportDelQuery = useMutation(pendingExportPickService);
+  const exportDelQuery = useMutation(pendingExportDelService);
   const exportPlainQuery = useMutation(pendingExportPlainService);
   const exportPickQuery = useMutation(pendingExportPickService);
   const saveQuery = useMutation(pendingSaveService);
-  const [dateEntered, setDateEntered] = useState<string>("");
-  const [departDate, setDepartDate] = useState<string>("");
+  const portQuery = useMutation(portService);
+  const [dateEntered, setDateEntered] = useState<Dayjs | null>(
+    dayjs(new Date())
+  );
+  const [departDate, setDepartDate] = useState<Dayjs | null>(dayjs(new Date()));
   const [port, setPort] = useState<string>("");
+  const [porttData, setPortData] = useState<string[]>();
   const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [markup, setMarkup] = useState<string>("");
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [batchId, setBatchId] = useState<number>();
+  const [batchId, setBatchId] = useState<string>("");
+  const [resBatchId, setResBatchId] = useState<number>();
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (port && port.length >= 3) {
+      portQuery.mutate(port, {
+        onSuccess(data) {
+          if (data.data) {
+            setPortData(data.data);
+          }
+        },
+      });
+    }
+  }, [port]);
 
   function CustomToolbar() {
     return (
@@ -192,6 +226,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   const handleSave = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const model = {
+      pendingId: data?.id,
       clientName: data?.clientName,
       companyName: data?.companyName,
       dateEntered: dateEntered,
@@ -199,12 +234,13 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
       port: port,
       invoiceNumber: invoiceNumber,
       category: category,
-      markup: markup,
+      markup: data?.markingNumber,
       subSaveModels: pendingData,
     };
+    console.log(model, "model");
     saveQuery.mutate(model, {
       onSuccess(data) {
-        setBatchId(data.data);
+        setResBatchId(data.data);
         dispatch(
           setToast({
             open: true,
@@ -217,14 +253,14 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   };
 
   const handleDownloadDel = () => {
-    exportDelQuery.mutate(batchId, {
+    exportDelQuery.mutate(resBatchId, {
       onSuccess(data) {
         if (data) {
           //@ts-ignore
           function download(url, filename) {
             const link = document.createElement("a");
             link.href = URL.createObjectURL(data);
-            link.download = "file";
+            link.download = `Delivery Docket ${resBatchId}`;
             link.click();
           }
           download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
@@ -233,15 +269,16 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
       },
     });
   };
+
   const handleDownloadPlain = () => {
-    exportPlainQuery.mutate(batchId, {
+    exportPlainQuery.mutate(resBatchId, {
       onSuccess(data) {
         if (data) {
           //@ts-ignore
           function download(url, filename) {
             const link = document.createElement("a");
             link.href = URL.createObjectURL(data);
-            link.download = "file";
+            link.download = `Plain Paper ${resBatchId}`;
             link.click();
           }
           download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
@@ -252,14 +289,14 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   };
 
   const handleDownloadPick = () => {
-    exportPickQuery.mutate(batchId, {
+    exportPickQuery.mutate(resBatchId, {
       onSuccess(data) {
         if (data) {
           //@ts-ignore
           function download(url, filename) {
             const link = document.createElement("a");
             link.href = URL.createObjectURL(data);
-            link.download = "file";
+            link.download = `Pick Report ${resBatchId}`;
             link.click();
           }
           download("https://get.geojs.io/v1/ip/geo.json", "geoip.json");
@@ -278,40 +315,79 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
     >
       <Box sx={wrapperBox}>
         <Grid container component="form" my={3} onSubmit={handleSave}>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
+            <FormLabel>Company Name</FormLabel>
+            <CustomInput
+              value={data?.companyName}
+              type="text"
+              fieldName="companyName"
+              readOnly
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
+            <FormLabel>Client Name</FormLabel>
+            <CustomInput
+              value={data?.clientName}
+              type="text"
+              fieldName="clientName"
+              readOnly
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
+            <FormLabel>Markup</FormLabel>
+            <CustomInput
+              value={data?.markingNumber}
+              type="text"
+              fieldName="markup"
+              readOnly
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
             <FormLabel>Date Entered</FormLabel>
-            <CustomInput
-              value={dateEntered}
-              handleChange={(e) => setDateEntered(e.target.value)}
-              type="text"
-              fieldName="dateEntered"
-              placeholder="Please Enter Date Entered"
-              required
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  value={dateEntered}
+                  onChange={(newValue) => setDateEntered(newValue)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
             <FormLabel>Depart Date</FormLabel>
-            <CustomInput
-              value={departDate}
-              handleChange={(e) => setDepartDate(e.target.value)}
-              type="text"
-              fieldName="departDate"
-              placeholder="Please Enter Depart Date"
-              required
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  value={departDate}
+                  onChange={(newValue) => setDepartDate(newValue)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
             <FormLabel>Port</FormLabel>
-            <CustomInput
+            <CustomAutocomplete
               value={port}
-              handleChange={(e) => setPort(e.target.value)}
-              type="text"
-              fieldName="port"
-              placeholder="Please Enter Port"
-              required
+              onInputChange={(event: object, value: string, reason: string) => {
+                setPort(value);
+              }}
+              options={
+                porttData
+                  ? porttData.map((item, index) => ({
+                      label: item,
+                      id: index,
+                    }))
+                  : []
+              }
+              renderInput={(params) => <TextField {...params} required />}
+              sx={{ mt: 1.3 }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
+            <FormLabel>Total Price </FormLabel>
+            <CustomInput value={data?.totalAmount} type="text" readOnly />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
             <FormLabel>Invoice Number</FormLabel>
             <CustomInput
               value={invoiceNumber}
@@ -322,7 +398,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
+          <Grid item xs={12} sm={6} md={4} mb={2} px={2}>
             <FormLabel>Category</FormLabel>
             <CustomInput
               value={category}
@@ -333,18 +409,6 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
-            <FormLabel>Markup</FormLabel>
-            <CustomInput
-              value={markup}
-              handleChange={(e) => setMarkup(e.target.value)}
-              type="text"
-              fieldName="markup"
-              placeholder="Please Enter Markup"
-              required
-            />
-          </Grid>
-
           <Grid container sx={{ height: "320px", mt: 2 }}>
             <DataGrid
               rows={pendingData ? pendingData : []}
@@ -388,33 +452,41 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
               Finalize
             </CustomButton>
           </Grid>
-          {batchId && (
-            <Grid
-              container
-              sx={{
-                justifyContent: "center",
-                "&>div": {
-                  margin: "10px",
-                },
-                "& button": {
-                  border: "1px solid #0678a2",
-                  color: "#0678a2",
-                  "& svg": {
-                    marginRight: "5px",
+          {resBatchId && (
+            <>
+              <Grid container sx={{ justifyContent: "center" }} my={1}>
+                <Typography variant="h6" sx={{ color: "rgb(126 175 128)" }}>
+                  BatchId {resBatchId} Saved Successfully
+                </Typography>
+              </Grid>
+              <Grid
+                container
+                sx={{
+                  justifyContent: "center",
+                  "&>div": {
+                    margin: "0 10px 10px 10px",
                   },
-                },
-              }}
-            >
-              <CustomButton onClick={handleDownloadDel}>
-                <CloudDownloadIcon /> Delivery Pocket
-              </CustomButton>
-              <CustomButton onClick={handleDownloadPlain}>
-                <CloudDownloadIcon /> Plain Paper
-              </CustomButton>
-              <CustomButton onClick={handleDownloadPick}>
-                <CloudDownloadIcon /> Pick Report
-              </CustomButton>
-            </Grid>
+                  "& button": {
+                    border: "1px solid #0678a2",
+                    color: "#0678a2",
+                    marginTop: "10px",
+                    "& svg": {
+                      marginRight: "5px",
+                    },
+                  },
+                }}
+              >
+                <CustomButton onClick={handleDownloadDel}>
+                  <CloudDownloadIcon /> Delivery Docket
+                </CustomButton>
+                <CustomButton onClick={handleDownloadPlain}>
+                  <CloudDownloadIcon /> Plain Paper
+                </CustomButton>
+                <CustomButton onClick={handleDownloadPick}>
+                  <CloudDownloadIcon /> Pick Report
+                </CustomButton>
+              </Grid>
+            </>
           )}
         </Grid>
       </Box>

@@ -12,4 +12,19 @@ export const wrapperBox: SxProps = {
   bgcolor: "#ffffff",
   borderRadius: "10px",
   p: 4,
+  "& .MuiTextField-root": {
+    width: "100%",
+  },
+  "& .MuiStack-root": {
+    "& fieldset": {
+      border: "none",
+    },
+    "& input": {
+      height: "8px",
+    },
+    "& .MuiInputBase-adornedEnd": {
+      background: "rgba(0, 0, 0, 0.05)",
+      borderRadius: "30px",
+    },
+  },
 };

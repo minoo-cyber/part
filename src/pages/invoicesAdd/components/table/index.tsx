@@ -14,9 +14,9 @@ import {
 } from "@mui/x-data-grid";
 import { FC, useState } from "react";
 import { Grid } from "@mui/material";
-import useAppSelector from "../../../../../../hooks/useSelector";
-import useAppDispatch from "../../../../../../hooks/useDispatch";
-import { setInvoiceInfoSelect } from "../../../../../../redux/slices/invoiceSlice";
+import { setInvoiceInfoSelect } from "../../../../redux/slices/invoiceSlice";
+import useAppDispatch from "../../../../hooks/useDispatch";
+import useAppSelector from "../../../../hooks/useSelector";
 
 interface IProps {
   title: string;

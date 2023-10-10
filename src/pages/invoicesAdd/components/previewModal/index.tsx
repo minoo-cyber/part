@@ -2,14 +2,14 @@ import { Box, FormLabel, Grid, Modal, Typography } from "@mui/material";
 import { FC } from "react";
 import { wrapperBox } from "./modal.style";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import useAppSelector from "../../../../../../hooks/useSelector";
-import CustomInput from "../../../../../../components/input";
-import CustomButton from "../../../../../../components/button";
 import { useMutation } from "@tanstack/react-query";
-import { sendPendingService } from "../../../../../../services/pending.api";
-import useAppDispatch from "../../../../../../hooks/useDispatch";
-import { setToast } from "../../../../../../redux/slices/toastSlice";
-import { setInvoiceClearData } from "../../../../../../redux/slices/invoiceSlice";
+import useAppDispatch from "../../../../hooks/useDispatch";
+import useAppSelector from "../../../../hooks/useSelector";
+import { sendPendingService } from "../../../../services/pending.api";
+import { setInvoiceClearData } from "../../../../redux/slices/invoiceSlice";
+import { setToast } from "../../../../redux/slices/toastSlice";
+import CustomInput from "../../../../components/input";
+import CustomButton from "../../../../components/button";
 
 interface IProps {
   open: boolean;

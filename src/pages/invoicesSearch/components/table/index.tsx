@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { IInvoiceSubModels } from "../../../../../../services/invoice.api";
-import CustomInput from "../../../../../../components/input";
+import { IInvoiceSubModels } from "../../../../services/invoice.api";
+import CustomInput from "../../../../components/input";
 import { Box } from "@mui/material";
 import { wrapperBox } from "./table.style";
 

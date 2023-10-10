@@ -57,6 +57,18 @@ export interface IAmountRes {
   impaCode: string;
   itemSell: number;
 }
+
+export interface IBatchId {
+  companyName: string;
+  clientName: string;
+}
+
+export interface IUpload {
+  clientName: string | undefined;
+  companyName: string | undefined;
+  file: string | undefined;
+}
+
 export const invoiceSearchService = (param: ISearchParam) =>
   axiosInstance.post<ISearchRes[]>("/invoice/search", param);
 
@@ -69,8 +81,14 @@ export const clientService = (companyName: string) =>
 export const addInvoiceService = (param: IAddParam) =>
   axiosInstance.post("/invoice/send-invoices", param);
 
+export const invoiceUploadService = (param: IUpload) =>
+  axiosInstance.post("/invoice/upload-invoice", param);
+
 export const itemDesService = (item: string) =>
   axiosInstance.get(`/invoice/item?item=${item}`);
+
+export const batchIdService = (param: IBatchId) =>
+  axiosInstance.post("/invoice/search-client-company", param);
 
 export const itemAmountService = (param: IAmountParam) =>
   axiosInstance.post<IAmountRes>("/invoice/item-amount", param);

@@ -56,7 +56,15 @@ const SideBar = () => {
               <FactCheckIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/invoices">Invoices</NavLink>
+              <NavLink to="/invoicesSearch">InvoicesSearch</NavLink>
+            </ListItemText>
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <FactCheckIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              <NavLink to="/invoiceAdd">InvoiceAdd</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>
@@ -72,7 +80,7 @@ const SideBar = () => {
               <LibraryAddIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/panel">Add/Search Item</NavLink>
+              <NavLink to="/newItem">Add/Search Item</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>

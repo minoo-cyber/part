@@ -29,6 +29,9 @@ export const sideBarBox: SxProps = {
     "&:nth-of-type(6) svg": {
       color: "#f5365c",
     },
+    "&:nth-of-type(7) svg": {
+      color: "#5e72e4",
+    },
   },
   "& a": {
     position: "absolute",
@@ -75,6 +78,9 @@ export const hideSideBar: SxProps = {
     },
     "&:nth-of-type(6) svg": {
       color: "#f5365c",
+    },
+    "&:nth-of-type(7) svg": {
+      color: "#5e72e4",
     },
   },
   "& a": {
