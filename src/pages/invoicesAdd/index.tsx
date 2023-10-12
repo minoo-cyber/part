@@ -208,18 +208,20 @@ const InvoiceAdd = () => {
   };
   const handleSubmitAuto = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const params = {
-      companyName: companyName,
-      clientName: clientName,
-      file: file,
-    };
-    uploadQuery.mutate(params, {
-      onSuccess(data) {
-        if (data.data) {
-          setItemDesData(data.data);
-        }
+    uploadQuery.mutate(
+      {
+        companyName: companyName,
+        clientName: clientName,
+        file: file,
       },
-    });
+      {
+        onSuccess(data) {
+          if (data.data) {
+            setItemDesData(data.data);
+          }
+        },
+      }
+    );
   };
 
   useEffect(() => {
