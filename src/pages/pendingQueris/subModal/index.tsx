@@ -237,7 +237,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
       markup: data?.markingNumber,
       subSaveModels: pendingData,
     };
-    console.log(model, "model");
+
     saveQuery.mutate(model, {
       onSuccess(data) {
         setResBatchId(data.data);

@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import {
   Box,
   FormLabel,
@@ -12,13 +12,12 @@ import CustomButton from "../../components/button";
 import { useMutation } from "@tanstack/react-query";
 import {
   addInvoiceService,
-  batchIdService,
   clientService,
   companyNameService,
   invoiceUploadService,
   itemDesService,
 } from "../../services/invoice.api";
-import { wrapperText } from "./add.style";
+import { wrapperBox, wrapperText } from "./add.style";
 import useAppDispatch from "../../hooks/useDispatch";
 import {
   setInvoiceData,
@@ -27,7 +26,14 @@ import {
 import useAppSelector from "../../hooks/useSelector";
 import { setToast } from "../../redux/slices/toastSlice";
 import CustomInput from "../../components/input";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+  GridRowModes,
+  GridRowModesModel,
+} from "@mui/x-data-grid";
 import { FileUploadProps, FileUploader } from "../../components/fileUploader";
 import CustomAutocomplete from "../../components/autocomplete";
 import PreviewModal from "./components/previewModal";
@@ -35,10 +41,20 @@ import AddTable from "./components/table";
 import Layout from "../../components/layout";
 import Card from "../../components/card";
 import { TabContext, TabPanel } from "@mui/lab";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
+
+export interface IRows {
+  id: number;
+  impaCode: string;
+  itemDesc: string;
+  batchId: number;
+}
 
 const InvoiceAdd = () => {
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.invoice);
+  const { dataInvoice } = useAppSelector((state) => state.invoice);
   const [companyName, setCompanyName] = useState<string | undefined>("");
   const [companyData, setCompanyData] = useState<string[]>();
   const [clientName, setClientName] = useState<string>("");
@@ -48,12 +64,7 @@ const InvoiceAdd = () => {
   const [itemList, setItemList] = useState([]);
   const [qtyList, setQtyList] = useState([]);
   const [itemDes, setItemDes] = useState<string | undefined>("");
-  const [itemDes1, setItemDes1] = useState<string | undefined>("");
-  const [itemDes2, setItemDes2] = useState<string | undefined>("");
-  const [itemDesData1, setItemDesData1] = useState<string[]>();
-  const [itemDesData2, setItemDesData2] = useState<string[]>();
   const [itemDesData, setItemDesData] = useState<string[]>();
-  const [filterData, setFilterData] = useState<string[]>();
   const itemDesQuery = useMutation(itemDesService);
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
@@ -61,25 +72,27 @@ const InvoiceAdd = () => {
   const clientQuery = useMutation(clientService);
   const [test, setTest] = useState<string>();
   const [value, setValue] = useState("1");
-
+  const [file, setFile] = useState();
+  const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
   const fileUploadProp: FileUploadProps = {
-    accept: "image/*",
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      // //@ts-ignore
-      // setTest(`${event.dataTransfer.files[0].name}`);
+    accept: "application/vnd.ms-excel",
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      //@ts-ignore
+      setFile(event.target.files[0]);
     },
     onDrop: (event: React.DragEvent<HTMLElement>) => {
-      setTest(`${event.dataTransfer.files[0].name}`);
+      // setFile(event.target.files[0]);
     },
   };
 
   const handleOpen = () => {
     let arrayLength: any = [];
-    Object.values(data?.map).map((item: any) => {
+    Object.values(dataInvoice?.map).map((item: any) => {
       arrayLength.push(item.length);
     });
     for (var i = 0; i < arrayLength.length; i++) {
@@ -173,6 +186,8 @@ const InvoiceAdd = () => {
         onSuccess(data) {
           dispatch(setInvoiceData(data.data));
           if (data?.data?.notFoundedItems.length > 0) {
+            setRows(data?.data?.notFoundedItems);
+            dispatch(setInvoiceNotFind(data?.data?.notFoundedItems));
             dispatch(
               setToast({
                 open: true,
@@ -186,73 +201,78 @@ const InvoiceAdd = () => {
     );
   };
 
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+    //@ts-ignore
+    setFile(e.target.files[0]);
+  };
   const handleSubmitAuto = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const params = {
       companyName: companyName,
       clientName: clientName,
-      file: test,
+      file: file,
     };
     uploadQuery.mutate(params, {
       onSuccess(data) {
         if (data.data) {
-          setItemDesData1(data.data);
-          // settest(
-          //   data.data?.filter((item: any) => item.itemDesc === itemDes1)
-          // );
-
-          dispatch(
-            setInvoiceNotFind(
-              data.data?.filter((item: any) => item.itemDesc === itemDes1)
-            )
-          );
+          setItemDesData(data.data);
         }
       },
     });
   };
+
   useEffect(() => {
-    if (itemDes1 && itemDes1.length >= 3) {
-      itemDesQuery.mutate(itemDes1, {
+    if (itemDes && itemDes.length >= 3) {
+      itemDesQuery.mutate(itemDes, {
         onSuccess(data) {
           if (data.data) {
-            setItemDesData1(data.data);
-            // settest(
-            //   data.data?.filter((item: any) => item.itemDesc === itemDes1)
-            // );
-
-            dispatch(
-              setInvoiceNotFind(
-                data.data?.filter((item: any) => item.itemDesc === itemDes1)
-              )
-            );
+            setItemDesData(data.data);
           }
         },
       });
     }
-  }, [itemDes1, data.data]);
-
-  useEffect(() => {
-    if (itemDes2 && itemDes2.length >= 3) {
-      itemDesQuery.mutate(itemDes2, {
-        onSuccess(data) {
-          if (data.data) {
-            setItemDesData2(data.data);
-            dispatch(
-              setInvoiceNotFind(
-                data.data?.filter((item: any) => item.itemDesc === itemDes2)
-              )
-            );
-          }
-        },
-      });
-    }
-  }, [itemDes2, data.data]);
-
-  const handleChange = (e: SyntheticEvent<Element, Event>, value: string) => {
-    setItemDes(value);
-  };
+  }, [itemDes, rows, itemDesData]);
 
   const columns: GridColDef[] = [
+    // {
+    //   field: "actions",
+    //   type: "actions",
+    //   headerName: "Actions",
+    //   width: 100,
+    //   cellClassName: "actions",
+    //   getActions: ({ id }) => {
+    //     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+    //     if (isInEditMode) {
+    //       return [
+    //         <GridActionsCellItem
+    //           icon={<SaveIcon />}
+    //           label="Save"
+    //           sx={{
+    //             color: "primary.main",
+    //           }}
+    //           onClick={handleSaveClick(id)}
+    //         />,
+    //         <GridActionsCellItem
+    //           icon={<CancelIcon />}
+    //           label="Cancel"
+    //           className="textPrimary"
+    //           onClick={handleCancelClick(id)}
+    //           color="inherit"
+    //         />,
+    //       ];
+    //     }
+    //     return [
+    //       <GridActionsCellItem
+    //         icon={<EditIcon />}
+    //         label="Edit"
+    //         className="textPrimary"
+    //         onClick={handleEditClick(id)}
+    //         color="inherit"
+    //       />,
+    //     ];
+    //   },
+    // },
     {
       field: "id",
       headerName: "Id",
@@ -270,6 +290,49 @@ const InvoiceAdd = () => {
       headerName: "Item Description",
       width: 400,
       editable: true,
+      //@ts-ignore
+      renderEditCell({ id, ...rest }) {
+        return (
+          <CustomAutocomplete
+            value={itemDes ? itemDes : ""}
+            onInputChange={(e, value) => {
+              //@ts-ignore
+              setItemDes(value);
+              if (value && value.length >= 3 && itemDesData) {
+                let arr: any = [...rows];
+                let filtered: any = itemDesData?.filter(
+                  (item: any) => item?.itemDesc === value
+                )?.[0];
+                if (filtered) {
+                  for (let i = 1; i < arr.length + 1; i++) {
+                    if (id === i) {
+                      let newRow: IRows = {
+                        id: id,
+                        impaCode: filtered?.impaCode,
+                        itemDesc: filtered?.itemDesc,
+                        batchId: filtered?.batchId,
+                      };
+                      arr[id - 1] = newRow;
+                      setRows(arr);
+                    }
+                  }
+                }
+              }
+            }}
+            options={
+              itemDesData
+                ? itemDesData.map((item, index) => ({
+                    //@ts-ignore
+                    label: item.itemDesc,
+                    //@ts-ignore
+                    id: item.id,
+                  }))
+                : []
+            }
+            renderInput={(params) => <TextField {...params} />}
+          />
+        );
+      },
     },
     {
       field: "extraText",
@@ -303,6 +366,23 @@ const InvoiceAdd = () => {
     },
   ];
 
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+  const handleEditClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
   return (
     <Layout>
       <Card>
@@ -395,8 +475,8 @@ const InvoiceAdd = () => {
                 </CustomButton>
               </Grid>
             </Grid>
-            <Grid container>
-              {Object.values(data?.map).length > 0 && (
+            <Grid container sx={wrapperBox}>
+              {Object.values(dataInvoice?.map).length > 0 && (
                 <Grid item xs={12} sm={6} md={4} mt={4}>
                   <FormLabel>Marking Number</FormLabel>
                   <CustomInput
@@ -408,7 +488,7 @@ const InvoiceAdd = () => {
                 </Grid>
               )}
               <Grid item xs={12}>
-                {Object.keys(data?.map).map((key: any) => {
+                {Object.keys(dataInvoice?.map).map((key: any) => {
                   return (
                     <Box key={key}>
                       <Typography
@@ -422,14 +502,62 @@ const InvoiceAdd = () => {
                       >
                         {key}
                       </Typography>
-                      {[data.map[key]].map((item: any) => {
+                      {[dataInvoice.map[key]].map((item: any) => {
                         return <AddTable title={key} key={key} />;
                       })}
                     </Box>
                   );
                 })}
               </Grid>
-              {Object.values(data?.map).length > 0 && (
+              {rows && (
+                <Grid
+                  item
+                  xs={12}
+                  style={{ borderTop: "1px solid red" }}
+                  mt={7}
+                >
+                  <Typography
+                    variant="h5"
+                    mb={1}
+                    mt={3}
+                    sx={{
+                      color: "red",
+                      marginTop: "-20px",
+                      background: "#fff",
+                      width: "200px",
+                    }}
+                  >
+                    Not Found Items
+                  </Typography>
+                  {rows &&
+                    rows.map((item: any, index: any) => {
+                      return (
+                        <Box key={index}>
+                          <Typography
+                            variant="h6"
+                            mb={1}
+                            mt={3}
+                            sx={{
+                              color: (theme) =>
+                                theme.palette.primary.main + "!important",
+                            }}
+                          >
+                            {item.itemDesc}
+                          </Typography>
+                          <DataGrid
+                            rows={[item] ? [item] : []}
+                            columns={columns}
+                            editMode="row"
+                            hideFooter={true}
+                            // rowModesModel={rowModesModel}
+                            // onRowModesModelChange={handleRowModesModelChange}
+                          />
+                        </Box>
+                      );
+                    })}
+                </Grid>
+              )}
+              {Object.values(dataInvoice?.map).length > 0 && (
                 <Grid
                   container
                   sx={{
@@ -456,13 +584,16 @@ const InvoiceAdd = () => {
                     setClientName={setClientName}
                     setQtyList={setQtyList}
                     setItemList={setItemList}
+                    rows={rows}
+                    setRows={setRows}
+                    itemDes={itemDes}
+                    itemDesData={itemDesData}
                   />
                 </Grid>
               )}
             </Grid>
           </TabPanel>
           <TabPanel value="2">
-            {" "}
             <Grid container component="form" onSubmit={handleSubmitAuto}>
               <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
                 <FormLabel>Company</FormLabel>
@@ -517,6 +648,11 @@ const InvoiceAdd = () => {
               <Grid item xs={12} sm={6} md={6} mb={1} pt={5} px={2}>
                 <Typography>{test}</Typography>
               </Grid>
+              <input
+                onChange={(e) => handleFile(e)}
+                type="file"
+                accept="application/vnd.ms-excel"
+              />
               <Grid container sx={{ justifyContent: "center" }}>
                 <CustomButton
                   type="submit"
@@ -530,7 +666,7 @@ const InvoiceAdd = () => {
               </Grid>
             </Grid>
             <Grid container>
-              {Object.values(data?.map).length > 0 && (
+              {Object.values(dataInvoice?.map).length > 0 && (
                 <Grid item xs={12} sm={6} md={4} mt={4}>
                   <FormLabel>Marking Number</FormLabel>
                   <CustomInput
@@ -542,7 +678,7 @@ const InvoiceAdd = () => {
                 </Grid>
               )}
               <Grid item xs={12}>
-                {Object.keys(data?.map).map((key: any) => {
+                {Object.keys(dataInvoice?.map).map((key: any) => {
                   return (
                     <Box key={key}>
                       <Typography
@@ -556,14 +692,15 @@ const InvoiceAdd = () => {
                       >
                         {key}
                       </Typography>
-                      {[data.map[key]].map((item: any) => {
+                      {[dataInvoice.map[key]].map((item: any) => {
                         return <AddTable title={key} key={key} />;
                       })}
                     </Box>
                   );
                 })}
               </Grid>
-              {Object.values(data?.map).length > 0 && (
+
+              {Object.values(dataInvoice?.map).length > 0 && (
                 <Grid
                   container
                   sx={{
@@ -590,6 +727,10 @@ const InvoiceAdd = () => {
                     setClientName={setClientName}
                     setQtyList={setQtyList}
                     setItemList={setItemList}
+                    rows={rows}
+                    setRows={setRows}
+                    itemDes={itemDes}
+                    itemDesData={itemDesData}
                   />
                 </Grid>
               )}

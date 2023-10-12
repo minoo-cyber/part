@@ -14,3 +14,9 @@ export const wrapperText: SxProps = {
     outline: "none",
   },
 };
+
+export const wrapperBox: SxProps = {
+  "& .MuiAutocomplete-root": {
+    width: "400px",
+  },
+};

@@ -82,7 +82,11 @@ export const addInvoiceService = (param: IAddParam) =>
   axiosInstance.post("/invoice/send-invoices", param);
 
 export const invoiceUploadService = (param: IUpload) =>
-  axiosInstance.post("/invoice/upload-invoice", param);
+  axiosInstance.post("/invoice/upload-invoice", param, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 export const itemDesService = (item: string) =>
   axiosInstance.get(`/invoice/item?item=${item}`);

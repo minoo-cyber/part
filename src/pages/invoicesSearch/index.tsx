@@ -111,7 +111,6 @@ const InvoicesSearch = () => {
       },
       {
         onSuccess(data) {
-          console.log(data.data[0]);
           if (data.data[0]) {
             setData(data.data[0]);
             setLoading(false);

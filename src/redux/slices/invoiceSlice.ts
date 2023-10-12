@@ -2,11 +2,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface InvoiceSlice {
-  data: any;
+  dataInvoice: any;
 }
 
 const initialState: InvoiceSlice = {
-  data: [],
+  dataInvoice: [],
 };
 
 export const invoiceSlice = createSlice({
@@ -14,19 +14,22 @@ export const invoiceSlice = createSlice({
   initialState,
   reducers: {
     setInvoiceData: (state, action: PayloadAction) => {
-      state.data = action.payload;
+      state.dataInvoice = action.payload;
     },
     setInvoiceInfoSelect: (state, action: PayloadAction) => {
-      state.data.map = Object.assign(state.data.map, action.payload);
+      state.dataInvoice.map = Object.assign(
+        state.dataInvoice.map,
+        action.payload
+      );
     },
     setInvoiceNotFind: (state, action: PayloadAction) => {
-      state.data.notFoundedItems = Object.assign(
-        state.data.notFoundedItems,
+      state.dataInvoice.notFoundedItems = Object.assign(
+        state.dataInvoice.notFoundedItems,
         action.payload
       );
     },
     setInvoiceClearData: (state) => {
-      state.data = [];
+      state.dataInvoice = [];
     },
   },
 });

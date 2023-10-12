@@ -113,7 +113,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
   ];
 
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.invoice);
+  const { dataInvoice } = useAppSelector((state) => state.invoice);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
@@ -130,8 +130,10 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
   };
 
   const handleRowClick = (id: any) => {
-    if (data.map[title].length > 1) {
-      const selected = data.map[title].filter((row: any) => row.rowNum === id);
+    if (dataInvoice.map[title].length > 1) {
+      const selected = dataInvoice.map[title].filter(
+        (row: any) => row.rowNum === id
+      );
       var key = title;
       var obj: any = {};
       obj[key] = selected;
@@ -145,11 +147,13 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = data.map[title].find((row: any) => row.rowNum !== id);
+    const editedRow = dataInvoice.map[title].find(
+      (row: any) => row.rowNum !== id
+    );
     if (editedRow?.isNew) {
       dispatch(
         setInvoiceInfoSelect(
-          data.map[title].filter((row: any) => row.rowNum !== id)
+          dataInvoice.map[title].filter((row: any) => row.rowNum !== id)
         )
       );
     }
@@ -177,7 +181,7 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
     <>
       <Grid item xs={12}>
         <DataGrid
-          rows={data.map[title] ? data.map[title] : []}
+          rows={dataInvoice.map[title] ? dataInvoice.map[title] : []}
           columns={columns}
           getRowId={(row) => row.rowNum}
           editMode="row"

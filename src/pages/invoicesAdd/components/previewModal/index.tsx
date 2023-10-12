@@ -1,4 +1,11 @@
-import { Box, FormLabel, Grid, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  FormLabel,
+  Grid,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
 import { wrapperBox } from "./modal.style";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -10,6 +17,7 @@ import { setInvoiceClearData } from "../../../../redux/slices/invoiceSlice";
 import { setToast } from "../../../../redux/slices/toastSlice";
 import CustomInput from "../../../../components/input";
 import CustomButton from "../../../../components/button";
+import CustomAutocomplete from "../../../../components/autocomplete";
 
 interface IProps {
   open: boolean;
@@ -19,8 +27,18 @@ interface IProps {
   setQtyList: any;
   setItemList: any;
   markingNumber: string;
+  rows: any;
+  setRows: (rows: []) => void;
+  itemDes: string | undefined;
+  itemDesData: any;
 }
 
+export interface IRows {
+  id: number;
+  impaCode: string;
+  itemDesc: string;
+  batchId: number;
+}
 const PreviewModal: FC<IProps> = ({
   open,
   setOpen,
@@ -29,14 +47,18 @@ const PreviewModal: FC<IProps> = ({
   setClientName,
   setQtyList,
   setItemList,
+  rows,
+  setRows,
+  itemDes,
+  itemDesData,
 }: IProps) => {
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.invoice);
+  const { dataInvoice } = useAppSelector((state) => state.invoice);
   const sendPendingQuery = useMutation(sendPendingService);
 
   const handlePending = () => {
     let subModels: any = [];
-    Object.values(data.map).map((item: any) => {
+    Object.values(dataInvoice.map).map((item: any) => {
       item.map((itemInfo: any) => {
         subModels.push(itemInfo);
       });
@@ -44,8 +66,8 @@ const PreviewModal: FC<IProps> = ({
     sendPendingQuery.mutate(
       {
         id: 0,
-        companyName: data.companyName,
-        clientName: data.clientName,
+        companyName: dataInvoice.companyName,
+        clientName: dataInvoice.clientName,
         markingNumber: Number(markingNumber),
         pendingInvoiceSubModels: subModels,
       },
@@ -124,6 +146,99 @@ const PreviewModal: FC<IProps> = ({
     },
   ];
 
+  const columnsNotFound: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "Id",
+      width: 50,
+      editable: false,
+    },
+    {
+      field: "impaCode",
+      headerName: "Impa Code",
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "itemDesc",
+      headerName: "Item Description",
+      width: 400,
+      editable: true,
+      //@ts-ignore
+      renderEditCell({ id, ...rest }) {
+        return (
+          <CustomAutocomplete
+            value={itemDes ? itemDes : ""}
+            onInputChange={(e, value) => {
+              //@ts-ignore
+              setItemDes(value);
+              if (value && value.length >= 3 && itemDesData) {
+                let arr: any = [...rows];
+                let filtered: any = itemDesData?.filter(
+                  (item: any) => item?.itemDesc === value
+                )?.[0];
+                if (filtered) {
+                  for (let i = 1; i < arr.length + 1; i++) {
+                    if (id === i) {
+                      let newRow: IRows = {
+                        id: id,
+                        impaCode: filtered?.impaCode,
+                        itemDesc: filtered?.itemDesc,
+                        batchId: filtered?.batchId,
+                      };
+                      arr[id - 1] = newRow;
+                      setRows(arr);
+                    }
+                  }
+                }
+              }
+            }}
+            options={
+              itemDesData
+                ? itemDesData.map((item: any, index: any) => ({
+                    //@ts-ignore
+                    label: item.itemDesc,
+                    //@ts-ignore
+                    id: item.id,
+                  }))
+                : []
+            }
+            renderInput={(params) => <TextField {...params} />}
+          />
+        );
+      },
+    },
+    {
+      field: "extraText",
+      headerName: "Extra Text",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "pkg",
+      headerName: "pkg",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "qty",
+      headerName: "Qty",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "itemSell",
+      headerName: "Item Sell",
+      width: 90,
+      editable: true,
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+      width: 110,
+      editable: true,
+    },
+  ];
   return (
     <Modal
       open={open}
@@ -135,14 +250,18 @@ const PreviewModal: FC<IProps> = ({
         <Grid container>
           <Grid item xs={12} sm={6} md={6} px={2} mb={1}>
             <FormLabel>Company Name</FormLabel>
-            <CustomInput value={data?.companyName} type="text" readOnly />
+            <CustomInput
+              value={dataInvoice?.companyName}
+              type="text"
+              readOnly
+            />
           </Grid>
           <Grid item xs={12} sm={6} md={6} px={2} mb={1}>
             <FormLabel>Client Name</FormLabel>
-            <CustomInput value={data?.clientName} type="text" readOnly />
+            <CustomInput value={dataInvoice?.clientName} type="text" readOnly />
           </Grid>
         </Grid>
-        {Object.keys(data.map).map((key: any) => {
+        {Object.keys(dataInvoice.map).map((key: any) => {
           return (
             <Box key={key}>
               <Typography
@@ -154,7 +273,7 @@ const PreviewModal: FC<IProps> = ({
               >
                 {key}
               </Typography>
-              {[data.map[key]].map((item: any) => {
+              {[dataInvoice.map[key]].map((item: any) => {
                 return (
                   <DataGrid
                     rows={item ? item : []}
@@ -167,6 +286,29 @@ const PreviewModal: FC<IProps> = ({
             </Box>
           );
         })}
+        {rows &&
+          rows.map((item: any, index: any) => {
+            return (
+              <Box key={index}>
+                <Typography
+                  variant="h6"
+                  mb={1}
+                  mt={3}
+                  sx={{
+                    color: (theme) => theme.palette.primary.main + "!important",
+                  }}
+                >
+                  {item.itemDesc}
+                </Typography>
+                <DataGrid
+                  rows={[item] ? [item] : []}
+                  columns={columnsNotFound}
+                  editMode="row"
+                  hideFooter={true}
+                />
+              </Box>
+            );
+          })}
         <Grid
           container
           sx={{
