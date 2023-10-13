@@ -11,7 +11,7 @@ interface ILoginRes {
 }
 
 interface IOtpParam {
-  email: string;
+  email: string | undefined;
   otp: string;
 }
 

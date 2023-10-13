@@ -105,7 +105,7 @@ const InvoicesSearch = () => {
     setLoading(true);
     searchQuery.mutate(
       {
-        batchId: Number(batchId),
+        batchId: Number(batchIdList),
         clientName: clientName,
         companyName: companyName,
       },

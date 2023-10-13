@@ -9,7 +9,7 @@ import CustomButton from "../../../../components/button";
 import Toast from "../../../../components/toast/Toast";
 
 interface IProps {
-  email: string;
+  email?: string | undefined;
 }
 
 const Otp: FC<IProps> = (email) => {
@@ -32,7 +32,7 @@ const Otp: FC<IProps> = (email) => {
       },
       {
         onSuccess(data) {
-          navigate("/panel");
+          navigate("/");
         },
       }
     );

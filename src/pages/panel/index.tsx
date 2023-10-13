@@ -1,5 +1,4 @@
 import { Grid, Typography } from "@mui/material";
-import { wrapperItems, wrapperStatus } from "./panel.style";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import ApartmentIcon from "@mui/icons-material/Apartment";
@@ -7,6 +6,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Layout from "../../components/layout";
 import { NavLink } from "react-router-dom";
 import Card from "../../components/card";
+import { wrapperItems, wrapperStatus } from "./panel.style";
 
 const Panel = () => {
   return (
@@ -19,19 +19,19 @@ const Panel = () => {
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/panel">
+          <NavLink to="/">
             <AccountBoxIcon />
             Search By Client Name
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/panel">
+          <NavLink to="/">
             <ApartmentIcon />
             Search By Company
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/panel">
+          <NavLink to="/">
             <PageviewIcon />
             Search By Batch
           </NavLink>
