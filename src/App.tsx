@@ -4,15 +4,13 @@ import Login from "./pages/login";
 import Panel from "./pages/panel";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Provider } from "react-redux";
 import User from "./pages/user";
-import Invoices from "./pages/invoicesAdd";
 import PendingQueris from "./pages/pendingQueris";
 import AddNewItem from "./pages/addNewItem";
 import InvoiceAdd from "./pages/invoicesAdd";
 import InvoicesSearch from "./pages/invoicesSearch";
 import useAppSelector from "./hooks/useSelector";
-import Otp from "./pages/login/components/otp";
+import Otp from "./pages/otp";
 
 const queryClient = new QueryClient();
 
@@ -32,11 +30,11 @@ const App = () => {
                 <Route path="/invoicesSearch" element={<InvoicesSearch />} />
                 <Route path="/pending" element={<PendingQueris />} />
                 <Route path="/newItem" element={<AddNewItem />} />
+                <Route path="/otp" element={<Otp />} />
               </>
             ) : (
               <>
                 <Route path="/login" element={<Login />} />
-                <Route path="/login" element={<Otp />} />
               </>
             )}
           </Routes>

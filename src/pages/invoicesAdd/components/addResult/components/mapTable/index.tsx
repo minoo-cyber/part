@@ -14,15 +14,15 @@ import {
 } from "@mui/x-data-grid";
 import { FC, useState } from "react";
 import { Grid } from "@mui/material";
-import { setInvoiceInfoSelect } from "../../../../redux/slices/invoiceSlice";
-import useAppDispatch from "../../../../hooks/useDispatch";
-import useAppSelector from "../../../../hooks/useSelector";
+import { setInvoiceInfoSelect } from "../../../../../../redux/slices/invoiceSlice";
+import useAppDispatch from "../../../../../../hooks/useDispatch";
+import useAppSelector from "../../../../../../hooks/useSelector";
 
 interface IProps {
   title: string;
 }
 
-const AddTable: FC<IProps> = ({ title }: IProps) => {
+const MapTable: FC<IProps> = ({ title }: IProps) => {
   const columns: GridColDef[] = [
     {
       field: "actions",
@@ -199,4 +199,4 @@ const AddTable: FC<IProps> = ({ title }: IProps) => {
   );
 };
 
-export default AddTable;
+export default MapTable;

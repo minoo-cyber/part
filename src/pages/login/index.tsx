@@ -1,7 +1,6 @@
 import { Box, FormLabel, Grid, Typography } from "@mui/material";
 import { formBox, welcomeBox, wrapperBox, wrapperFormBox } from "./login.style";
 import { SyntheticEvent, useState } from "react";
-import Otp from "./components/otp";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpService, loginService } from "../../services/login.api";
 import useAppDispatch from "../../hooks/useDispatch";
@@ -11,9 +10,9 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomInput from "../../components/input";
 import CustomButton from "../../components/button";
 import Toast from "../../components/toast/Toast";
+import { useNavigate } from "react-router";
 
 const Login = () => {
-  const [showVerify, setShowVerify] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPass, setShowPass] = useState<boolean>(false);
@@ -21,6 +20,7 @@ const Login = () => {
   const loginQuery = useMutation(loginService);
   const getOtpQuery = useMutation(getOtpService);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleShow = () => {
     setShowPass(!showPass);
@@ -46,10 +46,9 @@ const Login = () => {
               token: data.data.accessToken,
             })
           );
+          navigate("/otp");
           getOtpQuery.mutate(email, {
-            onSuccess(data) {
-              setShowVerify(true);
-            },
+            onSuccess(data) {},
           });
         },
       }
@@ -60,49 +59,45 @@ const Login = () => {
     <>
       <Grid sx={wrapperBox}>
         <Grid sx={wrapperFormBox}>
-          {!showVerify ? (
-            <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
-              <Typography variant="h5"> Sign In</Typography>
-              <Box>
-                <FormLabel>Email</FormLabel>
-                <CustomInput
-                  value={email}
-                  handleChange={(e) => setEmail(e.target.value)}
-                  type="text"
-                  fieldName="email"
-                  placeholder="Please Enter Your Email"
-                  required
-                />
-              </Box>
-              <Box>
-                <FormLabel>Password</FormLabel>
-                <CustomInput
-                  value={password}
-                  handleChange={(e) => setPassword(e.target.value)}
-                  type={type}
-                  placeholder="Please Enter Your Password"
-                  required
-                />
+          <Grid sx={formBox} component="form" onSubmit={handleSubmit}>
+            <Typography variant="h5"> Sign In</Typography>
+            <Box>
+              <FormLabel>Email</FormLabel>
+              <CustomInput
+                value={email}
+                handleChange={(e) => setEmail(e.target.value)}
+                type="text"
+                fieldName="email"
+                placeholder="Please Enter Your Email"
+                required
+              />
+            </Box>
+            <Box>
+              <FormLabel>Password</FormLabel>
+              <CustomInput
+                value={password}
+                handleChange={(e) => setPassword(e.target.value)}
+                type={type}
+                placeholder="Please Enter Your Password"
+                required
+              />
 
-                {!showPass ? (
-                  <RemoveRedEyeIcon onClick={handleShow} />
-                ) : (
-                  <VisibilityOffIcon onClick={handleHide} />
-                )}
-              </Box>
-              <CustomButton
-                type="submit"
-                sx={{
-                  backgroundColor: (theme) =>
-                    theme.palette.primary.main + "!important",
-                }}
-              >
-                Continue
-              </CustomButton>
-            </Grid>
-          ) : (
-            <Otp email={email} />
-          )}
+              {!showPass ? (
+                <RemoveRedEyeIcon onClick={handleShow} />
+              ) : (
+                <VisibilityOffIcon onClick={handleHide} />
+              )}
+            </Box>
+            <CustomButton
+              type="submit"
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.primary.main + "!important",
+              }}
+            >
+              Continue
+            </CustomButton>
+          </Grid>
         </Grid>
         <Grid
           sx={{

@@ -1,6 +1,5 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import {
-  Box,
   FormLabel,
   Grid,
   Tab,
@@ -17,7 +16,7 @@ import {
   invoiceUploadService,
   itemDesService,
 } from "../../services/invoice.api";
-import { wrapperBox, wrapperText } from "./add.style";
+import { wrapperText } from "./add.style";
 import useAppDispatch from "../../hooks/useDispatch";
 import {
   setInvoiceData,
@@ -25,24 +24,12 @@ import {
 } from "../../redux/slices/invoiceSlice";
 import useAppSelector from "../../hooks/useSelector";
 import { setToast } from "../../redux/slices/toastSlice";
-import CustomInput from "../../components/input";
-import {
-  DataGrid,
-  GridColDef,
-  GridRowId,
-  GridRowModes,
-  GridRowModesModel,
-} from "@mui/x-data-grid";
 import { FileUploadProps, FileUploader } from "../../components/fileUploader";
 import CustomAutocomplete from "../../components/autocomplete";
-import PreviewModal from "./components/previewModal";
-import AddTable from "./components/table";
 import Layout from "../../components/layout";
 import Card from "../../components/card";
 import { TabContext, TabPanel } from "@mui/lab";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+import AddResult from "./components/addResult";
 
 export interface IRows {
   id: number;
@@ -73,9 +60,9 @@ const InvoiceAdd = () => {
   const [value, setValue] = useState("1");
   const [file, setFile] = useState();
   const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
+    setRows([]);
   };
 
   const fileUploadProp: FileUploadProps = {
@@ -87,27 +74,6 @@ const InvoiceAdd = () => {
     onDrop: (event: React.DragEvent<HTMLElement>) => {
       // setFile(event.target.files[0]);
     },
-  };
-
-  const handleOpen = () => {
-    let arrayLength: any = [];
-    Object.values(dataInvoice?.map).map((item: any) => {
-      arrayLength.push(item.length);
-    });
-    for (var i = 0; i < arrayLength.length; i++) {
-      if (arrayLength[i] !== 1) {
-        setOpen(false);
-        dispatch(
-          setToast({
-            open: true,
-            type: "error",
-            text: "Each List Shoud Have Only One Row",
-          })
-        );
-      } else {
-        setOpen(true);
-      }
-    }
   };
 
   const onPasteItem = (event: any) => {
@@ -154,7 +120,7 @@ const InvoiceAdd = () => {
     }
   }, [companyName]);
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmitManual = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     let invoiceModels = [];
     for (let i = 0; i < itemList.length; i++) {
@@ -199,13 +165,7 @@ const InvoiceAdd = () => {
       }
     );
   };
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileReader = new FileReader();
-    //@ts-ignore
-    setFile(e.target.files[0]);
-  };
-  const handleSubmitAuto = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmitAutomatic = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     uploadQuery.mutate(
       {
@@ -215,12 +175,27 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
-          if (data.data) {
-            setItemDesData(data.data);
+          dispatch(setInvoiceData(data.data));
+          if (data?.data?.notFoundedItems.length > 0) {
+            setRows(data?.data?.notFoundedItems);
+            dispatch(setInvoiceNotFind(data?.data?.notFoundedItems));
+            dispatch(
+              setToast({
+                open: true,
+                type: "error",
+                text: "Not Founded Item",
+              })
+            );
           }
         },
       }
     );
+  };
+
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+    //@ts-ignore
+    setFile(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -233,157 +208,7 @@ const InvoiceAdd = () => {
         },
       });
     }
-  }, [itemDes, rows, itemDesData]);
-
-  const columns: GridColDef[] = [
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   headerName: "Actions",
-    //   width: 100,
-    //   cellClassName: "actions",
-    //   getActions: ({ id }) => {
-    //     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-    //     if (isInEditMode) {
-    //       return [
-    //         <GridActionsCellItem
-    //           icon={<SaveIcon />}
-    //           label="Save"
-    //           sx={{
-    //             color: "primary.main",
-    //           }}
-    //           onClick={handleSaveClick(id)}
-    //         />,
-    //         <GridActionsCellItem
-    //           icon={<CancelIcon />}
-    //           label="Cancel"
-    //           className="textPrimary"
-    //           onClick={handleCancelClick(id)}
-    //           color="inherit"
-    //         />,
-    //       ];
-    //     }
-    //     return [
-    //       <GridActionsCellItem
-    //         icon={<EditIcon />}
-    //         label="Edit"
-    //         className="textPrimary"
-    //         onClick={handleEditClick(id)}
-    //         color="inherit"
-    //       />,
-    //     ];
-    //   },
-    // },
-    {
-      field: "id",
-      headerName: "Id",
-      width: 50,
-      editable: false,
-    },
-    {
-      field: "impaCode",
-      headerName: "Impa Code",
-      width: 100,
-      editable: true,
-    },
-    {
-      field: "itemDesc",
-      headerName: "Item Description",
-      width: 400,
-      editable: true,
-      //@ts-ignore
-      renderEditCell({ id, ...rest }) {
-        return (
-          <CustomAutocomplete
-            value={itemDes ? itemDes : ""}
-            onInputChange={(e, value) => {
-              //@ts-ignore
-              setItemDes(value);
-              if (value && value.length >= 3 && itemDesData) {
-                let arr: any = [...rows];
-                let filtered: any = itemDesData?.filter(
-                  (item: any) => item?.itemDesc === value
-                )?.[0];
-                if (filtered) {
-                  for (let i = 1; i < arr.length + 1; i++) {
-                    if (id === i) {
-                      let newRow: IRows = {
-                        id: id,
-                        impaCode: filtered?.impaCode,
-                        itemDesc: filtered?.itemDesc,
-                        batchId: filtered?.batchId,
-                      };
-                      arr[id - 1] = newRow;
-                      setRows(arr);
-                    }
-                  }
-                }
-              }
-            }}
-            options={
-              itemDesData
-                ? itemDesData.map((item, index) => ({
-                    //@ts-ignore
-                    label: item.itemDesc,
-                    //@ts-ignore
-                    id: item.id,
-                  }))
-                : []
-            }
-            renderInput={(params) => <TextField {...params} />}
-          />
-        );
-      },
-    },
-    {
-      field: "extraText",
-      headerName: "Extra Text",
-      width: 200,
-      editable: true,
-    },
-    {
-      field: "pkg",
-      headerName: "pkg",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "qty",
-      headerName: "Qty",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "itemSell",
-      headerName: "Item Sell",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "totalAmount",
-      headerName: "Total Amount",
-      width: 110,
-      editable: true,
-    },
-  ];
-
-  const handleSaveClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-  };
-  const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
+  }, [itemDes]);
 
   return (
     <Layout>
@@ -399,8 +224,7 @@ const InvoiceAdd = () => {
             <Tab value="2" label="Automatic Create Invoice" />
           </Tabs>
           <TabPanel value="1">
-            {" "}
-            <Grid container component="form" onSubmit={handleSubmit}>
+            <Grid container component="form" onSubmit={handleSubmitManual}>
               <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
                 <FormLabel>Company</FormLabel>
                 <CustomAutocomplete
@@ -477,126 +301,23 @@ const InvoiceAdd = () => {
                 </CustomButton>
               </Grid>
             </Grid>
-            <Grid container sx={wrapperBox}>
-              {Object.values(dataInvoice?.map).length > 0 && (
-                <Grid item xs={12} sm={6} md={4} mt={4}>
-                  <FormLabel>Marking Number</FormLabel>
-                  <CustomInput
-                    value={markingNumber}
-                    handleChange={(e) => setMarkingNumber(e.target.value)}
-                    type="text"
-                    placeholder="Please Enter Marking Number"
-                  />
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                {Object.keys(dataInvoice?.map).map((key: any) => {
-                  return (
-                    <Box key={key}>
-                      <Typography
-                        variant="h6"
-                        mb={1}
-                        mt={3}
-                        sx={{
-                          color: (theme) =>
-                            theme.palette.primary.main + "!important",
-                        }}
-                      >
-                        {key}
-                      </Typography>
-                      {[dataInvoice.map[key]].map((item: any) => {
-                        return <AddTable title={key} key={key} />;
-                      })}
-                    </Box>
-                  );
-                })}
-              </Grid>
-              {rows && (
-                <Grid
-                  item
-                  xs={12}
-                  style={{ borderTop: "1px solid red" }}
-                  mt={7}
-                >
-                  <Typography
-                    variant="h5"
-                    mb={1}
-                    mt={3}
-                    sx={{
-                      color: "red",
-                      marginTop: "-20px",
-                      background: "#fff",
-                      width: "200px",
-                    }}
-                  >
-                    Not Found Items
-                  </Typography>
-                  {rows &&
-                    rows.map((item: any, index: any) => {
-                      return (
-                        <Box key={index}>
-                          <Typography
-                            variant="h6"
-                            mb={1}
-                            mt={3}
-                            sx={{
-                              color: (theme) =>
-                                theme.palette.primary.main + "!important",
-                            }}
-                          >
-                            {item.itemDesc}
-                          </Typography>
-                          <DataGrid
-                            rows={[item] ? [item] : []}
-                            columns={columns}
-                            editMode="row"
-                            hideFooter={true}
-                            // rowModesModel={rowModesModel}
-                            // onRowModesModelChange={handleRowModesModelChange}
-                          />
-                        </Box>
-                      );
-                    })}
-                </Grid>
-              )}
-              {Object.values(dataInvoice?.map).length > 0 && (
-                <Grid
-                  container
-                  sx={{
-                    justifyContent: "center",
-                    "&>div": {
-                      margin: "10px",
-                    },
-                  }}
-                >
-                  <CustomButton
-                    sx={{
-                      backgroundColor: (theme) =>
-                        theme.palette.primary.main + "!important",
-                    }}
-                    onClick={handleOpen}
-                  >
-                    Preview
-                  </CustomButton>
-                  <PreviewModal
-                    open={open}
-                    setOpen={setOpen}
-                    markingNumber={markingNumber}
-                    setCompanyName={setCompanyName}
-                    setClientName={setClientName}
-                    setQtyList={setQtyList}
-                    setItemList={setItemList}
-                    rows={rows}
-                    setRows={setRows}
-                    itemDes={itemDes}
-                    itemDesData={itemDesData}
-                  />
-                </Grid>
-              )}
-            </Grid>
+            <AddResult
+              rows={rows}
+              open={open}
+              setOpen={setOpen}
+              markingNumber={markingNumber}
+              setCompanyName={setCompanyName}
+              setClientName={setClientName}
+              setQtyList={setQtyList}
+              setItemList={setItemList}
+              setRows={setRows}
+              itemDes={itemDes}
+              itemDesData={itemDesData}
+              setMarkingNumber={setMarkingNumber}
+            />
           </TabPanel>
           <TabPanel value="2">
-            <Grid container component="form" onSubmit={handleSubmitAuto}>
+            <Grid container component="form" onSubmit={handleSubmitAutomatic}>
               <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
                 <FormLabel>Company</FormLabel>
                 <CustomAutocomplete
@@ -667,76 +388,20 @@ const InvoiceAdd = () => {
                 </CustomButton>
               </Grid>
             </Grid>
-            <Grid container>
-              {Object.values(dataInvoice?.map).length > 0 && (
-                <Grid item xs={12} sm={6} md={4} mt={4}>
-                  <FormLabel>Marking Number</FormLabel>
-                  <CustomInput
-                    value={markingNumber}
-                    handleChange={(e) => setMarkingNumber(e.target.value)}
-                    type="text"
-                    placeholder="Please Enter Marking Number"
-                  />
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                {Object.keys(dataInvoice?.map).map((key: any) => {
-                  return (
-                    <Box key={key}>
-                      <Typography
-                        variant="h6"
-                        mb={1}
-                        mt={3}
-                        sx={{
-                          color: (theme) =>
-                            theme.palette.primary.main + "!important",
-                        }}
-                      >
-                        {key}
-                      </Typography>
-                      {[dataInvoice.map[key]].map((item: any) => {
-                        return <AddTable title={key} key={key} />;
-                      })}
-                    </Box>
-                  );
-                })}
-              </Grid>
-
-              {Object.values(dataInvoice?.map).length > 0 && (
-                <Grid
-                  container
-                  sx={{
-                    justifyContent: "center",
-                    "&>div": {
-                      margin: "10px",
-                    },
-                  }}
-                >
-                  <CustomButton
-                    sx={{
-                      backgroundColor: (theme) =>
-                        theme.palette.primary.main + "!important",
-                    }}
-                    onClick={handleOpen}
-                  >
-                    Preview
-                  </CustomButton>
-                  <PreviewModal
-                    open={open}
-                    setOpen={setOpen}
-                    markingNumber={markingNumber}
-                    setCompanyName={setCompanyName}
-                    setClientName={setClientName}
-                    setQtyList={setQtyList}
-                    setItemList={setItemList}
-                    rows={rows}
-                    setRows={setRows}
-                    itemDes={itemDes}
-                    itemDesData={itemDesData}
-                  />
-                </Grid>
-              )}
-            </Grid>
+            <AddResult
+              rows={rows}
+              open={open}
+              setOpen={setOpen}
+              markingNumber={markingNumber}
+              setCompanyName={setCompanyName}
+              setClientName={setClientName}
+              setQtyList={setQtyList}
+              setItemList={setItemList}
+              setRows={setRows}
+              itemDes={itemDes}
+              itemDesData={itemDesData}
+              setMarkingNumber={setMarkingNumber}
+            />
           </TabPanel>
         </TabContext>
       </Card>
