@@ -24,7 +24,7 @@ export type FileUploadProps = {
 export const FileUploader: React.FC<FileUploadProps> = ({
   accept,
   imageButton = false,
-  hoverLabel = "Click or drag to upload file",
+  hoverLabel = "Click  to upload file",
   dropLabel = "Drop file here",
   image: { url = "" } = {},
   onChange,

@@ -91,8 +91,8 @@ export const invoiceUploadService = (param: IUpload) =>
 export const itemDesService = (item: string) =>
   axiosInstance.get(`/invoice/item?item=${item}`);
 
-export const batchIdService = (param: IBatchId) =>
-  axiosInstance.post("/invoice/search-client-company", param);
-
 export const itemAmountService = (param: IAmountParam) =>
   axiosInstance.post<IAmountRes>("/invoice/item-amount", param);
+
+export const batchIdService = (param: IBatchId) =>
+  axiosInstance.post("/invoice/search-client-company", param);

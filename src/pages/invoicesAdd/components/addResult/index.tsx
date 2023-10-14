@@ -22,6 +22,7 @@ interface IProps {
   setMarkingNumber: (markingNumber: string) => void;
   setRows: (rows: []) => void;
   itemDes: string | undefined;
+  setItemDes: (itemDes: string) => void;
   itemDesData: any;
 }
 
@@ -37,6 +38,7 @@ const AddResult: FC<IProps> = ({
   setItemList,
   setRows,
   itemDes,
+  setItemDes,
   itemDesData,
 }) => {
   const dispatch = useAppDispatch();
@@ -100,6 +102,7 @@ const AddResult: FC<IProps> = ({
         </Grid>
         <NotFoundTable
           itemDes={itemDes}
+          setItemDes={setItemDes}
           itemDesData={itemDesData}
           rows={rows}
           setRows={setRows}

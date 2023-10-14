@@ -19,6 +19,7 @@ import {
 import { wrapperText } from "./add.style";
 import useAppDispatch from "../../hooks/useDispatch";
 import {
+  setInvoiceClearData,
   setInvoiceData,
   setInvoiceNotFind,
 } from "../../redux/slices/invoiceSlice";
@@ -56,13 +57,18 @@ const InvoiceAdd = () => {
   const addInvoiceQuery = useMutation(addInvoiceService);
   const uploadQuery = useMutation(invoiceUploadService);
   const clientQuery = useMutation(clientService);
-  const [test, setTest] = useState<string>();
+  const [fileName, setFileName] = useState<string>();
   const [value, setValue] = useState("1");
   const [file, setFile] = useState();
   const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
     setRows([]);
+    dispatch(setInvoiceClearData());
+    setCompanyName("");
+    setClientName("");
+    setQtyList([]);
+    setItemList([]);
   };
 
   const fileUploadProp: FileUploadProps = {
@@ -70,10 +76,10 @@ const InvoiceAdd = () => {
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       //@ts-ignore
       setFile(event.target.files[0]);
+      //@ts-ignore
+      setFileName(event.target.files[0]?.name);
     },
-    onDrop: (event: React.DragEvent<HTMLElement>) => {
-      // setFile(event.target.files[0]);
-    },
+    onDrop: (event: React.DragEvent<HTMLElement>) => {},
   };
 
   const onPasteItem = (event: any) => {
@@ -175,7 +181,6 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
-          dispatch(setInvoiceData(data.data));
           if (data?.data?.notFoundedItems.length > 0) {
             setRows(data?.data?.notFoundedItems);
             dispatch(setInvoiceNotFind(data?.data?.notFoundedItems));
@@ -190,12 +195,6 @@ const InvoiceAdd = () => {
         },
       }
     );
-  };
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileReader = new FileReader();
-    //@ts-ignore
-    setFile(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -312,6 +311,7 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
+              setItemDes={setItemDes}
               itemDesData={itemDesData}
               setMarkingNumber={setMarkingNumber}
             />
@@ -364,18 +364,13 @@ const InvoiceAdd = () => {
                   sx={{ mt: 1.3 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={6} mb={1} px={2}>
+              <Grid item xs={12} sm={6} md={6} my={1} px={2}>
                 <FormLabel htmlFor="uploadExel">Upload Exel</FormLabel>
                 <FileUploader {...fileUploadProp} />
               </Grid>
-              <Grid item xs={12} sm={6} md={6} mb={1} pt={5} px={2}>
-                <Typography>{test}</Typography>
+              <Grid item xs={12} sm={6} md={6} my={1} pt={5} px={2}>
+                <Typography>{fileName}</Typography>
               </Grid>
-              <input
-                onChange={(e) => handleFile(e)}
-                type="file"
-                accept="application/vnd.ms-excel"
-              />
               <Grid container sx={{ justifyContent: "center" }}>
                 <CustomButton
                   type="submit"
@@ -399,6 +394,7 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
+              setItemDes={setItemDes}
               itemDesData={itemDesData}
               setMarkingNumber={setMarkingNumber}
             />

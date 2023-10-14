@@ -9,4 +9,10 @@ export const wrapperFile: SxProps = {
   marginTop: "10px",
   padding: "10px 20px",
   opacity: "0.5",
+  cursor: "pointer",
+  "& label": {
+    cursor: "pointer",
+    display: "inline-block",
+    width: "100%",
+  },
 };

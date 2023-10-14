@@ -46,7 +46,11 @@ const Login = () => {
               token: data.data.accessToken,
             })
           );
-          navigate("/otp");
+          navigate("/otp", {
+            state: {
+              email,
+            },
+          });
           getOtpQuery.mutate(email, {
             onSuccess(data) {},
           });

@@ -8,6 +8,7 @@ interface IProps {
   rows: any;
   setRows: (rows: []) => void;
   itemDes: string | undefined;
+  setItemDes: (itemDes: string) => void;
   itemDesData: any;
 }
 
@@ -15,6 +16,7 @@ const NotFoundTable: FC<IProps> = ({
   rows,
   setRows,
   itemDes,
+  setItemDes,
   itemDesData,
 }: IProps) => {
   const columns: GridColDef[] = [
@@ -151,7 +153,7 @@ const NotFoundTable: FC<IProps> = ({
 
   return (
     <>
-      {rows && (
+      {rows && rows.length > 0 && (
         <Grid item xs={12} style={{ borderTop: "1px solid red" }} mt={7}>
           <Typography
             variant="h5"

@@ -3,17 +3,15 @@ import { Box, Grid, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpValidation } from "../../services/login.api";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomButton from "../../components/button";
 import Toast from "../../components/toast/Toast";
 import { formBox, wrapperInput } from "./otp.style";
 import { wrapperBox, wrapperFormBox, welcomeBox } from "../login/login.style";
 
-interface IProps {
-  email?: string | undefined;
-}
+const Otp = () => {
+  const { state } = useLocation();
 
-const Otp: FC<IProps> = (email) => {
   const navigate = useNavigate();
   const getOtpValidationQuery = useMutation(getOtpValidation);
   const [segments, setSegments] = useState(["", "", "", "", "", ""]);
@@ -23,12 +21,13 @@ const Otp: FC<IProps> = (email) => {
     setSegments(pasted.split("").slice(0, segments.length));
   }
 
+  const handlechange = () => {};
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     let otp = segments.toString().replace(/,/g, "");
     getOtpValidationQuery.mutate(
       {
-        email: email.email,
+        email: state.email,
         otp: otp,
       },
       {
@@ -48,7 +47,13 @@ const Otp: FC<IProps> = (email) => {
             <Typography>Please Enter Your Verify Code</Typography>
             <Box sx={wrapperInput}>
               {segments.map((s, key) => (
-                <input type="text" key={key} value={s} onPaste={onPaste} />
+                <input
+                  type="text"
+                  key={key}
+                  value={s}
+                  onPaste={onPaste}
+                  onChange={handlechange}
+                />
               ))}
             </Box>
             <CustomButton
