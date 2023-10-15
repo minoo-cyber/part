@@ -179,6 +179,12 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
       width: 90,
       editable: true,
     },
+    {
+      field: "totalAmount",
+      headerName: "total Amount",
+      width: 90,
+      editable: true,
+    },
   ];
   const handleDeleteClick = (id: GridRowId) => () => {
     const selected = pendingData.filter((row: any) => row.id !== id);
