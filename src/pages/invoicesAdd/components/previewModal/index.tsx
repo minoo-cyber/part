@@ -22,6 +22,8 @@ import CustomAutocomplete from "../../../../components/autocomplete";
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  companyName: string;
+  clientName: string;
   setCompanyName: any;
   setClientName: any;
   setQtyList: any;
@@ -31,6 +33,7 @@ interface IProps {
   setRows: (rows: []) => void;
   itemDes: string | undefined;
   itemDesData: any;
+  setFileName: any;
 }
 
 export interface IRows {
@@ -44,6 +47,8 @@ const PreviewModal: FC<IProps> = ({
   open,
   setOpen,
   markingNumber,
+  companyName,
+  clientName,
   setCompanyName,
   setClientName,
   setQtyList,
@@ -52,6 +57,7 @@ const PreviewModal: FC<IProps> = ({
   setRows,
   itemDes,
   itemDesData,
+  setFileName,
 }: IProps) => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
@@ -64,11 +70,19 @@ const PreviewModal: FC<IProps> = ({
         subModels.push(itemInfo);
       });
     });
+    if (rows && rows.length > 0) {
+      rows.map((item: any) => {
+        subModels.push(item);
+      });
+    }
+
     sendPendingQuery.mutate(
       {
         id: 0,
-        companyName: dataInvoice.companyName,
-        clientName: dataInvoice.clientName,
+        companyName:
+          dataInvoice?.length > 0 ? dataInvoice.companyName : companyName,
+        clientName:
+          dataInvoice?.length > 0 ? dataInvoice.clientName : clientName,
         markingNumber: Number(markingNumber),
         pendingInvoiceSubModels: subModels,
       },
@@ -79,6 +93,8 @@ const PreviewModal: FC<IProps> = ({
           setClientName("");
           setQtyList([]);
           setItemList([]);
+          setRows([]);
+          setFileName();
           dispatch(
             setToast({
               open: true,
@@ -252,14 +268,22 @@ const PreviewModal: FC<IProps> = ({
           <Grid item xs={12} sm={6} md={6} px={2} mb={1}>
             <FormLabel>Company Name</FormLabel>
             <CustomInput
-              value={dataInvoice?.companyName}
+              value={
+                dataInvoice?.length > 0 ? dataInvoice.companyName : companyName
+              }
               type="text"
               readOnly
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} px={2} mb={1}>
             <FormLabel>Client Name</FormLabel>
-            <CustomInput value={dataInvoice?.clientName} type="text" readOnly />
+            <CustomInput
+              value={
+                dataInvoice?.length > 0 ? dataInvoice.clientName : clientName
+              }
+              type="text"
+              readOnly
+            />
           </Grid>
         </Grid>
         {Object.keys(dataInvoice.map).map((key: any) => {
@@ -292,7 +316,6 @@ const PreviewModal: FC<IProps> = ({
             return (
               <Box key={index}>
                 <Typography
-                  variant="h6"
                   mb={1}
                   mt={3}
                   sx={{

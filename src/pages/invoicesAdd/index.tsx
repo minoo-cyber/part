@@ -41,7 +41,7 @@ export interface IRows {
 const InvoiceAdd = () => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
-  const [companyName, setCompanyName] = useState<string | undefined>("");
+  const [companyName, setCompanyName] = useState<string>("");
   const [companyData, setCompanyData] = useState<string[]>();
   const [clientName, setClientName] = useState<string>("");
   const [clientData, setClientData] = useState<string[]>();
@@ -55,7 +55,7 @@ const InvoiceAdd = () => {
   const addInvoiceQuery = useMutation(addInvoiceService);
   const uploadQuery = useMutation(invoiceUploadService);
   const clientQuery = useMutation(clientService);
-  const [fileName, setFileName] = useState<string>();
+  const [fileName, setFileName] = useState();
   const [value, setValue] = useState("1");
   const [file, setFile] = useState();
   const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
@@ -66,7 +66,7 @@ const InvoiceAdd = () => {
     dispatch(setInvoiceClearData());
     setCompanyName("");
     setClientName("");
-    setFileName("");
+    setFileName(undefined);
     setQtyList([]);
     setItemList([]);
   };
@@ -294,6 +294,8 @@ const InvoiceAdd = () => {
               open={open}
               setOpen={setOpen}
               markingNumber={markingNumber}
+              companyName={companyName}
+              clientName={clientName}
               setCompanyName={setCompanyName}
               setClientName={setClientName}
               setQtyList={setQtyList}
@@ -303,6 +305,7 @@ const InvoiceAdd = () => {
               itemDesData={itemDesData}
               setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}
+              setFileName={setFileName}
             />
           </TabPanel>
           <TabPanel value="2">
@@ -376,6 +379,8 @@ const InvoiceAdd = () => {
               rows={rows}
               open={open}
               setOpen={setOpen}
+              companyName={companyName}
+              clientName={clientName}
               markingNumber={markingNumber}
               setCompanyName={setCompanyName}
               setClientName={setClientName}
@@ -386,6 +391,7 @@ const InvoiceAdd = () => {
               itemDesData={itemDesData}
               setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}
+              setFileName={setFileName}
             />
           </TabPanel>
         </TabContext>

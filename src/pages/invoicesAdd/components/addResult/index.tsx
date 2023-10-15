@@ -14,6 +14,8 @@ interface IProps {
   rows: string[];
   open: boolean;
   setOpen: (open: boolean) => void;
+  companyName: string;
+  clientName: string;
   setCompanyName: any;
   setClientName: any;
   setQtyList: any;
@@ -24,12 +26,15 @@ interface IProps {
   itemDes: string | undefined;
   itemDesData: any;
   setItemDesData: (itemDesData: any) => void;
+  setFileName: any;
 }
 
 const AddResult: FC<IProps> = ({
   rows,
   open,
   setOpen,
+  companyName,
+  clientName,
   markingNumber,
   setMarkingNumber,
   setCompanyName,
@@ -40,28 +45,33 @@ const AddResult: FC<IProps> = ({
   itemDes,
   itemDesData,
   setItemDesData,
+  setFileName,
 }) => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
 
   const handleOpen = () => {
-    let arrayLength: any = [];
-    Object.values(dataInvoice?.map).map((item: any) => {
-      arrayLength.push(item.length);
-    });
-    for (var i = 0; i < arrayLength.length; i++) {
-      if (arrayLength[i] !== 1) {
-        setOpen(false);
-        dispatch(
-          setToast({
-            open: true,
-            type: "error",
-            text: "Each List Shoud Have Only One Row",
-          })
-        );
-      } else {
-        setOpen(true);
+    if (Object.values(dataInvoice?.map).length > 0) {
+      let arrayLength: any = [];
+      Object.values(dataInvoice?.map).map((item: any) => {
+        arrayLength.push(item.length);
+      });
+      for (var i = 0; i < arrayLength.length; i++) {
+        if (arrayLength[i] !== 1) {
+          setOpen(false);
+          dispatch(
+            setToast({
+              open: true,
+              type: "error",
+              text: "Each List Shoud Have Only One Row",
+            })
+          );
+        } else {
+          setOpen(true);
+        }
       }
+    } else if (rows && rows?.length > 0) {
+      setOpen(true);
     }
   };
 
@@ -107,40 +117,45 @@ const AddResult: FC<IProps> = ({
           rows={rows}
           setRows={setRows}
         />
-        {Object.values(dataInvoice?.map).length > 0 && (
-          <Grid
-            container
-            sx={{
-              justifyContent: "center",
-              "&>div": {
-                margin: "10px",
-              },
-            }}
-          >
-            <CustomButton
+        {Object.values(dataInvoice?.map).length > 0 || rows?.length > 0 ? (
+          <>
+            <Grid
+              container
               sx={{
-                backgroundColor: (theme) =>
-                  theme.palette.primary.main + "!important",
+                justifyContent: "center",
+                "&>div": {
+                  margin: "10px",
+                },
               }}
-              onClick={handleOpen}
             >
-              Preview
-            </CustomButton>
-            <PreviewModal
-              open={open}
-              setOpen={setOpen}
-              markingNumber={markingNumber}
-              setCompanyName={setCompanyName}
-              setClientName={setClientName}
-              setQtyList={setQtyList}
-              setItemList={setItemList}
-              rows={rows}
-              setRows={setRows}
-              itemDes={itemDes}
-              itemDesData={itemDesData}
-            />
-          </Grid>
-        )}
+              <CustomButton
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.primary.main + "!important",
+                }}
+                onClick={handleOpen}
+              >
+                Preview
+              </CustomButton>
+              <PreviewModal
+                open={open}
+                setOpen={setOpen}
+                markingNumber={markingNumber}
+                companyName={companyName}
+                clientName={clientName}
+                setCompanyName={setCompanyName}
+                setClientName={setClientName}
+                setQtyList={setQtyList}
+                setItemList={setItemList}
+                rows={rows}
+                setRows={setRows}
+                itemDes={itemDes}
+                itemDesData={itemDesData}
+                setFileName={setFileName}
+              />
+            </Grid>
+          </>
+        ) : null}
       </Grid>
     </>
   );

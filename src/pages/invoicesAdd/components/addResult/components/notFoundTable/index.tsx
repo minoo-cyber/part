@@ -198,7 +198,6 @@ const NotFoundTable: FC<IProps> = ({
               return (
                 <Box key={index}>
                   <Typography
-                    variant="h6"
                     mb={1}
                     mt={3}
                     sx={{
