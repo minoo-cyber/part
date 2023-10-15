@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowModes } from "@mui/x-data-grid";
 import { FC, useState } from "react";
 import { Box, Grid, TextField, Typography } from "@mui/material";
 import CustomAutocomplete from "../../../../../../components/autocomplete";
@@ -82,7 +82,6 @@ const NotFoundTable: FC<IProps> = ({
       headerName: "Item Description",
       width: 400,
       editable: true,
-      //@ts-ignore
       renderEditCell({ id, ...rest }) {
         return (
           <CustomAutocomplete
@@ -112,6 +111,7 @@ const NotFoundTable: FC<IProps> = ({
                                       id: id,
                                       impaCode: data.data?.impaCode,
                                       itemDesc: data.data?.itemDesc,
+                                      itemSell: data.data?.itemSell,
                                       batchId: data.data?.batchId,
                                       pkg: data.data?.pkg,
                                     };

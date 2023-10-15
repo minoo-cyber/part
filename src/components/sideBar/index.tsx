@@ -39,7 +39,7 @@ const SideBar = () => {
               <Dashboard fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/">Dashboard</NavLink>
+              <NavLink to="/panel">Dashboard</NavLink>
             </ListItemText>
           </MenuItem>
           <Divider />
@@ -72,7 +72,7 @@ const SideBar = () => {
               <AssignmentIndIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <NavLink to="/">Create/Modify Clients</NavLink>
+              <NavLink to="/panel">Create/Modify Clients</NavLink>
             </ListItemText>
           </MenuItem>
           <MenuItem>

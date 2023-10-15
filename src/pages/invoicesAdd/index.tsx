@@ -47,8 +47,8 @@ const InvoiceAdd = () => {
   const [clientData, setClientData] = useState<string[]>();
   const [markingNumber, setMarkingNumber] = useState<string>("0");
   const [open, setOpen] = useState(false);
-  const [itemList, setItemList] = useState([]);
-  const [qtyList, setQtyList] = useState([]);
+  const [itemList, setItemList] = useState<any>([]);
+  const [qtyList, setQtyList] = useState<any>([]);
   const [itemDes, setItemDes] = useState<string | undefined>("");
   const [itemDesData, setItemDesData] = useState<string[]>();
   const companyQuery = useMutation(companyNameService);
@@ -67,8 +67,8 @@ const InvoiceAdd = () => {
     setCompanyName("");
     setClientName("");
     setFileName(undefined);
-    setQtyList([]);
-    setItemList([]);
+    setQtyList(undefined);
+    setItemList(undefined);
   };
 
   const fileUploadProp: FileUploadProps = {
@@ -182,6 +182,7 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
+          dispatch(setInvoiceData(data.data));
           if (data?.data?.notFoundedItems.length > 0) {
             setRows(data?.data?.notFoundedItems);
             dispatch(setInvoiceNotFind(data?.data?.notFoundedItems));

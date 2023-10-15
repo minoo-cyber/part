@@ -76,8 +76,8 @@ const AddUser = () => {
             value={fullName}
             handleChange={(e) => setFullName(e.target.value)}
             type="text"
-            fieldName="fullName"
-            placeholder="Please Enter Your FullName"
+            fieldName="userName"
+            placeholder="Please Enter UserName"
           />
         </Box>
         <Box>

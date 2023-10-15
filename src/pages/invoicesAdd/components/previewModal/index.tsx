@@ -18,6 +18,7 @@ import { setToast } from "../../../../redux/slices/toastSlice";
 import CustomInput from "../../../../components/input";
 import CustomButton from "../../../../components/button";
 import CustomAutocomplete from "../../../../components/autocomplete";
+import { useNavigate } from "react-router";
 
 interface IProps {
   open: boolean;
@@ -42,6 +43,7 @@ export interface IRows {
   itemDesc: string;
   batchId: number;
   pkg?: string;
+  itemSell?: number;
 }
 const PreviewModal: FC<IProps> = ({
   open,
@@ -61,6 +63,7 @@ const PreviewModal: FC<IProps> = ({
 }: IProps) => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
+  const navigate = useNavigate();
   const sendPendingQuery = useMutation(sendPendingService);
 
   const handlePending = () => {
@@ -95,6 +98,8 @@ const PreviewModal: FC<IProps> = ({
           setItemList([]);
           setRows([]);
           setFileName();
+          setQtyList(undefined);
+          setItemList(undefined);
           dispatch(
             setToast({
               open: true,
@@ -102,6 +107,7 @@ const PreviewModal: FC<IProps> = ({
               text: "Invoice Added To Pending Queris successfully",
             })
           );
+          navigate("/pending");
           setOpen(false);
         },
       }
@@ -298,10 +304,11 @@ const PreviewModal: FC<IProps> = ({
               >
                 {key}
               </Typography>
-              {[dataInvoice.map[key]].map((item: any) => {
+              {[dataInvoice.map[key]].map((item: any, index: any) => {
                 return (
                   <DataGrid
                     rows={item ? item : []}
+                    key={index}
                     getRowId={(row) => row.rowNum}
                     columns={columns}
                     hideFooter={true}

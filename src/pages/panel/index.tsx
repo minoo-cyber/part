@@ -13,25 +13,25 @@ const Panel = () => {
     <Layout>
       <Grid container sx={wrapperItems}>
         <Card>
-          <NavLink to="/invoices">
+          <NavLink to="/invoiceAdd">
             <FactCheckIcon />
             New Invoice
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/">
+          <NavLink to="/invoicesSearch">
             <AccountBoxIcon />
             Search By Client Name
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/">
+          <NavLink to="/invoicesSearch">
             <ApartmentIcon />
             Search By Company
           </NavLink>
         </Card>
         <Card>
-          <NavLink to="/">
+          <NavLink to="/invoicesSearch">
             <PageviewIcon />
             Search By Batch
           </NavLink>

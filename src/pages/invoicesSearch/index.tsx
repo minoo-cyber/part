@@ -51,6 +51,8 @@ const InvoicesSearch = () => {
 
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
+    setBatchId("");
+    setData(undefined);
   };
 
   useEffect(() => {
@@ -100,7 +102,37 @@ const InvoicesSearch = () => {
       setExpanded(newExpanded ? panel : false);
     };
 
-  const handleSearch = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSearchBatchId = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    searchQuery.mutate(
+      {
+        batchId: Number(batchId),
+        clientName: clientName,
+        companyName: companyName,
+      },
+      {
+        onSuccess(data) {
+          if (data.data[0]) {
+            setData(data.data[0]);
+            setLoading(false);
+          } else {
+            setData(undefined);
+            setLoading(false);
+            dispatch(
+              setToast({
+                open: true,
+                type: "error",
+                text: "No Data For This BatchId",
+              })
+            );
+          }
+        },
+      }
+    );
+  };
+
+  const handleSearchCompany = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     searchQuery.mutate(
@@ -144,7 +176,7 @@ const InvoicesSearch = () => {
             <Tab value="2" label="Search By Company" />
           </Tabs>
           <TabPanel value="1">
-            <Grid container component="form" onSubmit={handleSearch}>
+            <Grid container component="form" onSubmit={handleSearchBatchId}>
               <Grid item xs={12} sm={6} md={4} px={2} mb={1}>
                 <FormLabel>Batch Id Search</FormLabel>
                 <CustomInput
@@ -199,7 +231,7 @@ const InvoicesSearch = () => {
             </Accordion>
           </TabPanel>
           <TabPanel value="2">
-            <Grid container component="form" onSubmit={handleSearch}>
+            <Grid container component="form" onSubmit={handleSearchCompany}>
               <Grid item xs={12} sm={6} md={4} mb={1} px={2}>
                 <FormLabel>Company Name Search</FormLabel>
                 <CustomAutocomplete
