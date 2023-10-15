@@ -81,7 +81,7 @@ const AddUser = () => {
           />
         </Box>
         <Box>
-          <FormLabel>Rols</FormLabel>
+          <FormLabel>Roles</FormLabel>
           <CustomSelect value={role} onChange={handleRole}>
             {rolesQuery?.data?.data &&
               rolesQuery.data.data.map((item: any, index: any) => (

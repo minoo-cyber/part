@@ -18,7 +18,7 @@ const TopBar = () => {
   const dispatch = useAppDispatch();
   const handleLogOut = () => {
     dispatch(clearUserToken());
-    navigate("/login");
+    navigate("/");
   };
 
   return (

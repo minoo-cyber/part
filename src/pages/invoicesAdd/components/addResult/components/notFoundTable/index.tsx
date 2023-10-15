@@ -92,6 +92,8 @@ const NotFoundTable: FC<IProps> = ({
                   onSuccess(data) {
                     if (data.data) {
                       setItemDesData(data.data);
+                      //@ts-ignore
+                      let qty = rows[id - 1].qty;
                       let filtered: any = data.data?.filter(
                         (item: any) => item?.itemDesc === value
                       )?.[0];
@@ -100,6 +102,7 @@ const NotFoundTable: FC<IProps> = ({
                           {
                             impaCode: filtered?.impaCode,
                             batchId: filtered?.batchId,
+                            qty: qty,
                           },
                           {
                             onSuccess(data) {
@@ -113,6 +116,8 @@ const NotFoundTable: FC<IProps> = ({
                                       itemDesc: data.data?.itemDesc,
                                       itemSell: data.data?.itemSell,
                                       batchId: data.data?.batchId,
+                                      totalAmount: data.data?.totalAmount,
+                                      qty: data.data?.qty,
                                       pkg: data.data?.pkg,
                                     };
                                     arr[id - 1] = newRow;

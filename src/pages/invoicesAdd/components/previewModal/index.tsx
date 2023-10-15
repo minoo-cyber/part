@@ -44,6 +44,8 @@ export interface IRows {
   batchId: number;
   pkg?: string;
   itemSell?: number;
+  qty?: number;
+  totalAmount?: number;
 }
 const PreviewModal: FC<IProps> = ({
   open,

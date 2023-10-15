@@ -49,6 +49,7 @@ export interface IInvoiceAddModels {
 export interface IAmountParam {
   impaCode: string;
   batchId: number;
+  qty: number;
 }
 
 export interface IAmountRes {
@@ -57,6 +58,8 @@ export interface IAmountRes {
   impaCode: string;
   itemSell: number;
   batchId: number;
+  qty: number;
+  totalAmount: number;
 }
 
 export interface IBatchId {
