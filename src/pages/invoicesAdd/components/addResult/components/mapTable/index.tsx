@@ -12,11 +12,15 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-import { FC, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { Grid } from "@mui/material";
-import { setInvoiceInfoSelect } from "../../../../../../redux/slices/invoiceSlice";
+import {
+  setInvoiceData,
+  setInvoiceInfoSelect,
+} from "../../../../../../redux/slices/invoiceSlice";
 import useAppDispatch from "../../../../../../hooks/useDispatch";
 import useAppSelector from "../../../../../../hooks/useSelector";
+import CustomInput from "../../../../../../components/input";
 
 interface IProps {
   title: string;
@@ -115,6 +119,28 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [filterRows, setFilterRows] = useState(dataInvoice.map[title]);
+  const [filterKeyword, setFilterKeyword] = useState<string>();
+
+  const handleFilter = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFilterKeyword(e?.target.value);
+    const keyword = e.target.value;
+    if (keyword !== "") {
+      const results =
+        dataInvoice.map[title] &&
+        dataInvoice.map[title].filter((item: any) => {
+          return (
+            item?.impaCode?.toLowerCase()?.startsWith(keyword.toLowerCase()) ||
+            item?.itemDesc?.toLowerCase()?.startsWith(keyword.toLowerCase())
+          );
+        });
+      setFilterRows(results);
+    } else {
+      setFilterRows(dataInvoice.map[title]);
+    }
+  };
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
@@ -179,9 +205,21 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
 
   return (
     <>
-      <Grid item xs={12}>
+      <CustomInput
+        value={filterKeyword}
+        handleChange={handleFilter}
+        type="text"
+        placeholder="Filter By ImpaCode && ItemDescription"
+      />
+      <Grid item xs={12} mt={3}>
         <DataGrid
-          rows={dataInvoice.map[title] ? dataInvoice.map[title] : []}
+          rows={
+            filterRows
+              ? filterRows
+              : dataInvoice.map[title]
+              ? dataInvoice.map[title]
+              : []
+          }
           columns={columns}
           getRowId={(row) => row.rowNum}
           editMode="row"
