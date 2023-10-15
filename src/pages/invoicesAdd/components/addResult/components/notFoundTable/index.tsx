@@ -1,24 +1,31 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Box, Grid, TextField, Typography } from "@mui/material";
 import CustomAutocomplete from "../../../../../../components/autocomplete";
 import { IRows } from "../../../previewModal";
+import { useMutation } from "@tanstack/react-query";
+import {
+  itemAmountService,
+  itemDesService,
+} from "../../../../../../services/invoice.api";
 
 interface IProps {
   rows: any;
   setRows: (rows: []) => void;
   itemDes: string | undefined;
-  setItemDes: (itemDes: string) => void;
   itemDesData: any;
+  setItemDesData: (itemDesData: string) => void;
 }
 
 const NotFoundTable: FC<IProps> = ({
   rows,
   setRows,
   itemDes,
-  setItemDes,
   itemDesData,
+  setItemDesData,
 }: IProps) => {
+  const itemDesQuery = useMutation(itemDesService);
+  const itemAmountQuery = useMutation(itemAmountService);
   const columns: GridColDef[] = [
     // {
     //   field: "actions",
@@ -81,27 +88,45 @@ const NotFoundTable: FC<IProps> = ({
           <CustomAutocomplete
             value={itemDes ? itemDes : ""}
             onInputChange={(e, value) => {
-              //@ts-ignore
-              setItemDes(value);
-              if (value && value.length >= 3 && itemDesData) {
-                let arr: any = [...rows];
-                let filtered: any = itemDesData?.filter(
-                  (item: any) => item?.itemDesc === value
-                )?.[0];
-                if (filtered) {
-                  for (let i = 1; i < arr.length + 1; i++) {
-                    if (id === i) {
-                      let newRow: IRows = {
-                        id: id,
-                        impaCode: filtered?.impaCode,
-                        itemDesc: filtered?.itemDesc,
-                        batchId: filtered?.batchId,
-                      };
-                      arr[id - 1] = newRow;
-                      setRows(arr);
+              if (value && value.length >= 3) {
+                itemDesQuery.mutate(value, {
+                  onSuccess(data) {
+                    if (data.data) {
+                      setItemDesData(data.data);
+                      let filtered: any = data.data?.filter(
+                        (item: any) => item?.itemDesc === value
+                      )?.[0];
+                      if (filtered) {
+                        itemAmountQuery.mutate(
+                          {
+                            impaCode: filtered?.impaCode,
+                            batchId: filtered?.batchId,
+                          },
+                          {
+                            onSuccess(data) {
+                              let arr: any = [...rows];
+                              if (data.data) {
+                                for (let i = 1; i < arr.length + 1; i++) {
+                                  if (id === i) {
+                                    let newRow: IRows = {
+                                      id: id,
+                                      impaCode: data.data?.impaCode,
+                                      itemDesc: data.data?.itemDesc,
+                                      batchId: data.data?.batchId,
+                                      pkg: data.data?.pkg,
+                                    };
+                                    arr[id - 1] = newRow;
+                                    setRows(arr);
+                                  }
+                                }
+                              }
+                            },
+                          }
+                        );
+                      }
                     }
-                  }
-                }
+                  },
+                });
               }
             }}
             options={

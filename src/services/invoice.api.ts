@@ -56,6 +56,7 @@ export interface IAmountRes {
   pkg: string;
   impaCode: string;
   itemSell: number;
+  batchId: number;
 }
 
 export interface IBatchId {

@@ -14,7 +14,6 @@ import {
   clientService,
   companyNameService,
   invoiceUploadService,
-  itemDesService,
 } from "../../services/invoice.api";
 import { wrapperText } from "./add.style";
 import useAppDispatch from "../../hooks/useDispatch";
@@ -52,7 +51,6 @@ const InvoiceAdd = () => {
   const [qtyList, setQtyList] = useState([]);
   const [itemDes, setItemDes] = useState<string | undefined>("");
   const [itemDesData, setItemDesData] = useState<string[]>();
-  const itemDesQuery = useMutation(itemDesService);
   const companyQuery = useMutation(companyNameService);
   const addInvoiceQuery = useMutation(addInvoiceService);
   const uploadQuery = useMutation(invoiceUploadService);
@@ -61,12 +59,14 @@ const InvoiceAdd = () => {
   const [value, setValue] = useState("1");
   const [file, setFile] = useState();
   const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
+
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
     setRows([]);
     dispatch(setInvoiceClearData());
     setCompanyName("");
     setClientName("");
+    setFileName("");
     setQtyList([]);
     setItemList([]);
   };
@@ -171,6 +171,7 @@ const InvoiceAdd = () => {
       }
     );
   };
+
   const handleSubmitAutomatic = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     uploadQuery.mutate(
@@ -196,18 +197,6 @@ const InvoiceAdd = () => {
       }
     );
   };
-
-  useEffect(() => {
-    if (itemDes && itemDes.length >= 3) {
-      itemDesQuery.mutate(itemDes, {
-        onSuccess(data) {
-          if (data.data) {
-            setItemDesData(data.data);
-          }
-        },
-      });
-    }
-  }, [itemDes]);
 
   return (
     <Layout>
@@ -311,8 +300,8 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
-              setItemDes={setItemDes}
               itemDesData={itemDesData}
+              setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}
             />
           </TabPanel>
@@ -394,8 +383,8 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
-              setItemDes={setItemDes}
               itemDesData={itemDesData}
+              setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}
             />
           </TabPanel>

@@ -38,6 +38,7 @@ export interface IRows {
   impaCode: string;
   itemDesc: string;
   batchId: number;
+  pkg?: string;
 }
 const PreviewModal: FC<IProps> = ({
   open,
