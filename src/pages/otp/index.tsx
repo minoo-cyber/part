@@ -32,7 +32,7 @@ const Otp = () => {
       },
       {
         onSuccess(data) {
-          navigate("/");
+          navigate("/panel");
         },
       }
     );
