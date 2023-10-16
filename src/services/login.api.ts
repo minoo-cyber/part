@@ -8,6 +8,7 @@ interface ILoginParam {
 interface ILoginRes {
   accessToken: string;
   refreshToken: string;
+  user: any;
 }
 
 interface IOtpParam {

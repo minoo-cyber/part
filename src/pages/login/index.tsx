@@ -4,7 +4,7 @@ import { SyntheticEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpService, loginService } from "../../services/login.api";
 import useAppDispatch from "../../hooks/useDispatch";
-import { userToken } from "../../redux/slices/userSlice";
+import { userInfo, userToken } from "../../redux/slices/userSlice";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomInput from "../../components/input";
@@ -44,6 +44,11 @@ const Login = () => {
             userToken({
               refresh: data.data.refreshToken,
               token: data.data.accessToken,
+            })
+          );
+          dispatch(
+            userInfo({
+              user: data.data.user.email,
             })
           );
           navigate("/otp", {

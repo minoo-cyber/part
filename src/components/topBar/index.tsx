@@ -7,8 +7,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useAppDispatch from "../../hooks/useDispatch";
 import { clearUserToken } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router";
+import useAppSelector from "../../hooks/useSelector";
 
 const TopBar = () => {
+  const { user } = useAppSelector((state) => state.user);
   let newDate = new Date();
   let date = newDate.getDate();
   let month = newDate.getMonth() + 1;
@@ -32,7 +34,7 @@ const TopBar = () => {
       <Box sx={wrapperIcons}>
         <Typography>
           <AccountCircleIcon />
-          Welcome Aref
+          Welcome {user}
         </Typography>
         <Typography>
           <CalendarMonthIcon />

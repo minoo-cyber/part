@@ -39,8 +39,14 @@ export const wrapperIcons: SxProps = {
       cursor: "pointer",
     },
   },
-  "@media (max-width: 800px)": {
-    "& p:nth-of-type(1),& p:nth-of-type(2)": {
+  "@media (max-width: 850px)": {
+    "& p:nth-of-type(2)": {
+      display: "none",
+    },
+  },
+
+  "@media (max-width: 680px)": {
+    "& p:nth-of-type(1)": {
       display: "none",
     },
     "& p:nth-of-type(3)": {

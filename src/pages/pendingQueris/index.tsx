@@ -199,7 +199,7 @@ const PendingQueris = () => {
           <>
             {pendingData?.map((item, index) => {
               return (
-                <Grid container sx={wrapperBox}>
+                <Grid container sx={wrapperBox} key={index}>
                   <Grid item xs={12} sm={6} md={4} px={2} my={1}>
                     <FormLabel>Id</FormLabel>
                     <CustomInput value={item.id} type="text" readOnly />
