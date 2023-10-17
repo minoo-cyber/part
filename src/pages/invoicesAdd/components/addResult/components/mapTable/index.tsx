@@ -165,6 +165,11 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
       obj[key] = selected;
       dispatch(setInvoiceInfoSelect(obj));
     }
+    if (filterRows.length > 1) {
+      const selected = filterRows.filter((row: any) => row.rowNum === id);
+
+      setFilterRows(selected);
+    }
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
