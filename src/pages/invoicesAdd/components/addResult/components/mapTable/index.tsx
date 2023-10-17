@@ -133,7 +133,7 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
         dataInvoice.map[title].filter((item: any) => {
           return (
             item?.impaCode?.toLowerCase()?.startsWith(keyword.toLowerCase()) ||
-            item?.itemDesc?.toLowerCase()?.startsWith(keyword.toLowerCase())
+            item?.itemDesc?.toLowerCase()?.includes(keyword.toLowerCase())
           );
         });
       setFilterRows(results);
