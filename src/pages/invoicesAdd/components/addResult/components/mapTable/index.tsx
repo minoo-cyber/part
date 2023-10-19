@@ -109,10 +109,13 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
       editable: true,
     },
     {
-      field: "totalAmount",
+      field: "",
       headerName: "Total Amount",
       width: 110,
-      editable: true,
+      editable: false,
+      valueGetter: (params) => {
+        return params.row.itemSell * params.row.qty;
+      },
     },
   ];
 
@@ -192,10 +195,12 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    const test = [updatedRow];
+    //@ts-ignore
+    updatedRow.totalAmount = updatedRow.qty * updatedRow.itemSell;
+    const selected = [updatedRow];
     var key = title;
     var obj: any = {};
-    obj[key] = test;
+    obj[key] = selected;
     dispatch(setInvoiceInfoSelect(obj));
     return updatedRow;
   };

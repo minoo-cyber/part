@@ -131,43 +131,43 @@ const PreviewModal: FC<IProps> = ({
       field: "impaCode",
       headerName: "Impa Code",
       width: 100,
-      editable: true,
+      editable: false,
     },
     {
       field: "itemDesc",
       headerName: "Item Description",
       width: 400,
-      editable: true,
+      editable: false,
     },
     {
       field: "extraText",
       headerName: "Extra Text",
       width: 200,
-      editable: true,
+      editable: false,
     },
     {
       field: "pkg",
       headerName: "pkg",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "qty",
       headerName: "Qty",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "itemSell",
       headerName: "Item Sell",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "totalAmount",
       headerName: "Total Amount",
       width: 110,
-      editable: true,
+      editable: false,
     },
   ];
 
@@ -258,12 +258,16 @@ const PreviewModal: FC<IProps> = ({
       editable: true,
     },
     {
-      field: "totalAmount",
+      field: "",
       headerName: "Total Amount",
       width: 110,
-      editable: true,
+      editable: false,
+      valueGetter: (params) => {
+        return params.row.itemSell * params.row.qty;
+      },
     },
   ];
+
   return (
     <Modal
       open={open}
