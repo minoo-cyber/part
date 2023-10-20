@@ -1,5 +1,6 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import {
+  CircularProgress,
   FormLabel,
   Grid,
   Tab,
@@ -59,6 +60,8 @@ const InvoiceAdd = () => {
   const [value, setValue] = useState("1");
   const [file, setFile] = useState();
   const [rows, setRows] = useState<string[]>(dataInvoice.notFoundedItems);
+  const [autoLoading, setAutoLoading] = useState<boolean>(false);
+  const [manualLoading, setManualLoading] = useState<boolean>(false);
 
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -128,6 +131,7 @@ const InvoiceAdd = () => {
 
   const handleSubmitManual = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setManualLoading(true);
     let invoiceModels = [];
     for (let i = 0; i < itemList.length; i++) {
       if (
@@ -155,6 +159,7 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
+          setManualLoading(false);
           dispatch(setInvoiceData(data.data));
           if (data?.data?.notFoundedItems.length > 0) {
             setRows(data?.data?.notFoundedItems);
@@ -174,6 +179,7 @@ const InvoiceAdd = () => {
 
   const handleSubmitAutomatic = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setAutoLoading(true);
     uploadQuery.mutate(
       {
         companyName: companyName,
@@ -182,6 +188,7 @@ const InvoiceAdd = () => {
       },
       {
         onSuccess(data) {
+          setAutoLoading(false);
           dispatch(setInvoiceData(data.data));
           if (data?.data?.notFoundedItems.length > 0) {
             setRows(data?.data?.notFoundedItems);
@@ -223,7 +230,9 @@ const InvoiceAdd = () => {
                     value: string,
                     reason: string
                   ) => {
-                    setCompanyName(value);
+                    if (value && value.length >= 3) {
+                      setCompanyName(value);
+                    }
                   }}
                   options={
                     companyData
@@ -286,6 +295,7 @@ const InvoiceAdd = () => {
                       theme.palette.primary.main + "!important",
                   }}
                 >
+                  {manualLoading ? <CircularProgress size="small" /> : null}
                   Add Invoice
                 </CustomButton>
               </Grid>
@@ -320,7 +330,9 @@ const InvoiceAdd = () => {
                     value: string,
                     reason: string
                   ) => {
-                    setCompanyName(value);
+                    if (value && value.length >= 3) {
+                      setCompanyName(value);
+                    }
                   }}
                   options={
                     companyData
@@ -372,6 +384,7 @@ const InvoiceAdd = () => {
                       theme.palette.primary.main + "!important",
                   }}
                 >
+                  {autoLoading ? <CircularProgress size="small" /> : null}
                   Add Invoice
                 </CustomButton>
               </Grid>

@@ -224,7 +224,7 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
       <Grid item xs={12} mt={3}>
         <DataGrid
           rows={
-            filterRows
+            filterKeyword
               ? filterRows
               : dataInvoice.map[title]
               ? dataInvoice.map[title]

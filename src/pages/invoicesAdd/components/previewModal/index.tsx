@@ -1,12 +1,13 @@
 import {
   Box,
+  CircularProgress,
   FormLabel,
   Grid,
   Modal,
   TextField,
   Typography,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { wrapperBox } from "./modal.style";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useMutation } from "@tanstack/react-query";
@@ -65,10 +66,12 @@ const PreviewModal: FC<IProps> = ({
 }: IProps) => {
   const dispatch = useAppDispatch();
   const { dataInvoice } = useAppSelector((state) => state.invoice);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const sendPendingQuery = useMutation(sendPendingService);
 
   const handlePending = () => {
+    setLoading(true);
     let subModels: any = [];
     Object.values(dataInvoice.map).map((item: any) => {
       item.map((itemInfo: any) => {
@@ -93,6 +96,7 @@ const PreviewModal: FC<IProps> = ({
       },
       {
         onSuccess(data) {
+          setLoading(false);
           dispatch(setInvoiceClearData());
           setCompanyName("");
           setClientName("");
@@ -371,6 +375,7 @@ const PreviewModal: FC<IProps> = ({
                 theme.palette.primary.main + "!important",
             }}
           >
+            {loading ? <CircularProgress size="small" /> : null}
             Add Pending
           </CustomButton>
         </Grid>
