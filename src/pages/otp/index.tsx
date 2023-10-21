@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getOtpValidation } from "../../services/login.api";
@@ -11,7 +11,7 @@ import { wrapperBox, wrapperFormBox, welcomeBox } from "../login/login.style";
 
 const Otp = () => {
   const { state } = useLocation();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const getOtpValidationQuery = useMutation(getOtpValidation);
   const [segments, setSegments] = useState(["", "", "", "", "", ""]);
@@ -24,6 +24,7 @@ const Otp = () => {
   const handlechange = () => {};
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     let otp = segments.toString().replace(/,/g, "");
     getOtpValidationQuery.mutate(
       {
@@ -32,6 +33,7 @@ const Otp = () => {
       },
       {
         onSuccess(data) {
+          setLoading(false);
           navigate("/panel");
         },
       }
@@ -63,6 +65,7 @@ const Otp = () => {
                   theme.palette.primary.main + "!important",
               }}
             >
+              {loading ? <CircularProgress size="small" /> : null}
               Sign In
             </CustomButton>
           </Grid>

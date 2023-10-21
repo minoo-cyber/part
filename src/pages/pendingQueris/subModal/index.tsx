@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   FormLabel,
   Grid,
   InputLabel,
@@ -70,10 +71,9 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
   const [porttData, setPortData] = useState<string[]>();
   const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [markup, setMarkup] = useState<string>("");
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [batchId, setBatchId] = useState<string>("");
   const [resBatchId, setResBatchId] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -231,6 +231,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
 
   const handleSave = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const model = {
       pendingId: data?.id,
       clientName: data?.clientName,
@@ -246,6 +247,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
 
     saveQuery.mutate(model, {
       onSuccess(data) {
+        setLoading(false);
         setResBatchId(data.data);
         dispatch(
           setToast({
@@ -455,6 +457,7 @@ const SubModal: FC<IProps> = ({ open, setOpen, data }: IProps) => {
                   theme.palette.primary.main + "!important",
               }}
             >
+              {loading ? <CircularProgress size="small" /> : null}
               Finalize
             </CustomButton>
           </Grid>

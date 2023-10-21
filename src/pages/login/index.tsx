@@ -1,4 +1,10 @@
-import { Box, FormLabel, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  FormLabel,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { formBox, welcomeBox, wrapperBox, wrapperFormBox } from "./login.style";
 import { SyntheticEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +22,7 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPass, setShowPass] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [type, setType] = useState<any>("password");
   const loginQuery = useMutation(loginService);
   const getOtpQuery = useMutation(getOtpService);
@@ -33,6 +40,7 @@ const Login = () => {
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     loginQuery.mutate(
       {
         email: email,
@@ -51,6 +59,7 @@ const Login = () => {
               user: data.data.user.email,
             })
           );
+          setLoading(false);
           navigate("/otp", {
             state: {
               email,
@@ -104,6 +113,7 @@ const Login = () => {
                   theme.palette.primary.main + "!important",
               }}
             >
+              {loading ? <CircularProgress size="small" /> : null}
               Continue
             </CustomButton>
           </Grid>

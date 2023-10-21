@@ -6,7 +6,7 @@ import {
   pendingSearchService,
 } from "../../services/pending.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { FormLabel, Grid, TextField } from "@mui/material";
+import { CircularProgress, FormLabel, Grid, TextField } from "@mui/material";
 import CustomAutocomplete from "../../components/autocomplete";
 import { clientService, companyNameService } from "../../services/invoice.api";
 import CustomButton from "../../components/button";
@@ -79,6 +79,7 @@ const PendingQueris = () => {
   const [clientData, setClientData] = useState<string[]>();
   const [open, setOpen] = useState(false);
   const [modaldata, setModalData] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setPendingData(getPendingQuery?.data?.data);
@@ -110,6 +111,7 @@ const PendingQueris = () => {
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     pendingSearchQuery.mutate(
       {
         companyName: companyName,
@@ -117,6 +119,7 @@ const PendingQueris = () => {
       },
       {
         onSuccess(data) {
+          setLoading(false);
           if (data.data.length > 1) {
             setPendingData(data.data);
           } else {
@@ -150,7 +153,11 @@ const PendingQueris = () => {
             <CustomAutocomplete
               value={companyName}
               onInputChange={(event: object, value: string, reason: string) => {
-                setCompanyName(value);
+                if (value && value.length >= 3) {
+                  setCompanyName(value);
+                } else {
+                  setCompanyName("");
+                }
               }}
               options={
                 companyData
@@ -191,6 +198,7 @@ const PendingQueris = () => {
                   theme.palette.primary.main + "!important",
               }}
             >
+              {loading ? <CircularProgress size="small" /> : null}
               Search
             </CustomButton>
           </Grid>
