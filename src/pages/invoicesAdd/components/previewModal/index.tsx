@@ -186,21 +186,19 @@ const PreviewModal: FC<IProps> = ({
       field: "impaCode",
       headerName: "Impa Code",
       width: 100,
-      editable: true,
+      editable: false,
     },
     {
       field: "itemDesc",
       headerName: "Item Description",
       width: 400,
-      editable: true,
+      editable: false,
       //@ts-ignore
       renderEditCell({ id, ...rest }) {
         return (
           <CustomAutocomplete
             value={itemDes ? itemDes : ""}
             onInputChange={(e, value) => {
-              //@ts-ignore
-              setItemDes(value);
               if (value && value.length >= 3 && itemDesData) {
                 let arr: any = [...rows];
                 let filtered: any = itemDesData?.filter(
@@ -241,25 +239,25 @@ const PreviewModal: FC<IProps> = ({
       field: "extraText",
       headerName: "Extra Text",
       width: 200,
-      editable: true,
+      editable: false,
     },
     {
       field: "pkg",
       headerName: "pkg",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "qty",
       headerName: "Qty",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "itemSell",
       headerName: "Item Sell",
       width: 90,
-      editable: true,
+      editable: false,
     },
     {
       field: "",
@@ -267,7 +265,9 @@ const PreviewModal: FC<IProps> = ({
       width: 110,
       editable: false,
       valueGetter: (params) => {
-        return params.row.itemSell * params.row.qty;
+        return params.row.itemSell
+          ? parseFloat((params.row.itemSell * params.row.qty).toFixed(2))
+          : "";
       },
     },
   ];

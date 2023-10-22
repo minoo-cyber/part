@@ -313,6 +313,7 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
+              setItemDes={setItemDes}
               itemDesData={itemDesData}
               setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}
@@ -402,6 +403,7 @@ const InvoiceAdd = () => {
               setItemList={setItemList}
               setRows={setRows}
               itemDes={itemDes}
+              setItemDes={setItemDes}
               itemDesData={itemDesData}
               setItemDesData={setItemDesData}
               setMarkingNumber={setMarkingNumber}

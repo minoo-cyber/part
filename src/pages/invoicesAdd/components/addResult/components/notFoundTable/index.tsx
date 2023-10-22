@@ -1,6 +1,16 @@
-import { DataGrid, GridColDef, GridRowModes } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridEventListener,
+  GridRowEditStopReasons,
+  GridRowId,
+  GridRowModel,
+  GridRowModes,
+  GridRowModesModel,
+} from "@mui/x-data-grid";
 import { FC, useState } from "react";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import CustomAutocomplete from "../../../../../../components/autocomplete";
 import { IRows } from "../../../previewModal";
 import { useMutation } from "@tanstack/react-query";
@@ -8,11 +18,15 @@ import {
   itemAmountService,
   itemDesService,
 } from "../../../../../../services/invoice.api";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
 
 interface IProps {
   rows: any;
   setRows: (rows: []) => void;
   itemDes: string | undefined;
+  setItemDes: (itemDes: string) => void;
   itemDesData: any;
   setItemDesData: (itemDesData: string) => void;
 }
@@ -26,45 +40,47 @@ const NotFoundTable: FC<IProps> = ({
 }: IProps) => {
   const itemDesQuery = useMutation(itemDesService);
   const itemAmountQuery = useMutation(itemAmountService);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
   const columns: GridColDef[] = [
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   headerName: "Actions",
-    //   width: 100,
-    //   cellClassName: "actions",
-    //   getActions: ({ id }) => {
-    //     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-    //     if (isInEditMode) {
-    //       return [
-    //         <GridActionsCellItem
-    //           icon={<SaveIcon />}
-    //           label="Save"
-    //           sx={{
-    //             color: "primary.main",
-    //           }}
-    //           onClick={handleSaveClick(id)}
-    //         />,
-    //         <GridActionsCellItem
-    //           icon={<CancelIcon />}
-    //           label="Cancel"
-    //           className="textPrimary"
-    //           onClick={handleCancelClick(id)}
-    //           color="inherit"
-    //         />,
-    //       ];
-    //     }
-    //     return [
-    //       <GridActionsCellItem
-    //         icon={<EditIcon />}
-    //         label="Edit"
-    //         className="textPrimary"
-    //         onClick={handleEditClick(id)}
-    //         color="inherit"
-    //       />,
-    //     ];
-    //   },
-    // },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
     {
       field: "id",
       headerName: "Id",
@@ -85,8 +101,9 @@ const NotFoundTable: FC<IProps> = ({
       renderEditCell({ id, ...rest }) {
         return (
           <CustomAutocomplete
-            value={itemDes ? itemDes : ""}
-            onInputChange={(e, value) => {
+            loading
+            value={itemDes}
+            onInputChange={(event: object, value: string, reason: string) => {
               if (value && value.length >= 3) {
                 itemDesQuery.mutate(value, {
                   onSuccess(data) {
@@ -98,36 +115,36 @@ const NotFoundTable: FC<IProps> = ({
                         (item: any) => item?.itemDesc === value
                       )?.[0];
                       if (filtered) {
-                        itemAmountQuery.mutate(
-                          {
-                            impaCode: filtered?.impaCode,
-                            batchId: filtered?.batchId,
-                            qty: qty,
-                          },
-                          {
-                            onSuccess(data) {
-                              let arr: any = [...rows];
-                              if (data.data) {
-                                for (let i = 1; i < arr.length + 1; i++) {
-                                  if (id === i) {
-                                    let newRow: IRows = {
-                                      id: id,
-                                      impaCode: data.data?.impaCode,
-                                      itemDesc: data.data?.itemDesc,
-                                      itemSell: data.data?.itemSell,
-                                      batchId: data.data?.batchId,
-                                      totalAmount: data.data?.totalAmount,
-                                      qty: data.data?.qty,
-                                      pkg: data.data?.pkg,
-                                    };
-                                    arr[id - 1] = newRow;
-                                    setRows(arr);
-                                  }
-                                }
-                              }
-                            },
+                        let arr: any = [...rows];
+                        for (let i = 1; i < arr.length + 1; i++) {
+                          if (id === i) {
+                            let newRow: IRows = {
+                              id: id,
+                              impaCode: filtered?.impaCode,
+                              itemDesc: filtered?.itemDesc,
+                              itemSell: filtered?.itemSell,
+                              batchId: filtered?.batchId,
+                              qty: qty,
+                              totalAmount: filtered?.itemSell * qty,
+                              pkg: filtered?.pkg,
+                            };
+                            arr[id - 1] = newRow;
+                            setRows(arr);
                           }
-                        );
+                        }
+
+                        // itemAmountQuery.mutate(
+                        //   {
+                        //     impaCode: filtered?.impaCode,
+                        //     batchId: filtered?.batchId,
+                        //     qty: qty,
+                        //   },
+                        //   {
+                        //     onSuccess(data) {
+
+                        //     },
+                        //   }
+                        // );
                       }
                     }
                   },
@@ -144,7 +161,8 @@ const NotFoundTable: FC<IProps> = ({
                   }))
                 : []
             }
-            renderInput={(params) => <TextField {...params} />}
+            freeSolo
+            renderInput={({ ...rest }) => <TextField {...rest} />}
           />
         );
       },
@@ -174,17 +192,64 @@ const NotFoundTable: FC<IProps> = ({
       editable: true,
     },
     {
-      field: "totalAmount",
+      field: "",
       headerName: "Total Amount",
       width: 110,
-      editable: true,
+      editable: false,
+      valueGetter: (params) => {
+        return params.row.itemSell
+          ? parseFloat((params.row.itemSell * params.row.qty).toFixed(2))
+          : "";
+      },
     },
   ];
+
+  const handleEditClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row: any) => row.id === id);
+    if (editedRow!.isNew) {
+      setRows(rows.filter((row: any) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    //@ts-ignore
+    updatedRow.totalAmount = parseFloat(
+      //@ts-ignore
+      (updatedRow.qty * updatedRow.itemSell).toFixed(2)
+    );
+    setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
+    params,
+    event
+  ) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
 
   return (
     <>
       {rows && rows.length > 0 && (
-        <Grid item xs={12} style={{ borderTop: "1px solid red" }} mt={7}>
+        <Grid item xs={12} mt={7}>
           <Typography
             variant="h5"
             mb={1}
@@ -198,8 +263,21 @@ const NotFoundTable: FC<IProps> = ({
           >
             Not Found Items
           </Typography>
-          {rows &&
+          <Grid item xs={12} mt={3}>
+            <DataGrid
+              rows={rows ? rows : []}
+              columns={columns}
+              editMode="row"
+              hideFooter={true}
+              onRowEditStop={handleRowEditStop}
+              onRowModesModelChange={handleRowModesModelChange}
+              rowModesModel={rowModesModel}
+              processRowUpdate={processRowUpdate}
+            />
+          </Grid>
+          {/* {rows &&
             rows.map((item: any, index: any) => {
+
               return (
                 <Box key={index}>
                   <Typography
@@ -212,17 +290,10 @@ const NotFoundTable: FC<IProps> = ({
                   >
                     {item.itemDesc}
                   </Typography>
-                  <DataGrid
-                    rows={[item] ? [item] : []}
-                    columns={columns}
-                    editMode="row"
-                    hideFooter={true}
-                    // rowModesModel={rowModesModel}
-                    // onRowModesModelChange={handleRowModesModelChange}
-                  />
+              
                 </Box>
               );
-            })}
+            })} */}
         </Grid>
       )}
     </>

@@ -14,10 +14,7 @@ import {
 } from "@mui/x-data-grid";
 import { ChangeEvent, FC, useState } from "react";
 import { Grid } from "@mui/material";
-import {
-  setInvoiceData,
-  setInvoiceInfoSelect,
-} from "../../../../../../redux/slices/invoiceSlice";
+import { setInvoiceInfoSelect } from "../../../../../../redux/slices/invoiceSlice";
 import useAppDispatch from "../../../../../../hooks/useDispatch";
 import useAppSelector from "../../../../../../hooks/useSelector";
 import CustomInput from "../../../../../../components/input";
@@ -114,7 +111,9 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
       width: 110,
       editable: false,
       valueGetter: (params) => {
-        return params.row.itemSell * params.row.qty;
+        return params.row.itemSell
+          ? parseFloat((params.row.itemSell * params.row.qty).toFixed(2))
+          : "";
       },
     },
   ];
@@ -196,7 +195,10 @@ const MapTable: FC<IProps> = ({ title }: IProps) => {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
     //@ts-ignore
-    updatedRow.totalAmount = updatedRow.qty * updatedRow.itemSell;
+    updatedRow.totalAmount = parseFloat(
+      //@ts-ignore
+      (updatedRow.qty * updatedRow.itemSell).toFixed(2)
+    );
     const selected = [updatedRow];
     var key = title;
     var obj: any = {};
