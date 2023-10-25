@@ -237,15 +237,6 @@ const NotFoundTable: FC<IProps> = ({
     setRowModesModel(newRowModesModel);
   };
 
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
-    params,
-    event
-  ) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
-
   return (
     <>
       {rows && rows.length > 0 && (
@@ -269,31 +260,11 @@ const NotFoundTable: FC<IProps> = ({
               columns={columns}
               editMode="row"
               hideFooter={true}
-              onRowEditStop={handleRowEditStop}
               onRowModesModelChange={handleRowModesModelChange}
               rowModesModel={rowModesModel}
               processRowUpdate={processRowUpdate}
             />
           </Grid>
-          {/* {rows &&
-            rows.map((item: any, index: any) => {
-
-              return (
-                <Box key={index}>
-                  <Typography
-                    mb={1}
-                    mt={3}
-                    sx={{
-                      color: (theme) =>
-                        theme.palette.primary.main + "!important",
-                    }}
-                  >
-                    {item.itemDesc}
-                  </Typography>
-              
-                </Box>
-              );
-            })} */}
         </Grid>
       )}
     </>
