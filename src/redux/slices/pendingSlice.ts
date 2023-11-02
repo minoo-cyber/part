@@ -1,6 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import { IPendingModels } from "../../services/pending.api";
 
 interface PendingSlice {
   pendingData: any;

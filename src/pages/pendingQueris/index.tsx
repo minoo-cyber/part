@@ -11,7 +11,6 @@ import CustomAutocomplete from "../../components/autocomplete";
 import { clientService, companyNameService } from "../../services/invoice.api";
 import CustomButton from "../../components/button";
 import CustomInput from "../../components/input";
-import { GridColDef } from "@mui/x-data-grid";
 import SubModal from "./subModal";
 import useAppDispatch from "../../hooks/useDispatch";
 import { setToast } from "../../redux/slices/toastSlice";
@@ -20,50 +19,6 @@ import { wrapperBox } from "./pending.style";
 import { setPendingSubData } from "../../redux/slices/pendingSlice";
 
 const PendingQueris = () => {
-  const columns: GridColDef[] = [
-    {
-      field: "id",
-      headerName: "Id",
-      width: 40,
-      editable: false,
-    },
-    {
-      field: "impaCode",
-      headerName: "Impa Code",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "itemDesc",
-      headerName: "Item Description",
-      width: 400,
-      editable: true,
-    },
-    {
-      field: "extraDescription",
-      headerName: "Text",
-      width: 200,
-      editable: true,
-    },
-    {
-      field: "qty",
-      headerName: "Qty",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "pkg",
-      headerName: "Pkg",
-      width: 90,
-      editable: true,
-    },
-    {
-      field: "itemSell",
-      headerName: "Sell",
-      width: 90,
-      editable: true,
-    },
-  ];
   const getPendingQuery = useQuery({
     queryKey: ["getPending"],
     queryFn: getPendingService,

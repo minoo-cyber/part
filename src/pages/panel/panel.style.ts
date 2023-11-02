@@ -58,6 +58,7 @@ export const wrapperItems: SxProps = {
   },
   "@media (max-width:1400px)": {
     justifyContent: "center",
+    width: "100%",
     "&>div": {
       width: "35%",
     },
@@ -67,17 +68,45 @@ export const wrapperItems: SxProps = {
       width: "100%",
     },
   },
-  "@media (max-width: 1390px)": {
-    width: "100%",
-  },
 };
 
 export const wrapperStatus: SxProps = {
-  "&>div": {
-    width: "98%",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  "&>div:first-child": {
+    width: "23%",
+    minHeight: "120px",
+    padding: "40px 30px 10px 30px",
     position: "relative",
-    left: "1%",
-    mt: 3,
-    minHeight: "200px",
+    fontSize: "1.1rem",
+    color: "#777777",
+    margin: "10px auto",
+    "& p": {
+      textAlign: "center",
+    },
+    "& a": {
+      color: "#444444",
+    },
+  },
+  "&>div:last-child": {
+    width: "73%",
+    minHeight: "120px",
+    padding: "30px",
+    position: "relative",
+    fontSize: "1.1rem",
+    margin: "10px auto",
+  },
+  "@media (max-width:1400px)": {
+    justifyContent: "center",
+    width: "100%",
+    "&>div": {
+      width: "35% !important",
+    },
+  },
+  "@media (max-width:500px)": {
+    "&>div": {
+      width: "100% !important",
+    },
   },
 };

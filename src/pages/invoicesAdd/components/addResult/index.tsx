@@ -58,19 +58,20 @@ const AddResult: FC<IProps> = ({
       Object.values(dataInvoice?.map).map((item: any) => {
         arrayLength.push(item.length);
       });
-      for (var i = 0; i < arrayLength.length; i++) {
-        if (arrayLength[i] !== 1) {
-          setOpen(false);
-          dispatch(
-            setToast({
-              open: true,
-              type: "error",
-              text: "Each List Shoud Have Only One Row",
-            })
-          );
-        } else {
-          setOpen(true);
-        }
+      let checkForOne = function (arrayLength: any) {
+        return new Set(arrayLength).size === 1;
+      };
+      if (!checkForOne(arrayLength)) {
+        setOpen(false);
+        dispatch(
+          setToast({
+            open: true,
+            type: "error",
+            text: "Each List Shoud Have Only One Row",
+          })
+        );
+      } else {
+        setOpen(true);
       }
     } else if (rows && rows?.length > 0) {
       setOpen(true);

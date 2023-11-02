@@ -52,6 +52,9 @@ const InvoicesSearch = () => {
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
     setBatchId("");
+    setCompanyName("");
+    setClientName("");
+    setBatchIdList("");
     setData(undefined);
   };
 
