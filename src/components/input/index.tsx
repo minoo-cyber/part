@@ -1,13 +1,15 @@
 import { Grid, TextField } from "@mui/material";
-import React, { ChangeEvent, FC, forwardRef, RefObject } from "react";
+import { ChangeEvent, FC, forwardRef, RefObject } from "react";
 import { wrapperBox } from "./input.style";
 
 interface IProps {
   value: any;
+  defaultValue?: any;
   handleChange?: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   type: "tel" | "text" | "password" | "number" | "file";
+  multiline?: boolean;
   id?: string;
   placeholder?: string;
   required?: boolean;
@@ -20,8 +22,10 @@ const CustomInput: FC<IProps> = forwardRef<RefObject<HTMLInputElement>, IProps>(
   (props, ref) => {
     const {
       value,
+      defaultValue,
       handleChange,
       type,
+      multiline,
       id,
       placeholder,
       required,
@@ -46,6 +50,8 @@ const CustomInput: FC<IProps> = forwardRef<RefObject<HTMLInputElement>, IProps>(
           id={id ? id : `${fieldName}-input`}
           type={type}
           value={value}
+          defaultValue={defaultValue}
+          multiline={multiline}
           inputRef={ref}
           fullWidth
           onChange={(e) => onChangeCustom(e, handleChange)}

@@ -6,7 +6,8 @@ import { PersistConfig, persistReducer, persistStore } from "redux-persist";
 const persistConfig: PersistConfig<CombinedState<RootState>, any, any, any> = {
   key: "root",
   storage,
-  blacklist: ["toast", "invoice", "pending"],
+  whitelist: ["addTask"],
+  blacklist: ["toast", "doneTask"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

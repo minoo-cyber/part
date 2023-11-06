@@ -1,14 +1,12 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import addTaskSlice from "./addTaskSlice";
+import doneTaskSlice from "./doneTaskSlice";
 import toastSlice from "./toastSlice";
-import invoiceSlice from "./invoiceSlice";
-import pendingSlice from "./pendingSlice";
 
 const rootReducer = combineReducers({
-  user: userReducer,
   toast: toastSlice,
-  invoice: invoiceSlice,
-  pending: pendingSlice,
+  addTask: addTaskSlice,
+  doneTask: doneTaskSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
